@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
-
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -14,20 +13,22 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import org.example.project.data.dto.User
 import org.example.project.domain.models.Resource
-import org.example.project.presentation.components.ErrorComponent
-import org.example.project.presentation.components.LoadingComponent
+import org.example.project.presentation.components.ScreenContainer
+import org.example.project.presentation.components.PromptTypeShow
+import org.example.project.presentation.common.PromptsViewModel
 import org.example.project.presentation.ui.UserViewModel
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserScreen(
-    onNavigateBack: (() -> Unit)? = null
+    onNavigateBack: (() -> Unit)? = null,
+    promptsViewModel: PromptsViewModel = remember { PromptsViewModel() }
 ) {
     val viewModel = rememberUserViewModel()
     val usersState by viewModel.usersState.collectAsState()
     val createUserState by viewModel.createUserState.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
+    val currentPrompt by promptsViewModel.currentPrompt.collectAsState()
 
     var showCreateDialog by remember { mutableStateOf(false) }
 
@@ -38,84 +39,169 @@ fun UserScreen(
                 showCreateDialog = false
                 viewModel.clearCreateUserState()
                 viewModel.refreshUsers()
+                // Show success prompt
+                promptsViewModel.showSuccess(
+                    title = "Success",
+                    message = "User created successfully!"
+                )
             }
             is Resource.Error -> {
-                // Handle error if needed
+                // Show error prompt
+                promptsViewModel.showError(
+                    title = "Error",
+                    message = (createUserState as Resource.Error).exception.message ?: "Failed to create user"
+                )
+                viewModel.clearCreateUserState()
             }
-            else -> { /* Loading or null state */ }
+            is Resource.Loading -> {
+                // Show loading prompt
+                promptsViewModel.showLoading()
+            }
+            else -> {
+                // Clear any existing prompts when state is null
+                promptsViewModel.clearPrompt()
+            }
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Users") },
-                navigationIcon  = { NavigationIcon(onNavigateBack) },
-                actions = {
-                    IconButton(
-                        onClick = { viewModel.refreshUsers() }
-                    ) {
-                        Icon(
-                            imageVector = SimpleIcons.Refresh,
-                            contentDescription = "Refresh"
-                        )
-                    }
-                    IconButton(
-                        onClick = { showCreateDialog = true }
-                    ) {
-                        Icon(
-                            imageVector =SimpleIcons.Add,
-                            contentDescription = "Add User"
-                        )
-                    }
+    // Handle users loading state
+    LaunchedEffect(usersState) {
+        when (usersState) {
+            is Resource.Loading -> {
+                if (!isRefreshing) { // Don't show loading dialog during refresh
+                    promptsViewModel.showLoading()
                 }
-            )
-        },
-        content = { paddingValues ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                when (usersState) {
-                    is Resource.Loading -> {
-                        LoadingComponent(
-                            modifier = Modifier.align(Alignment.Center)
-                        )
+            }
+            is Resource.Error -> {
+                promptsViewModel.showError(
+                    title = "Error Loading Users",
+                    message = (usersState as Resource.Error).exception.message ?: "Failed to load users",
+                    buttonText = "Retry",
+                    onButtonClick = {
+                        viewModel.retryLoadUsers()
                     }
+                )
+            }
+            is Resource.Success -> {
+                promptsViewModel.clearPrompt()
+            }
+        }
+    }
 
-                    is Resource.Success -> {
-                        UsersList(
-                            users = (usersState as Resource.Success<List<User>>).data,
-                            isRefreshing = isRefreshing,
-                            onRefresh = { viewModel.refreshUsers() }
-                        )
+    ScreenContainer(
+        currentPrompt = currentPrompt,
+        horizontalPadding = 0.dp
+    ) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text("Users") },
+                    navigationIcon = { NavigationIcon(onNavigateBack) },
+                    actions = {
+                        IconButton(
+                            onClick = { viewModel.refreshUsers() }
+                        ) {
+                            Icon(
+                                imageVector = SimpleIcons.Refresh,
+                                contentDescription = "Refresh"
+                            )
+                        }
+                        IconButton(
+                            onClick = { showCreateDialog = true }
+                        ) {
+                            Icon(
+                                imageVector = SimpleIcons.Add,
+                                contentDescription = "Add User"
+                            )
+                        }
                     }
-
-                    is Resource.Error -> {
-                        ErrorComponent(
-                            error = (usersState as Resource.Error).exception,
-                            onRetry = { viewModel.retryLoadUsers() },
-                            modifier = Modifier.align(Alignment.Center)
-                        )
+                )
+            },
+            content = { paddingValues ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                ) {
+                    when (usersState) {
+                        is Resource.Success -> {
+                            UsersList(
+                                users = (usersState as Resource.Success<List<User>>).data,
+                                isRefreshing = isRefreshing,
+                                onRefresh = { viewModel.refreshUsers() }
+                            )
+                        }
+                        is Resource.Error -> {
+                            // Error state is handled by prompts now
+                            EmptyUsersState(
+                                onRetry = { viewModel.retryLoadUsers() }
+                            )
+                        }
+                        is Resource.Loading -> {
+                            // Loading state is handled by prompts now
+                            EmptyUsersState()
+                        }
                     }
                 }
             }
-        }
-    )
-
-    if (showCreateDialog) {
-        CreateUserDialog(
-            onDismiss = {
-                showCreateDialog = false
-                viewModel.clearCreateUserState()
-            },
-            onCreateUser = { name, username, email ->
-                viewModel.createUser(name, username, email)
-            },
-            isLoading = createUserState is Resource.Loading,
-            error = (createUserState as? Resource.Error)?.exception
         )
+
+        if (showCreateDialog) {
+            CreateUserDialog(
+                onDismiss = {
+                    showCreateDialog = false
+                    viewModel.clearCreateUserState()
+                },
+                onCreateUser = { name, username, email ->
+                    // Validate input first
+                    when {
+                        name.isBlank() -> {
+                            promptsViewModel.showError(
+                                message = "Please enter a valid name"
+                            )
+                        }
+                        username.isBlank() -> {
+                            promptsViewModel.showError(
+                                message = "Please enter a valid username"
+                            )
+                        }
+                        email.isBlank() || !email.contains("@") -> {
+                            promptsViewModel.showError(
+                                message = "Please enter a valid email address"
+                            )
+                        }
+                        else -> {
+                            viewModel.createUser(name, username, email)
+                        }
+                    }
+                },
+                isLoading = createUserState is Resource.Loading,
+                error = (createUserState as? Resource.Error)?.exception
+            )
+        }
+    }
+}
+
+@Composable
+private fun EmptyUsersState(
+    onRetry: (() -> Unit)? = null
+) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "No users to display",
+            style = MaterialTheme.typography.bodyLarge
+        )
+
+        onRetry?.let {
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = it) {
+                Text("Retry")
+            }
+        }
     }
 }
 
@@ -195,7 +281,7 @@ private fun CreateUserDialog(
     var email by remember { mutableStateOf("") }
 
     AlertDialog(
-        onDismissRequest = onDismiss,
+        onDismissRequest = (if (!isLoading) onDismiss else { onDismiss}) ,
         title = { Text("Create New User") },
         text = {
             Column(
@@ -273,6 +359,7 @@ private fun CreateUserDialog(
         }
     )
 }
+
 @Composable
 private fun NavigationIcon(onNavigateBack: (() -> Unit)?) {
     onNavigateBack?.let { callback ->
@@ -284,5 +371,53 @@ private fun NavigationIcon(onNavigateBack: (() -> Unit)?) {
         }
     }
 }
+
 @Composable
 expect fun rememberUserViewModel(): UserViewModel
+
+// Enhanced version with confirmation dialogs
+@Composable
+fun UserScreenWithConfirmations(
+    onNavigateBack: (() -> Unit)? = null,
+    promptsViewModel: PromptsViewModel = remember { PromptsViewModel() }
+) {
+    val viewModel = rememberUserViewModel()
+    val currentPrompt by promptsViewModel.currentPrompt.collectAsState()
+
+    ScreenContainer(
+        currentPrompt = currentPrompt,
+        horizontalPadding = 0.dp
+    ) {
+        // Example of using confirmation dialog
+        Button(
+            onClick = {
+                promptsViewModel.showConfirmation(
+                    title = "Delete All Users",
+                    message = "Are you sure you want to delete all users? This action cannot be undone.",
+                    positiveButtonText = "Delete",
+                    negativeButtonText = "Cancel",
+                    onPositiveClick = {
+                        // Perform delete operation
+                        promptsViewModel.showSuccess(
+                            message = "All users deleted successfully!"
+                        )
+                    },
+                    onNegativeClick = {
+                        // User cancelled, no action needed
+                    }
+                )
+            }
+        ) {
+            Text("Delete All Users")
+        }
+
+        // Example of using coming soon
+        Button(
+            onClick = {
+                promptsViewModel.comingSoon("User export feature is coming soon!")
+            }
+        ) {
+            Text("Export Users")
+        }
+    }
+}
