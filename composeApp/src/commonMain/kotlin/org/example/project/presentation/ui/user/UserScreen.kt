@@ -15,6 +15,8 @@ import org.example.project.data.dto.User
 import org.example.project.domain.models.Resource
 import org.example.project.presentation.components.ScreenContainer
 import org.example.project.presentation.common.PromptsViewModel
+import org.example.project.presentation.common.HandleResourceState
+import org.example.project.presentation.common.HandleApiState
 import org.example.project.presentation.ui.UserViewModel
 
 @Composable
@@ -26,53 +28,37 @@ fun UserScreen(
     val usersState by viewModel.usersState.collectAsState()
     val createUserState by viewModel.createUserState.collectAsState()
     val currentPrompt by promptsViewModel.currentPrompt.collectAsState()
-
+    var users  by remember { mutableStateOf(emptyList<User>()) }
     var showCreateDialog by remember { mutableStateOf(false) }
 
-    // Handle create user state changes
-    LaunchedEffect(createUserState) {
-        when (createUserState) {
-            is Resource.Success -> {
-                showCreateDialog = false
-                viewModel.clearCreateUserState()
-                viewModel.refreshUsers()
-                promptsViewModel.showSuccess(
-                    message = "User created successfully!"
-                )
-            }
-            is Resource.Error -> {
-                promptsViewModel.showError(
-                    message = (createUserState as Resource.Error).exception.message ?: "Failed to create user"
-                )
-                viewModel.clearCreateUserState()
-            }
-            else -> { }
-        }
+    // Handle create user state - simplified with HandleResourceState
+    HandleApiState(
+        state = createUserState ?: Resource.Loading, // Handle null state
+        promptsViewModel = promptsViewModel,
+    ) { user ->
+        showCreateDialog = false
+        viewModel.clearCreateUserState()
+        viewModel.refreshUsers()
+        promptsViewModel.showSuccess(message = "User created successfully!")
     }
+    // Handle users loading state with HandleResourceState
+    HandleApiState(
+        state = usersState,
+        promptsViewModel = promptsViewModel,
+    ) { response ->
+        users= response
 
+    }
     ScreenContainer(
         currentPrompt = currentPrompt,
         horizontalPadding = 0.dp
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            when (usersState) {
-                is Resource.Loading -> {
-                    LoadingState()
-                }
-                is Resource.Success -> {
-                    UsersList(
-                        users = (usersState as Resource.Success<List<User>>).data,
-                        onRefresh = { viewModel.refreshUsers() }
-                    )
-                }
-                is Resource.Error -> {
-                    ErrorState(
-                        error = (usersState as Resource.Error).exception,
-                        onRetry = { viewModel.retryLoadUsers() }
-                    )
-                }
-            }
 
+            UsersList(
+                users = users,
+                onRefresh = { viewModel.refreshUsers() }
+            )
             // Floating Action Button for adding users
             FloatingActionButton(
                 onClick = { showCreateDialog = true },
@@ -121,39 +107,6 @@ fun UserScreen(
     }
 }
 
-@Composable
-private fun LoadingState() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        CircularProgressIndicator()
-        Spacer(modifier = Modifier.height(16.dp))
-        Text("Loading users...")
-    }
-}
-
-@Composable
-private fun ErrorState(
-    error: Throwable,
-    onRetry: () -> Unit
-) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "Error: ${error.message}",
-            style = MaterialTheme.typography.bodyLarge
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onRetry) {
-            Text("Retry")
-        }
-    }
-}
 
 @Composable
 private fun UsersList(
