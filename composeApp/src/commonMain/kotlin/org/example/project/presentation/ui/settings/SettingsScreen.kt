@@ -16,89 +16,72 @@ fun SettingsScreen(
     var darkMode by remember { mutableStateOf(false) }
     var notifications by remember { mutableStateOf(true) }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Settings") },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            imageVector = AppIcons.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
-                }
-            )
-        }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp)
-        ) {
-            // Settings Items
-            SettingItem(
-                title = "Dark Mode",
-                description = "Enable dark theme",
-                icon = AppIcons.DarkMode,
-                trailing = {
-                    Switch(
-                        checked = darkMode,
-                        onCheckedChange = { darkMode = it }
-                    )
-                }
-            )
-
-            Divider(modifier = Modifier.padding(vertical = 8.dp))
-
-            SettingItem(
-                title = "Notifications",
-                description = "Enable push notifications",
-                icon = AppIcons.Notifications,
-                trailing = {
-                    Switch(
-                        checked = notifications,
-                        onCheckedChange = { notifications = it }
-                    )
-                }
-            )
-
-            Divider(modifier = Modifier.padding(vertical = 8.dp))
-
-            SettingItem(
-                title = "About",
-                description = "App version and info",
-                icon = AppIcons.Info,
-                onClick = {
-                    // Handle about click
-                }
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            // App Info
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        // Settings Items
+        SettingItem(
+            title = "Dark Mode",
+            description = "Enable dark theme",
+            icon = AppIcons.DarkMode,
+            trailing = {
+                Switch(
+                    checked = darkMode,
+                    onCheckedChange = { darkMode = it }
                 )
+            }
+        )
+
+        Divider(modifier = Modifier.padding(vertical = 8.dp))
+
+        SettingItem(
+            title = "Notifications",
+            description = "Enable push notifications",
+            icon = AppIcons.Notifications,
+            trailing = {
+                Switch(
+                    checked = notifications,
+                    onCheckedChange = { notifications = it }
+                )
+            }
+        )
+
+        Divider(modifier = Modifier.padding(vertical = 8.dp))
+
+        SettingItem(
+            title = "About",
+            description = "App version and info",
+            icon = AppIcons.Info,
+            onClick = {
+                // Handle about click
+            }
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        // App Info
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant
+            )
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "KMP Template",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        text = "Version 1.0.0",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
+                Text(
+                    text = "KMP Template",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = "Version 1.0.0",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     }

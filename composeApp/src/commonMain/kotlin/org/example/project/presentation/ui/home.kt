@@ -27,111 +27,102 @@ fun HomeScreen(
         currentPrompt = currentPrompt,
         horizontalPadding = 0.dp
     ) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text("KMP Template") }
-                )
-            }
-        ) { paddingValues ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "Welcome to KMP Template",
-                    style = MaterialTheme.typography.headlineMedium,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "Welcome to KMP Template",
+                style = MaterialTheme.typography.headlineMedium,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurface
+            )
 
-                Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-                Text(
-                    text = "Choose a section to explore:",
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+            Text(
+                text = "Choose a section to explore:",
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
 
-                Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-                // Navigation Cards with prompt integration
-                NavigationCard(
-                    title = "Users",
-                    description = "View and manage users",
-                    icon = SimpleIcons.Person,
-                    onClick = {
-                        // Show loading and then navigate
-                        promptsViewModel.showLoading()
-                        // Simulate loading delay (remove in production)
-                        kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
-                            delay(1000)
-                            promptsViewModel.clearPrompt()
-                            onNavigateToUsers()
+            // Navigation Cards with prompt integration
+            NavigationCard(
+                title = "Users",
+                description = "View and manage users",
+                icon = SimpleIcons.Person,
+                onClick = {
+                    // Show loading and then navigate
+                    promptsViewModel.showLoading()
+                    // Simulate loading delay (remove in production)
+                    kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
+                        delay(1000)
+                        promptsViewModel.clearPrompt()
+                        onNavigateToUsers()
+                    }
+                }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            NavigationCard(
+                title = "Settings",
+                description = "App settings and preferences",
+                icon = AppIcons.Settings,
+                onClick = onNavigateToSettings
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Demo Cards for different prompt types
+            NavigationCard(
+                title = "Demo Features",
+                description = "Test different prompt types",
+                icon = AppIcons.Info,
+                onClick = {
+                    promptsViewModel.showConfirmation(
+                        title = "Demo Features",
+                        message = "Would you like to see all the available prompt types?",
+                        positiveButtonText = "Yes, Show Me",
+                        negativeButtonText = "Cancel",
+                        onPositiveClick = {
+                            showDemoPrompts(promptsViewModel)
                         }
-                    }
-                )
+                    )
+                }
+            )
 
-                Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-                NavigationCard(
-                    title = "Settings",
-                    description = "App settings and preferences",
-                    icon = AppIcons.Settings,
-                    onClick = onNavigateToSettings
-                )
+            NavigationCard(
+                title = "Coming Soon",
+                description = "Features under development",
+                icon = AppIcons.Info,
+                onClick = {
+                    promptsViewModel.comingSoon("More exciting features are coming soon!")
+                }
+            )
 
-                Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-                // Demo Cards for different prompt types
-                NavigationCard(
-                    title = "Demo Features",
-                    description = "Test different prompt types",
-                    icon = AppIcons.Info,
-                    onClick = {
-                        promptsViewModel.showConfirmation(
-                            title = "Demo Features",
-                            message = "Would you like to see all the available prompt types?",
-                            positiveButtonText = "Yes, Show Me",
-                            negativeButtonText = "Cancel",
-                            onPositiveClick = {
-                                showDemoPrompts(promptsViewModel)
-                            }
-                        )
-                    }
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                NavigationCard(
-                    title = "Coming Soon",
-                    description = "Features under development",
-                    icon = AppIcons.Info,
-                    onClick = {
-                        promptsViewModel.comingSoon("More exciting features are coming soon!")
-                    }
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                NavigationCard(
-                    title = "Test Error",
-                    description = "Test error handling",
-                    icon = AppIcons.Info,
-                    onClick = {
-                        promptsViewModel.showError(
-                            title = "Test Error",
-                            message = "This is a test error message to demonstrate error handling.",
-                            buttonText = "Got it"
-                        )
-                    }
-                )
-            }
+            NavigationCard(
+                title = "Test Error",
+                description = "Test error handling",
+                icon = AppIcons.Info,
+                onClick = {
+                    promptsViewModel.showError(
+                        title = "Test Error",
+                        message = "This is a test error message to demonstrate error handling.",
+                        buttonText = "Got it"
+                    )
+                }
+            )
         }
     }
 }

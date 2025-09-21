@@ -92,60 +92,30 @@ fun UserScreen(
         currentPrompt = currentPrompt,
         horizontalPadding = 0.dp
     ) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text("Users") },
-                    navigationIcon = { NavigationIcon(onNavigateBack) },
-                    actions = {
-                        IconButton(
-                            onClick = { viewModel.refreshUsers() }
-                        ) {
-                            Icon(
-                                imageVector = SimpleIcons.Refresh,
-                                contentDescription = "Refresh"
-                            )
-                        }
-                        IconButton(
-                            onClick = { showCreateDialog = true }
-                        ) {
-                            Icon(
-                                imageVector = SimpleIcons.Add,
-                                contentDescription = "Add User"
-                            )
-                        }
-                    }
-                )
-            },
-            content = { paddingValues ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                ) {
-                    when (usersState) {
-                        is Resource.Success -> {
-                            UsersList(
-                                users = (usersState as Resource.Success<List<User>>).data,
-                                isRefreshing = isRefreshing,
-                                onRefresh = { viewModel.refreshUsers() }
-                            )
-                        }
-                        is Resource.Error -> {
-                            // Error state is handled by prompts now
-                            EmptyUsersState(
-                                onRetry = { viewModel.retryLoadUsers() }
-                            )
-                        }
-                        is Resource.Loading -> {
-                            // Loading state is handled by prompts now
-                            EmptyUsersState()
-                        }
-                    }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            when (usersState) {
+                is Resource.Success -> {
+                    UsersList(
+                        users = (usersState as Resource.Success<List<User>>).data,
+                        isRefreshing = isRefreshing,
+                        onRefresh = { viewModel.refreshUsers() }
+                    )
+                }
+                is Resource.Error -> {
+                    // Error state is handled by prompts now
+                    EmptyUsersState(
+                        onRetry = { viewModel.retryLoadUsers() }
+                    )
+                }
+                is Resource.Loading -> {
+                    // Loading state is handled by prompts now
+                    EmptyUsersState()
                 }
             }
-        )
-
+        }
         if (showCreateDialog) {
             CreateUserDialog(
                 onDismiss = {

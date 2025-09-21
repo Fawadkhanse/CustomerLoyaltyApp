@@ -1,35 +1,42 @@
 package org.example.project.presentation.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import org.example.project.presentation.navigation.Screen.Screen
 import org.example.project.presentation.ui.HomeScreen
 import org.example.project.presentation.ui.settings.SettingsScreen
 import org.example.project.presentation.ui.user.UserScreen
 
 @Composable
 fun AppNavigation(
-    navController: NavHostController = rememberNavController()
+    navController: androidx.navigation.NavHostController,
+    updateTopBottomAppBar: (topBarVisible: Boolean, title: String, bottomTabVisible: Boolean) -> Unit
 ) {
-    NavHost(
+    androidx.navigation.compose.NavHost(
         navController = navController,
-        startDestination = Screen.Home.route
+        startDestination = "home"
     ) {
-        composable(Screen.Home.route) {
+    composable("home") {
+            LaunchedEffect(Unit) {
+                updateTopBottomAppBar(true, "KMP Template", true)
+            }
+
+            // Each screen manages its own prompts via ScreenContainer
             HomeScreen(
                 onNavigateToUsers = {
-                    navController.navigate(Screen.Users.route)
+                    navController.navigate("users")
                 },
                 onNavigateToSettings = {
-                    navController.navigate(Screen.Settings.route)
+                    navController.navigate("settings")
                 }
             )
         }
 
-        composable(Screen.Users.route) {
+      composable("users") {
+            LaunchedEffect(Unit) {
+                updateTopBottomAppBar(true, "Users", true)
+            }
+
             UserScreen(
                 onNavigateBack = {
                     navController.popBackStack()
@@ -37,7 +44,11 @@ fun AppNavigation(
             )
         }
 
-        composable(Screen.Settings.route) {
+        composable("settings") {
+            LaunchedEffect(Unit) {
+                updateTopBottomAppBar(true, "Settings", true)
+            }
+
             SettingsScreen(
                 onNavigateBack = {
                     navController.popBackStack()
