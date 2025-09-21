@@ -5,27 +5,33 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import org.example.project.domain.models.Resource
 
 abstract class BaseViewModel : ViewModel() {
 
-    protected fun <T> Flow<Resource<T>>.collectAsState(
-        stateFlow: MutableStateFlow<Resource<T>>
+    // Simple collect with automatic JSON parsing
+    protected inline fun <reified T> Flow<Resource<String>>.collect(
+        crossinline onResult: (T) -> Unit
     ) {
         viewModelScope.launch {
-            collect { resource ->
-                stateFlow.value = resource
-            }
-        }
-    }
-
-    protected fun <T> executeUseCase(
-        useCase: suspend () -> Flow<Resource<T>>,
-        stateFlow: MutableStateFlow<Resource<T>>
-    ) {
-        viewModelScope.launch {
-            useCase().collect { resource ->
-                stateFlow.value = resource
+            this@collect.collect { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        try {
+                            val result = Json.decodeFromString<T>(resource.data)
+                            onResult(result)
+                        } catch (e: Exception) {
+                            // Handle parsing error if needed
+                        }
+                    }
+                    is Resource.Error -> {
+                        // Handle error if needed
+                    }
+                    is Resource.Loading -> {
+                        // Handle loading if needed
+                    }
+                }
             }
         }
     }

@@ -3,7 +3,9 @@ package org.example.project.di
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.example.project.data.api.ApiClient
 import org.example.project.data.repository.GenericRepository
+import org.example.project.data.repository.RemoteRepositoryImpl
 import org.example.project.data.repository.UserRepository
+import org.example.project.domain.RemoteRepository
 import org.example.project.domain.usecase.CreateUserUseCase
 import org.example.project.domain.usecase.GetUsersUseCase
 import org.example.project.presentation.ui.UserViewModel
@@ -21,7 +23,7 @@ val  appModule = module {
     single<GenericRepository> {
         GenericRepository(apiClient = get())
     }
-
+    single<RemoteRepository> { RemoteRepositoryImpl(get()) }
     // Specific Repositories
     single<UserRepository> {
         UserRepository(genericRepository = get())
@@ -35,14 +37,14 @@ val  appModule = module {
     factory<CreateUserUseCase> {
         CreateUserUseCase(userRepository = get())
     }
-
+    factory<UserViewModel> { UserViewModel(get()) }
     // ViewModels - ✅ Use factory instead of viewModel for cross-platform
-    factory<UserViewModel> {
-        UserViewModel(
-            getUsersUseCase = get(),
-            createUserUseCase = get()
-        )
-    }
+//    factory<UserViewModel> {
+//        UserViewModel(
+////            getUsersUseCase = get(),
+////            createUserUseCase = get()
+//        )
+//    }
 }
 
 

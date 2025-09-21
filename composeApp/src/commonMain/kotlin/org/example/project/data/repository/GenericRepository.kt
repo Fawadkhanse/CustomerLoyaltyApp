@@ -12,9 +12,6 @@ class GenericRepository(
     val apiClient: ApiClient
 ) {
 
-    /**
-     * Executes a GET request and returns the result as a Flow<Resource<T>>
-     */
     suspend inline fun <reified T> get(
         url: String,
         headers: Map<String, String> = emptyMap(),
@@ -30,13 +27,12 @@ class GenericRepository(
                 emit(Resource.Error(HttpException(response.status, response.bodyAsText())))
             }
         } catch (e: Exception) {
+            println("GenericRepository GET Exception for $url:")
+            println("${e::class.simpleName}: ${e.message}")
             emit(Resource.Error(e))
         }
     }
 
-    /**
-     * Executes a POST request and returns the result as a Flow<Resource<R>>
-     */
     suspend inline fun <reified T, reified R> post(
         url: String,
         body: T,
@@ -52,13 +48,12 @@ class GenericRepository(
                 emit(Resource.Error(HttpException(response.status, response.bodyAsText())))
             }
         } catch (e: Exception) {
+            println("GenericRepository POST Exception for $url:")
+            println("${e::class.simpleName}: ${e.message}")
             emit(Resource.Error(e))
         }
     }
 
-    /**
-     * Executes a PUT request and returns the result as a Flow<Resource<R>>
-     */
     suspend inline fun <reified T, reified R> put(
         url: String,
         body: T,
@@ -74,13 +69,12 @@ class GenericRepository(
                 emit(Resource.Error(HttpException(response.status, response.bodyAsText())))
             }
         } catch (e: Exception) {
+            println("GenericRepository PUT Exception for $url:")
+            println("${e::class.simpleName}: ${e.message}")
             emit(Resource.Error(e))
         }
     }
 
-    /**
-     * Executes a DELETE request and returns the result as a Flow<Resource<Unit>>
-     */
     suspend fun delete(
         url: String,
         headers: Map<String, String> = emptyMap()
@@ -94,34 +88,13 @@ class GenericRepository(
                 emit(Resource.Error(HttpException(response.status, response.bodyAsText())))
             }
         } catch (e: Exception) {
-            emit(Resource.Error(e))
-        }
-    }
-
-    /**
-     * Generic method for any HTTP operation
-     */
-    suspend inline fun <reified T> execute(
-        crossinline operation: suspend () -> HttpResponse
-    ): Flow<Resource<T>> = flow {
-        emit(Resource.Loading)
-        try {
-            val response = operation()
-            if (response.status.isSuccess()) {
-                val data = response.body<T>()
-                emit(Resource.Success(data))
-            } else {
-                emit(Resource.Error(HttpException(response.status, response.bodyAsText())))
-            }
-        } catch (e: Exception) {
+            println("GenericRepository DELETE Exception for $url:")
+            println("${e::class.simpleName}: ${e.message}")
             emit(Resource.Error(e))
         }
     }
 }
 
-/**
- * Custom exception for HTTP errors
- */
 class HttpException(
     val status: HttpStatusCode,
     val errorBody: String

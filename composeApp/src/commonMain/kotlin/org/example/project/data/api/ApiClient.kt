@@ -1,5 +1,6 @@
 package org.example.project.data.api
 
+
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.DEFAULT
@@ -14,13 +15,11 @@ import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
-import io.ktor.client.utils.EmptyContent.contentType
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-
 
 class ApiClient {
     val httpClient = HttpClient {
@@ -34,7 +33,7 @@ class ApiClient {
 
         install(Logging) {
             logger = Logger.DEFAULT
-            level = LogLevel.HEADERS
+            level = LogLevel.ALL
             sanitizeHeader { header -> header == HttpHeaders.Authorization }
         }
     }
@@ -44,14 +43,13 @@ class ApiClient {
         headers: Map<String, String> = emptyMap(),
         parameters: Map<String, String> = emptyMap()
     ): HttpResponse {
-        return httpClient.get(url) {
-            headers.forEach { (key, value) ->
-                header(key, value)
-            }
-            parameters.forEach { (key, value) ->
-                parameter(key, value)
-            }
+        println("API Request: GET $url")
+        val response = httpClient.get(url) {
+            headers.forEach { (key, value) -> header(key, value) }
+            parameters.forEach { (key, value) -> parameter(key, value) }
         }
+        println("API Response: ${response.status.value} ${response.status.description}")
+        return response
     }
 
     suspend inline fun <reified T> post(
@@ -59,13 +57,15 @@ class ApiClient {
         body: T,
         headers: Map<String, String> = emptyMap()
     ): HttpResponse {
-        return httpClient.post(url) {
+        println("API Request: POST $url")
+        println("Request Body: $body")
+        val response = httpClient.post(url) {
             contentType(ContentType.Application.Json)
-            headers.forEach { (key, value) ->
-                header(key, value)
-            }
+            headers.forEach { (key, value) -> header(key, value) }
             setBody(body)
         }
+        println("API Response: ${response.status.value} ${response.status.description}")
+        return response
     }
 
     suspend inline fun <reified T> put(
@@ -73,24 +73,27 @@ class ApiClient {
         body: T,
         headers: Map<String, String> = emptyMap()
     ): HttpResponse {
-        return httpClient.put(url) {
+        println("API Request: PUT $url")
+        println("Request Body: $body")
+        val response = httpClient.put(url) {
             contentType(ContentType.Application.Json)
-            headers.forEach { (key, value) ->
-                header(key, value)
-            }
+            headers.forEach { (key, value) -> header(key, value) }
             setBody(body)
         }
+        println("API Response: ${response.status.value} ${response.status.description}")
+        return response
     }
 
     suspend fun delete(
         url: String,
         headers: Map<String, String> = emptyMap()
     ): HttpResponse {
-        return httpClient.delete(url) {
-            headers.forEach { (key, value) ->
-                header(key, value)
-            }
+        println("API Request: DELETE $url")
+        val response = httpClient.delete(url) {
+            headers.forEach { (key, value) -> header(key, value) }
         }
+        println("API Response: ${response.status.value} ${response.status.description}")
+        return response
     }
 
     fun close() {
