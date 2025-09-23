@@ -8,13 +8,12 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
+import org.example.project.presentation.LoyaltyApp
 import org.example.project.presentation.navigation.AppNavigation
 
 @Composable
 fun App() {
-    MaterialTheme {
-        MyApp()
-    }
+    LoyaltyApp()
 }
 
 @Composable

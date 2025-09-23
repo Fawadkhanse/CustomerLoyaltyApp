@@ -36,10 +36,9 @@ fun UserScreen(
         state = createUserState ?: Resource.Loading, // Handle null state
         promptsViewModel = promptsViewModel,
     ) { user ->
-        showCreateDialog = false
-        viewModel.clearCreateUserState()
-        viewModel.refreshUsers()
+
         promptsViewModel.showSuccess(message = "User created successfully!")
+        viewModel.clearCreateUserState()
     }
     // Handle users loading state with HandleResourceState
     HandleApiState(
@@ -47,7 +46,6 @@ fun UserScreen(
         promptsViewModel = promptsViewModel,
     ) { response ->
         users= response
-
     }
     ScreenContainer(
         currentPrompt = currentPrompt,

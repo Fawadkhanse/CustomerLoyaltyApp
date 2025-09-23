@@ -237,38 +237,6 @@ sealed class PromptTypeShow(
     )
 }
 
-// Dialog Composables
-@Composable
-private fun ShowLoader() {
-    Dialog(
-        onDismissRequest = { },
-        properties = DialogProperties(
-            dismissOnBackPress = false,
-            dismissOnClickOutside = false
-        )
-    ) {
-        Card(
-            modifier = Modifier
-                .wrapContentSize()
-                .padding(16.dp),
-            shape = RoundedCornerShape(16.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(48.dp)
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "Loading...",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-        }
-    }
-}
 
 @Composable
 private fun ShowError(

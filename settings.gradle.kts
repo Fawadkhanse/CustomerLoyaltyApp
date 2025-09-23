@@ -1,4 +1,4 @@
-rootProject.name = "SimpleAppArch"
+rootProject.name = "CustomerLoyaltyApp"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
