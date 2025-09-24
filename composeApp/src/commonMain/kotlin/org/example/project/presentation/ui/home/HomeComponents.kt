@@ -1,11 +1,8 @@
-package org.example.project.presentation.components.home
-
-import org.example.project.presentation.components.StatsCard
+package org.example.project.presentation.ui.home
 
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -20,80 +17,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import org.example.project.presentation.components.coupons.CouponData
+import org.example.project.presentation.ui.coupons.CouponData
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 // 🏠 Customer Home Screen
-@Composable
-fun CustomerHomeScreen(
-    userName: String,
-    userPoints: Int,
-    tier: String,
-    promotions: List<PromotionData>,
-    availableCoupons: List<CouponData>,
-    recentActivity: List<ActivityData>,
-    userProfileImageUrl: String? = null,
-    onProfileClick: () -> Unit,
-    onCouponClick: (CouponData) -> Unit,
-    onViewAllCoupons: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
-    ) {
-        item {
-            // Header with profile
-            CustomerHeader(
-                userName = userName,
-                userProfileImageUrl = userProfileImageUrl,
-                onProfileClick = onProfileClick
-            )
-        }
-
-        item {
-            // Points Balance Card
-            PointsBalanceCard(
-                points = userPoints,
-                tier = tier
-            )
-        }
-
-        item {
-            // Promotions Carousel
-            if (promotions.isNotEmpty()) {
-                PromotionsSection(
-                    promotions = promotions
-                )
-            }
-        }
-
-        item {
-            // Available Coupons
-            if (availableCoupons.isNotEmpty()) {
-                CouponsSection(
-                    coupons = availableCoupons,
-                    onCouponClick = onCouponClick,
-                    onViewAll = onViewAllCoupons
-                )
-            }
-        }
-
-        item {
-            // Recent Activity
-            if (recentActivity.isNotEmpty()) {
-                RecentActivitySection(
-                    activities = recentActivity
-                )
-            }
-        }
-    }
-}
 
 @Composable
 private fun CustomerHeader(
@@ -152,7 +81,7 @@ private fun CustomerHeader(
 }
 
 @Composable
-private fun PointsBalanceCard(
+ fun PointsBalanceCard(
     points: Int,
     tier: String,
     modifier: Modifier = Modifier
@@ -224,7 +153,7 @@ private fun PromotionsSection(
 }
 
 @Composable
-private fun PromotionCard(
+ fun PromotionCard(
     promotion: PromotionData,
     modifier: Modifier = Modifier
 ) {
@@ -264,7 +193,7 @@ private fun PromotionCard(
 }
 
 @Composable
-private fun CouponsSection(
+ fun CouponsSection(
     coupons: List<CouponData>,
     onCouponClick: (CouponData) -> Unit,
     onViewAll: () -> Unit,
@@ -447,177 +376,6 @@ private fun ActivityItem(
 }
 
 // 📊 Merchant Dashboard Screen
-@Composable
-fun MerchantDashboardScreen(
-    todaysScans: Int,
-    pointsAwarded: Int,
-    couponsRedeemed: Int,
-    activeOutlets: Int,
-    recentTransactions: List<TransactionData>,
-    onViewAllTransactions: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
-    ) {
-        item {
-            // Header
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Dashboard",
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontWeight = FontWeight.Bold
-                )
-
-                // Notification Icon
-                IconButton(
-                    onClick = { },
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .background(LoyaltyExtendedColors.cardBackground())
-                ) {
-                    Icon(
-                        imageVector = AppIcons.Notifications,
-                        contentDescription = "Notifications",
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
-                }
-            }
-        }
-
-        item {
-            // Stats Grid
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                StatsCard(
-                    title = "Today's Scans",
-                    value = todaysScans.toString(),
-                    icon = AppIcons.Info, // Replace with QR icon
-                    modifier = Modifier.weight(1f)
-                )
-
-                StatsCard(
-                    title = "Points Awarded",
-                    value = pointsAwarded.toString(),
-                    icon = AppIcons.Info, // Replace with star icon
-                    color = LoyaltyColors.ButteryYellow,
-                    modifier = Modifier.weight(1f)
-                )
-            }
-        }
-
-        item {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                StatsCard(
-                    title = "Coupons Redeemed",
-                    value = couponsRedeemed.toString(),
-                    icon = AppIcons.Info, // Replace with coupon icon
-                    color = LoyaltyColors.Success,
-                    modifier = Modifier.weight(1f)
-                )
-
-                StatsCard(
-                    title = "Active Outlets",
-                    value = activeOutlets.toString(),
-                    icon = AppIcons.Info, // Replace with store icon
-                    color = LoyaltyColors.Warning,
-                    modifier = Modifier.weight(1f)
-                )
-            }
-        }
-
-        item {
-            // Performance Chart Placeholder
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = LoyaltyExtendedColors.cardBackground()
-                ),
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Performance",
-                            style = MaterialTheme.typography.headlineSmall,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontWeight = FontWeight.SemiBold
-                        )
-
-                        Row {
-                            listOf("Today", "Week", "Month").forEach { period ->
-                                Surface(
-                                    color = if (period == "Today") LoyaltyColors.OrangePink
-                                    else Color.Transparent,
-                                    shape = RoundedCornerShape(16.dp)
-                                ) {
-                                    Text(
-                                        text = period,
-                                        style = MaterialTheme.typography.labelMedium,
-                                        color = if (period == "Today") Color.White
-                                        else LoyaltyExtendedColors.secondaryText(),
-                                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Simple chart placeholder
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(100.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(LoyaltyColors.OrangePink.copy(alpha = 0.1f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "Chart Visualization",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = LoyaltyExtendedColors.secondaryText()
-                        )
-                    }
-                }
-            }
-        }
-
-        item {
-            // Recent Transactions
-            RecentTransactionsSection(
-                transactions = recentTransactions,
-                onViewAll = onViewAllTransactions
-            )
-        }
-    }
-}
 
 @Composable
 private fun RecentTransactionsSection(
@@ -708,33 +466,7 @@ private fun TransactionItem(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun CustomerHomeScreenPreview() {
-    MaterialTheme {
-        CustomerHomeScreen(
-            userName = "Sarah J.",
-            userPoints = 1250,
-            tier = "Gold",
-            promotions = listOf(
-                PromotionData("promo1", "20% Off Coffee", null, "Dec 31"),
-                PromotionData("promo2", "Free Pastry with Purchase", null, "Jan 15")
-            ),
-            availableCoupons = listOf(
-                CouponData(id = "coupon1", title = "50 Points Off", pointsRequired = 50, expiryDate = "Jan 31", description = "Redeem for 50 points discount."),
-                CouponData(id = "coupon2", title = "Free Drink", pointsRequired = 100, expiryDate = "Feb 28", description = "Redeem for a free drink.")
-            ),
-            recentActivity = listOf(
-                ActivityData("act1", "Earned points at Cafe Mocha", 25, "Dec 10, 2023", "earned"),
-                ActivityData("act2", "Redeemed 'Free Pastry' coupon", 75, "Dec 08, 2023", "redeemed")
-            ),
-            userProfileImageUrl = null,
-            onProfileClick = {},
-            onCouponClick = {},
-            onViewAllCoupons = {}
-        )
-    }
-}
+
 
 @Preview(showBackground = true)
 @Composable
@@ -775,24 +507,6 @@ fun ActivityItemPreview() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun MerchantDashboardScreenPreview() {
-    MaterialTheme {
-        MerchantDashboardScreen(
-            todaysScans = 152,
-            pointsAwarded = 7850,
-            couponsRedeemed = 35,
-            activeOutlets = 4,
-            recentTransactions = listOf(
-                TransactionData("t1", "John Doe", 120, "Main Street Cafe", "10:30 AM"),
-                TransactionData("t2", "Alice Smith", 85, "Downtown Brew", "09:15 AM"),
-                TransactionData("t3", "Bob Johnson", 200, "City Center Outlet", "08:00 AM")
-            ),
-            onViewAllTransactions = {}
-        )
-    }
-}
 
 // Data classes
 data class PromotionData(

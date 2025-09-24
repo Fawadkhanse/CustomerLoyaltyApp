@@ -31,6 +31,16 @@ import org.example.project.presentation.components.transactions.*
 import org.example.project.presentation.components.auth.SetNewPasswordScreen
 import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.example.project.presentation.navigation.Screen.Screen
+import org.example.project.presentation.ui.coupons.CouponData
+import org.example.project.presentation.ui.coupons.RedeemedCouponData
+import org.example.project.presentation.ui.home.ActivityData
+import org.example.project.presentation.ui.home.PromotionData
+import org.example.project.presentation.ui.home.TransactionData
+import org.example.project.presentation.ui.qr.CustomerFoundBottomSheet
+import org.example.project.presentation.ui.qr.QRCodeDisplayScreen
+import org.example.project.presentation.ui.qr.QRScannerScreen
+import org.example.project.presentation.ui.transaction.OutletListData
+import org.example.project.presentation.ui.transaction.TransactionHistoryData
 
 // ===================
 // CUSTOMER SCREENS
@@ -45,7 +55,13 @@ fun CustomerHomeScreenWrapper(navController: NavHostController) {
     )
 
     val sampleCoupons = listOf(
-        CouponData("1", "Free Appetizer", "Enjoy a free appetizer with any main course", 500, "15 Nov 2024"),
+        CouponData(
+            "1",
+            "Free Appetizer",
+            "Enjoy a free appetizer with any main course",
+            500,
+            "15 Nov 2024"
+        ),
         CouponData("2", "10% Off Main Course", "Get 10% off any main course", 250, "30 Nov 2024")
     )
 
@@ -84,8 +100,20 @@ fun CustomerQRScreen(navController: NavHostController) {
 @Composable
 fun CustomerCouponsScreen(navController: NavHostController) {
     val sampleAvailableCoupons = listOf(
-        CouponData("1", "20% Off Your Next Purchase", "Get 20% off on any item in our store.", 500, "Dec 31, 2024"),
-        CouponData("2", "Free Coffee", "Enjoy a free cup of our signature blend coffee.", 250, "Nov 15, 2024")
+        CouponData(
+            "1",
+            "20% Off Your Next Purchase",
+            "Get 20% off on any item in our store.",
+            500,
+            "Dec 31, 2024"
+        ),
+        CouponData(
+            "2",
+            "Free Coffee",
+            "Enjoy a free cup of our signature blend coffee.",
+            250,
+            "Nov 15, 2024"
+        )
     )
 
     val sampleRedeemedCoupons = listOf(
@@ -188,12 +216,54 @@ fun MerchantOutletsScreen(navController: NavHostController) {
 @Composable
 fun MerchantTransactionsScreen(navController: NavHostController) {
     val sampleTransactions = listOf(
-        TransactionHistoryData("1", "Olivia Chen", 50, "25 Oct 2023, 10:45 AM", "awarded", "Points Awarded"),
-        TransactionHistoryData("2", "Benjamin Carter", 100, "24 Oct 2023, 07:15 PM", "redeemed", "Points Redeemed"),
-        TransactionHistoryData("3", "Ethan Nguyen", 25, "24 Oct 2023, 01:30 PM", "awarded", "Points Awarded"),
-        TransactionHistoryData("4", "Sophia Rodriguez", 75, "23 Oct 2023, 11:00 AM", "awarded", "Points Awarded"),
-        TransactionHistoryData("5", "Liam Goldberg", 500, "22 Oct 2023, 08:00 PM", "redeemed", "Points Redeemed"),
-        TransactionHistoryData("6", "Ava Kim", 120, "22 Oct 2023, 03:20 PM", "awarded", "Points Awarded")
+        TransactionHistoryData(
+            "1",
+            "Olivia Chen",
+            50,
+            "25 Oct 2023, 10:45 AM",
+            "awarded",
+            "Points Awarded"
+        ),
+        TransactionHistoryData(
+            "2",
+            "Benjamin Carter",
+            100,
+            "24 Oct 2023, 07:15 PM",
+            "redeemed",
+            "Points Redeemed"
+        ),
+        TransactionHistoryData(
+            "3",
+            "Ethan Nguyen",
+            25,
+            "24 Oct 2023, 01:30 PM",
+            "awarded",
+            "Points Awarded"
+        ),
+        TransactionHistoryData(
+            "4",
+            "Sophia Rodriguez",
+            75,
+            "23 Oct 2023, 11:00 AM",
+            "awarded",
+            "Points Awarded"
+        ),
+        TransactionHistoryData(
+            "5",
+            "Liam Goldberg",
+            500,
+            "22 Oct 2023, 08:00 PM",
+            "redeemed",
+            "Points Redeemed"
+        ),
+        TransactionHistoryData(
+            "6",
+            "Ava Kim",
+            120,
+            "22 Oct 2023, 03:20 PM",
+            "awarded",
+            "Points Awarded"
+        )
     )
 
     TransactionHistoryScreen(

@@ -1,160 +1,20 @@
-package org.example.project.presentation.components.transactions
-
-import org.example.project.presentation.components.LoyaltyPrimaryButton
+package org.example.project.presentation.ui.transaction
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 // 📊 Transaction History Screen
-@Composable
-fun TransactionHistoryScreen(
-    transactions: List<TransactionHistoryData>,
-    onBack: () -> Unit,
-    onDateRangeFilter: () -> Unit,
-    onOutletFilter: () -> Unit,
-    selectedDateRange: String? = null,
-    selectedOutlet: String? = null,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        // Header
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = onBack) {
-                Icon(
-                    imageVector = AppIcons.ArrowBack,
-                    contentDescription = "Back"
-                )
-            }
-
-            Text(
-                text = "Transactions History",
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.width(48.dp))
-        }
-
-        // Filter Row
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            // Date Range Filter
-            FilterChip(
-                onClick = onDateRangeFilter,
-                label = {
-                    Text(
-                        text = selectedDateRange ?: "Date range",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = AppIcons.Info, // Replace with calendar icon
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp)
-                    )
-                },
-                selected = selectedDateRange != null,
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = LoyaltyColors.OrangePink.copy(alpha = 0.1f),
-                    selectedLabelColor = LoyaltyColors.OrangePink,
-                    selectedLeadingIconColor = LoyaltyColors.OrangePink
-                ),
-                modifier = Modifier.weight(1f)
-            )
-
-            // Outlet Filter
-            FilterChip(
-                onClick = onOutletFilter,
-                label = {
-                    Text(
-                        text = selectedOutlet ?: "Outlet",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = AppIcons.Info, // Replace with store icon
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp)
-                    )
-                },
-                selected = selectedOutlet != null,
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = LoyaltyColors.OrangePink.copy(alpha = 0.1f),
-                    selectedLabelColor = LoyaltyColors.OrangePink,
-                    selectedLeadingIconColor = LoyaltyColors.OrangePink
-                ),
-                modifier = Modifier.weight(1f)
-            )
-        }
-
-        // Transactions List
-        if (transactions.isEmpty()) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        imageVector = AppIcons.Info,
-                        contentDescription = null,
-                        modifier = Modifier.size(64.dp),
-                        tint = LoyaltyExtendedColors.secondaryText()
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(
-                        text = "No transactions found",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = LoyaltyExtendedColors.secondaryText()
-                    )
-                }
-            }
-        } else {
-            LazyColumn(
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(transactions) { transaction ->
-                    TransactionHistoryItem(transaction = transaction)
-                }
-            }
-        }
-    }
-}
 
 @Composable
 private fun TransactionHistoryItem(
@@ -223,101 +83,9 @@ private fun TransactionHistoryItem(
     }
 }
 
-// 🏪 Outlets List Screen (Simple List View)
-@Composable
-fun OutletsListScreen(
-    outlets: List<OutletListData>,
-    onBack: () -> Unit,
-    onAddOutlet: () -> Unit,
-    onOutletClick: (OutletListData) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        // Header
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = onBack) {
-                Icon(
-                    imageVector = AppIcons.ArrowBack,
-                    contentDescription = "Back"
-                )
-            }
-
-            Text(
-                text = "Outlets",
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
-            )
-
-            IconButton(onClick = onAddOutlet) {
-                Icon(
-                    imageVector = SimpleIcons.Add,
-                    contentDescription = "Add Outlet"
-                )
-            }
-        }
-
-        // Outlets List
-        if (outlets.isEmpty()) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        imageVector = AppIcons.Info, // Replace with store icon
-                        contentDescription = null,
-                        modifier = Modifier.size(64.dp),
-                        tint = LoyaltyExtendedColors.secondaryText()
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(
-                        text = "No outlets found",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = LoyaltyExtendedColors.secondaryText()
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    LoyaltyPrimaryButton(
-                        text = "Add First Outlet",
-                        onClick = onAddOutlet,
-                        modifier = Modifier.padding(horizontal = 32.dp)
-                    )
-                }
-            }
-        } else {
-            LazyColumn(
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(1.dp)
-            ) {
-                items(outlets) { outlet ->
-                    OutletListItem(
-                        outlet = outlet,
-                        onClick = { onOutletClick(outlet) }
-                    )
-                }
-            }
-        }
-    }
-}
 
 @Composable
-private fun OutletListItem(
+ fun OutletListItem(
     outlet: OutletListData,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -483,61 +251,10 @@ fun LoyaltyBottomNavigationBar(
     }
 }
 
-// Preview for Transaction History Screen
-@Preview(showBackground = true)
-@Composable
-fun TransactionHistoryScreenPreview() {
-    val sampleTransactions = listOf(
-        TransactionHistoryData("1", "Alice Smith", 100, "2023-10-26 10:00 AM", "awarded", "Points for purchase", "Downtown Cafe"),
-        TransactionHistoryData("2", "Bob Johnson", 50, "2023-10-25 03:30 PM", "redeemed", "Redeemed for discount", "Main Street Shop"),
-        TransactionHistoryData("3", "Carol White", 75, "2023-10-24 11:15 AM", "awarded", "Bonus points", "Uptown Bakery")
-    )
-    TransactionHistoryScreen(
-        transactions = sampleTransactions,
-        onBack = {},
-        onDateRangeFilter = {},
-        onOutletFilter = {},
-        selectedDateRange = "Last 7 days"
-    )
-}
-@Preview(showBackground = true, name = "Empty State")
-@Composable
-fun TransactionHistoryScreenEmptyPreview() {
-    TransactionHistoryScreen(
-        transactions = emptyList(),
-        onBack = {},
-        onDateRangeFilter = {},
-        onOutletFilter = {}
-    )
-}
-
-// Preview for Outlets List Screen@
-@Preview(showBackground = true)
-@Composable
-fun OutletsListScreenPreview() {
-    val sampleOutlets = listOf(
-        OutletListData("1", "Downtown Cafe", "123 Main St, Cityville", "555-1234"),
-        OutletListData("2", "Uptown Bakery", "456 Oak Ave, Townsville", "555-5678", isActive = false),
-        OutletListData("3", "Suburb Supermart", "789 Pine Rd, Villagetown", "")
-    )
-    OutletsListScreen(
-        outlets = sampleOutlets,
-        onBack = {},
-        onAddOutlet = {},
-        onOutletClick = {}
-    )
-}
-
-@Preview(showBackground = true, name = "Empty State")
-@Composable
-fun OutletsListScreenEmptyPreview() {
-    OutletsListScreen(outlets = emptyList(), onBack = {}, onAddOutlet = {}, onOutletClick = {})
-}
-
 // Enums for navigation
 enum class CustomerBottomNavItems(
     val title: String,
-    val icon: androidx.compose.ui.graphics.vector.ImageVector,
+    val icon: ImageVector,
     val route: String
 ) {
     HOME("Home", AppIcons.Info, "home"), // Replace with home icon
@@ -548,7 +265,7 @@ enum class CustomerBottomNavItems(
 
 enum class MerchantBottomNavItems(
     val title: String,
-    val icon: androidx.compose.ui.graphics.vector.ImageVector,
+    val icon: ImageVector,
     val route: String
 ) {
     HOME("Home", AppIcons.Info, "home"), // Replace with home icon
