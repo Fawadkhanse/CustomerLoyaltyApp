@@ -30,7 +30,6 @@ fun CustomerHomeScreenRoute(
         availableCoupons = listOf(),
         recentActivity = listOf(),
 
-
     )
 }
 
@@ -103,6 +102,18 @@ fun CustomerHomeScreenRoute(
         }
     }
 }
+val listPromo = listOf(
+    PromotionData("1", "Promotion 1", null, "2023-12-31"),
+    PromotionData("2", "Promotion 2", null, "2024-01-15")
+)
+val listCoupon = listOf(
+    CouponData("1", "Coupon 1", "Description 1", 100, "2023-12-31"),
+    CouponData("2", "Coupon 2", "Description 2", 200, "2024-01-15")
+)
+val list =listOf(
+    ActivityData("1", "Activity 1", 10, "2023-12-01", "earned"),
+    ActivityData("2", "Activity 2", 20, "2023-12-02", "redeemed")
+)
 
 @Preview
 @Composable
@@ -111,18 +122,9 @@ fun CustomerHomeScreenPreview() {
         userName = "John Doe",
         userPoints = 1000,
         tier = "Gold",
-        promotions = listOf(
-            PromotionData("1", "Promotion 1", null, "2023-12-31"),
-            PromotionData("2", "Promotion 2", null, "2024-01-15")
-        ),
-        availableCoupons = listOf(
-            CouponData("1", "Coupon 1", "Description 1", 100, "2023-12-31"),
-            CouponData("2", "Coupon 2", "Description 2", 200, "2024-01-15")
-        ),
-        recentActivity = listOf(
-            ActivityData("1", "Activity 1", 10, "2023-12-01", "earned"),
-            ActivityData("2", "Activity 2", 20, "2023-12-02", "redeemed")
-        ),
+        promotions = listPromo,
+        availableCoupons = listCoupon ,
+        recentActivity = list ,
         userProfileImageUrl = null,
         onProfileClick = {},
         onCouponClick = {},
