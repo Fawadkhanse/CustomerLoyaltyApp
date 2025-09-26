@@ -28,6 +28,14 @@ import org.example.project.presentation.components.NotificationData
 import org.example.project.presentation.design.LoyaltyExtendedColors
 
 @Composable
+fun NotificationsScreenRoute(
+    onBack: () -> Unit,
+    onNotificationClick: (NotificationData) -> Unit,
+
+){
+    NotificationsScreen(notifications = listOf(), onBack = {}, onNotificationClick = {})
+}
+@Composable
 fun NotificationsScreen(
     notifications: List<NotificationData>,
     onBack: () -> Unit,

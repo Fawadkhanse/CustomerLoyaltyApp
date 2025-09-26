@@ -1,5 +1,6 @@
 package org.example.project.presentation.ui.home
 
+import AppIcons
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,9 +33,29 @@ import androidx.compose.ui.unit.dp
 import org.example.project.presentation.components.StatsCard
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun MerchantDashboardScreen(
+fun MerchantDashboardRoute(
+    // Pass ViewModel or state hoisting parameters here if needed
+    onNavigateToAllTransactions: () -> Unit
+) {
+    // Replace with actual data from ViewModel or state
+    MerchantDashboardScreen(
+        todaysScans = 120, // Example data
+        pointsAwarded = 850, // Example data
+        couponsRedeemed = 35, // Example data
+        activeOutlets = 5, // Example data
+        recentTransactions = listOf( // Example data
+            TransactionData("1", "Alice Smith", 100, "Main St Branch", "10:30 AM"),
+            TransactionData("2", "Bob Johnson", 50, "Downtown Outlet", "11:15 AM")
+        ),
+        onViewAllTransactions = onNavigateToAllTransactions
+    )
+}
+
+@Composable
+private fun MerchantDashboardScreen(
     todaysScans: Int,
     pointsAwarded: Int,
     couponsRedeemed: Int,
@@ -202,5 +223,34 @@ fun MerchantDashboardScreen(
                 onViewAll = onViewAllTransactions
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MerchantDashboardScreenPreview() {
+    MaterialTheme {
+        MerchantDashboardScreen(
+            todaysScans = 120,
+            pointsAwarded = 850,
+            couponsRedeemed = 35,
+            activeOutlets = 5,
+            recentTransactions = listOf(
+                TransactionData(
+                    id = "ad",
+                    customerName = "Rebekah Figueroa",
+                    points = 1965,
+                    location = "tractatos",
+                    timestamp = "maximus"
+                ),
+                TransactionData(
+                    id = "neque",
+                    customerName = "Arlene Sanders",
+                    points = 2297,
+                    location = "malorum",
+                    timestamp = "ea"
+
+                )),
+            onViewAllTransactions = {})
     }
 }

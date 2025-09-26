@@ -32,10 +32,24 @@ import org.example.project.presentation.components.LoyaltyTextField
 import org.example.project.presentation.components.OutletCard
 import org.example.project.presentation.components.OutletData
 import org.example.project.presentation.design.LoyaltyExtendedColors
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
-// 🏪 Outlets Screen (Map & List View)
 @Composable
-fun OutletsScreen(
+fun OutletsScreenRoute(){
+    OutletsScreen(
+        outlets = listOf(),
+        onBack = {},
+        onOutletClick = {},
+        onMapToggle = {},
+        isMapView = false,
+        searchQuery = "deseruisse",
+        onSearchQueryChange = {},
+
+    )
+
+}
+@Composable
+private fun OutletsScreen(
     outlets: List<OutletData>,
     onBack: () -> Unit,
     onOutletClick: (OutletData) -> Unit,
@@ -158,6 +172,22 @@ fun OutletsScreen(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun OutletsScreenPreview(){
+    MaterialTheme {
+        OutletsScreen(
+            outlets = listOf(),
+            onBack = {},
+            onOutletClick = {},
+            onMapToggle = {},
+            isMapView = false,
+            searchQuery = "dolor",
+            onSearchQueryChange = {},
+        )
     }
 }
 

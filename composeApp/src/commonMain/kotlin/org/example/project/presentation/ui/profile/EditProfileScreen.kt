@@ -28,15 +28,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.example.project.presentation.components.LoyaltyPrimaryButton
 import org.example.project.presentation.components.LoyaltyTextField
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
+import org.jetbrains.compose.ui.tooling.preview.Preview
+
 
 @Composable
-fun EditProfileScreen(
+private fun EditProfileScreen(
     name: String,
     phone: String,
     email: String,
@@ -161,7 +164,7 @@ fun EditProfileScreen(
                         onValueChange = { phoneState = it },
                         label = "",
                         placeholder = "Enter your phone number",
-                        keyboardType = androidx.compose.ui.text.input.KeyboardType.Phone
+                        keyboardType = KeyboardType.Phone
                     )
                 }
 
@@ -178,7 +181,7 @@ fun EditProfileScreen(
                         onValueChange = { emailState = it },
                         label = "",
                         placeholder = "Enter your email",
-                        keyboardType = androidx.compose.ui.text.input.KeyboardType.Email
+                        keyboardType = KeyboardType.Email
                     )
                 }
             }
@@ -194,3 +197,37 @@ fun EditProfileScreen(
         }
     }
 }
+
+@Composable
+ fun EditProfileScreenRoute(
+     onBack: () -> Unit,
+     onSave: (String, String, String) -> Unit = { _, _, _ -> },
+
+ ){
+    EditProfileScreen(
+        name = "Wm Casey",
+        phone = "(574) 163-6858",
+        email = "sharon.small@example.com",
+        profileImageUrl = "https://search.yahoo.com/search?p=commodo",
+        onSave = { string: String, string1: String, string2: String -> },
+        onBack = {},
+        onChangeProfilePicture = {},
+    )
+}
+
+@Preview
+@Composable
+fun EditProfileScreenPreview() {
+    MaterialTheme {
+        EditProfileScreen(
+            name = "Hector Drake",
+            phone = "(183) 748-5196",
+            email = "tabatha.pacheco@example.com",
+            profileImageUrl = "https://duckduckgo.com/?q=condimentum",
+            onSave = { string: String, string1: String, string2: String -> },
+            onBack = {},
+            onChangeProfilePicture = {},
+        )
+    }
+}
+

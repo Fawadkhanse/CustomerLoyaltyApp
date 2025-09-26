@@ -51,6 +51,7 @@ kotlin {
             implementation(libs.ktor.client.logging)
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.kotlinx.serialization.json)
+            implementation(compose.components.resources)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

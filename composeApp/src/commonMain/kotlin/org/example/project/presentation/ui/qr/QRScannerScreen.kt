@@ -26,7 +26,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
+@Composable
+fun QRScannerScreenRoute(
+    onBack: () -> Unit
+) {
+    QRScannerScreen(
+        onQRScanned = { /* Handle QR scan result */ },
+        onBack = { /* Handle back action */ }
+    )
+}
 @Composable
 fun QRScannerScreen(
     onQRScanned: (String) -> Unit,
@@ -114,3 +124,13 @@ fun QRScannerScreen(
         }
     }
 }
+
+@Preview
+@Composable
+private fun QRScannerScreenPreview() {
+    QRScannerScreen(
+        onQRScanned = {},
+        onBack = {}
+    )
+}
+

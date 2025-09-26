@@ -25,7 +25,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 // 🏠 Customer Home Screen
 
 @Composable
-private fun CustomerHeader(
+fun CustomerHeader(
     userName: String,
     userProfileImageUrl: String?,
     onProfileClick: () -> Unit,
@@ -128,7 +128,7 @@ private fun CustomerHeader(
 }
 
 @Composable
-private fun PromotionsSection(
+fun PromotionsSection(
     promotions: List<PromotionData>,
     modifier: Modifier = Modifier
 ) {
@@ -288,7 +288,7 @@ private fun HomeCouponCard(
 }
 
 @Composable
-private fun RecentActivitySection(
+fun RecentActivitySection(
     activities: List<ActivityData>,
     modifier: Modifier = Modifier
 ) {
@@ -378,7 +378,7 @@ private fun ActivityItem(
 // 📊 Merchant Dashboard Screen
 
 @Composable
-private fun RecentTransactionsSection(
+fun RecentTransactionsSection(
     transactions: List<TransactionData>,
     onViewAll: () -> Unit,
     modifier: Modifier = Modifier

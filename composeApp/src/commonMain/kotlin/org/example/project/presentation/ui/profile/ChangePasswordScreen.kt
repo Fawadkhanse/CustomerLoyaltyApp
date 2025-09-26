@@ -1,5 +1,6 @@
 package org.example.project.presentation.ui.profile
 
+import AppIcons
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,10 +23,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.example.project.presentation.design.LoyaltyTypography
-
-// 🔒 Change Password Screen
+import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
-fun ChangePasswordScreen(
+fun ChangePasswordScreenRoute(){
+    ChangePasswordScreen(
+        onSave = { _, _, _ -> },
+        onBack = {}
+    )
+}
+
+@Composable
+private fun ChangePasswordScreen(
     onSave: (String, String, String) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier
@@ -68,3 +76,13 @@ fun ChangePasswordScreen(
         // Save button...
     }
 }
+
+@Preview
+@Composable
+private fun ChangePasswordScreenPreview() {
+    ChangePasswordScreen(
+        onSave = { _, _, _ -> },
+        onBack = {}
+    )
+}
+

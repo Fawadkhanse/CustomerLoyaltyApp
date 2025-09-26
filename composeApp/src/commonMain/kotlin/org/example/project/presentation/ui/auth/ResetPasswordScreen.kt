@@ -1,5 +1,6 @@
 package org.example.project.presentation.ui.auth
 
+import AppIcons
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,11 +18,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.example.project.presentation.components.LoyaltyPrimaryButton
 import org.example.project.presentation.components.LoyaltyTextField
-import org.example.project.presentation.ui.auth.components.UserTypeSelector
 import org.example.project.presentation.design.LoyaltyExtendedColors
+import org.example.project.presentation.ui.auth.components.UserTypeSelector
 
 @Composable
-fun ResetPasswordScreen(
+fun ResetPasswordScreenRoute(
+    onResetPassword: (String, String, String, String) -> Unit,
+    onBack: () -> Unit
+) {
+    ResetPasswordScreen(
+        onResetPassword = { email, newPassword, confirmPassword, userType ->
+           onResetPassword(email, newPassword, confirmPassword, userType)
+        },
+        onBack = {
+           onBack
+        }
+    )
+}
+@Composable
+private fun ResetPasswordScreen(
     onResetPassword: (String, String, String, String) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier
@@ -109,6 +124,18 @@ fun ResetPasswordScreen(
                     newPassword.isNotBlank() &&
                     confirmPassword.isNotBlank() &&
                     newPassword == confirmPassword
+        )
+    }
+}
+
+@org.jetbrains.compose.ui.tooling.preview.Preview
+@Composable
+fun ResetPasswordScreenPreview() {
+    MaterialTheme {
+        ResetPasswordScreen(
+            onResetPassword = { _, _, _, _ -> },
+            onBack = {},
+            modifier = Modifier.fillMaxSize()
         )
     }
 }

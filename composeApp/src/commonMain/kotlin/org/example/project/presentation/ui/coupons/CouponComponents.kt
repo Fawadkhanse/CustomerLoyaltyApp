@@ -192,18 +192,6 @@ private fun RedeemedCouponCard(
     }
 }
 
-@Preview
-@Composable
-fun CouponDetailScreenPreview() {
-    CouponDetailScreen(
-        title = "20% Off Your Next Purchase",
-        description = "Enjoy a 20% discount on any single item in our store. This offer cannot be combined with other promotions.",
-        pointsRequired = 500,
-        expiryDate = "Dec 31, 2024",
-        onRedeem = {},
-        onBack = {}
-    )
-}
 
 
 

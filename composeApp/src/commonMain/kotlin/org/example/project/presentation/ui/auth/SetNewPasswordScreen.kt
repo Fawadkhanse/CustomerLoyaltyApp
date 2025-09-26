@@ -16,12 +16,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import customerloyaltyapp.composeapp.generated.resources.Res
 import org.example.project.presentation.components.LoyaltyPrimaryButton
 import org.example.project.presentation.components.LoyaltyTextField
 import org.example.project.presentation.design.LoyaltyExtendedColors
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun SetNewPasswordScreen(
+fun SetNewPasswordScreenRout(){
+    SetNewPasswordScreen(
+        onSetPassword = { newPassword, confirmPassword ->
+            // Handle password reset logic here
+        },
+        onBack = {
+            // Handle back navigation
+        }
+    )
+}
+@Composable
+private fun SetNewPasswordScreen(
     onSetPassword: (String, String) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier
@@ -94,3 +107,14 @@ fun SetNewPasswordScreen(
         )
     }
 }
+@Preview(showBackground = true)
+@Composable
+ fun SetNewPasswordScreenPreview() {
+    SetNewPasswordScreen(
+        onSetPassword = { _, _ -> },
+        onBack = {}
+    )
+}
+
+
+

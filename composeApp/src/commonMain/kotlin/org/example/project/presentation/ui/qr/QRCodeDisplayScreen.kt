@@ -21,10 +21,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+
 import androidx.compose.ui.unit.dp
 import org.example.project.presentation.components.LoyaltyPrimaryButton
 import org.example.project.presentation.components.LoyaltySecondaryButton
 import org.example.project.presentation.design.LoyaltyExtendedColors
+import org.jetbrains.compose.ui.tooling.preview.Preview
+
+@Composable
+fun QRCodeDisplayScreenRoute(){
+        QRCodeDisplayScreen(
+            customerName = "Marsha Alston",
+            qrCodeData = "sample_qr_code_data",
+            onShareQR = {
+                // Handle share QR code action
+            },
+            onDownloadQR = {
+                // Handle download QR code action
+            }
+
+        )
+
+}
 
 @Composable
 fun QRCodeDisplayScreen(
@@ -138,5 +156,22 @@ fun QRCodeDisplayScreen(
                 icon = AppIcons.ArrowForward // Replace with download icon
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun QRCodeDisplayScreenPreview() {
+    MaterialTheme {
+        QRCodeDisplayScreen(
+            customerName = "John Doe",
+            qrCodeData = "sample_qr_code_data",
+            onShareQR = {
+                // Handle share QR code action
+            },
+            onDownloadQR = {
+                // Handle download QR code action
+            }
+        )
     }
 }

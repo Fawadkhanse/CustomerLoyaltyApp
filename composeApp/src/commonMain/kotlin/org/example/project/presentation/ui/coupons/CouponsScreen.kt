@@ -26,11 +26,36 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.example.project.presentation.design.LoyaltyColors
+
 import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun CouponsScreen(
+fun CouponsScreenRoute(
+    onBack: () -> Unit,
+    onCouponClick: (CouponData) -> Unit,
+) {
+    // This is a placeholder for where you would typically fetch data from a ViewModel
+    // For now, we'll use the preview data directly.
+    val availableCoupons = listOf(
+        CouponData("1", "10% Off Coffee", "Get 10% off any coffee purchase.", 100, "Nov 30, 2024"),
+        CouponData("2", "Free Pastry", "Enjoy a free pastry with any large drink.", 250, "Dec 15, 2024"),
+        CouponData("3", "Buy One Get One Free", "Buy one sandwich, get another one free.", 400, "Jan 10, 2025")
+    )
+    val redeemedCoupons = listOf(
+        RedeemedCouponData("4", "50% Off Smoothies", "Oct 20, 2024", "Used"),
+        RedeemedCouponData("5", "$5 Off Merchandise", "Sep 01, 2024", "Expired")
+    )
+
+    CouponsScreen(
+        availableCoupons = availableCoupons,
+        redeemedCoupons = redeemedCoupons,
+        onCouponClick = onCouponClick,
+        onBack = onBack
+    )
+}
+@Composable
+private fun CouponsScreen(
     availableCoupons: List<CouponData>,
     redeemedCoupons: List<RedeemedCouponData>,
     onCouponClick: (CouponData) -> Unit,
@@ -118,6 +143,8 @@ fun CouponsScreen(
         }
     }
 }
+
+
 
 @Preview
 @Composable

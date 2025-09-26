@@ -31,9 +31,24 @@ import androidx.compose.ui.unit.dp
 import org.example.project.presentation.components.LoyaltyPrimaryButton
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun CouponDetailScreen(
+fun CouponDetailScreenRout(
+    onBack: () -> Unit,
+    onRedeem: () -> Unit
+){
+    CouponDetailScreen(
+        title = "20% Off Your Next Purchase",
+        description = "Enjoy a 20% discount on any single item in our store. This offer cannot be combined with other promotions.",
+        pointsRequired = 500,
+        expiryDate = "Dec 31, 2024",
+        onRedeem = {},
+        onBack = {}
+    )
+}
+@Composable
+private fun CouponDetailScreen(
     title: String,
     description: String,
     pointsRequired: Int,
@@ -206,4 +221,18 @@ fun CouponDetailScreen(
             )
         }
     }
+}
+
+
+@Preview
+@Composable
+ fun CouponDetailScreenPreview() {
+    CouponDetailScreen(
+        title = "20% Off Your Next Purchase",
+        description = "Enjoy a 20% discount on any single item in our store. This offer cannot be combined with other promotions.",
+        pointsRequired = 500,
+        expiryDate = "Dec 31, 2024",
+        onRedeem = {},
+        onBack = {}
+    )
 }

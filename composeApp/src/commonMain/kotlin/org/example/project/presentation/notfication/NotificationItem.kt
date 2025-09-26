@@ -26,7 +26,7 @@ import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
 
 @Composable
-private fun NotificationItem(
+fun NotificationItem(
     notification: NotificationData,
     onClick: () -> Unit,
     modifier: Modifier = Modifier

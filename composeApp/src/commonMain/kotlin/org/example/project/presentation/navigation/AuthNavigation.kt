@@ -1,13 +1,17 @@
 package org.example.project.presentation.navigation
 
 
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.runtime.*
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import org.example.project.presentation.components.auth.*
 import org.example.project.presentation.navigation.Screen.Screen
+import org.example.project.presentation.ui.auth.CustomerRegistrationScreenRoute
+import org.example.project.presentation.ui.auth.ForgotPasswordScreenRout
+import org.example.project.presentation.ui.auth.LoginScreenRout
+import org.example.project.presentation.ui.auth.OnboardingScreenRoute
+import org.example.project.presentation.ui.auth.ResetPasswordScreenRoute
+import org.example.project.presentation.ui.splash.AppSplashScreenRoute
 
 @Composable
 fun AuthenticationNavigation(
@@ -16,35 +20,33 @@ fun AuthenticationNavigation(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Login.route
+        startDestination = Screen.Welcome.route
     ) {
         // Welcome Screen
         composable(Screen.Welcome.route) {
-//            WelcomeScreen(
-//                onGetStarted = {
-//                    navController.navigateToScreen(Screen.Onboarding)
-//                },
-//                onLogin = {
-//                    navController.navigateToScreen(Screen.Login)
-//                }
-//            )
+            AppSplashScreenRoute(
+                onNavigateToLogin = {
+                    navController.navigateToScreen(Screen.Onboarding)
+                },
+
+            )
         }
 
         // Onboarding Screens
         composable(Screen.Onboarding.route) {
-//            OnboardingFlow(
-//                onComplete = {
-//                    navController.navigateToScreen(Screen.Login)
-//                },
-//                onSkip = {
-//                    navController.navigateToScreen(Screen.Login)
-//                }
-//            )
+            OnboardingScreenRoute(
+                onComplete = {
+                    navController.navigateToScreen(Screen.Login)
+                },
+                onSkip = {
+                    navController.navigateToScreen(Screen.Login)
+                }
+            )
         }
 
         // Login Screen
         composable(Screen.Login.route) {
-            LoginScreen(
+            LoginScreenRout(
                 onLogin = { email, password, userType ->
                     // Handle login logic here
                     val type = if (userType == "Merchant") UserType.MERCHANT else UserType.CUSTOMER
@@ -65,20 +67,20 @@ fun AuthenticationNavigation(
 
         // Register Screen
         composable(Screen.Register.route) {
-//            CustomerRegistrationScreen(
-//                onRegister = { name, email, phone ->
-//                    // Handle registration
-//                    onLoginSuccess(UserType.CUSTOMER)
-//                },
-//                onBack = {
-//                    navController.popBackStack()
-//                }
-//            )
+            CustomerRegistrationScreenRoute(
+                onRegister = { name, email, phone,password ->
+                    // Handle registration
+                    onLoginSuccess(UserType.CUSTOMER)
+                },
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
         }
 
         // Forgot Password Screen
         composable(Screen.ForgotPassword.route) {
-            ForgotPasswordScreen(
+            ForgotPasswordScreenRout(
                 onSendResetLink = { email, userType ->
                     navController.navigateToScreen(Screen.ResetPassword)
                 },
@@ -90,7 +92,7 @@ fun AuthenticationNavigation(
 
         // Reset Password Screen
         composable(Screen.ResetPassword.route) {
-            ResetPasswordScreen(
+            ResetPasswordScreenRoute(
                 onResetPassword = { email, newPassword, confirmPassword, userType ->
                     // Handle password reset
                     navController.navigateToScreen(Screen.Login)

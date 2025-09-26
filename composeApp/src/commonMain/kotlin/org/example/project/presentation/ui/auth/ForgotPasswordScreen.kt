@@ -21,7 +21,24 @@ import org.example.project.presentation.ui.auth.components.UserTypeSelector
 import org.example.project.presentation.design.LoyaltyExtendedColors
 
 @Composable
-fun ForgotPasswordScreen(
+fun ForgotPasswordScreenRout(
+    onSendResetLink: (String, String) -> Unit,
+    onBack: () -> Unit
+) {
+    ForgotPasswordScreen(
+        onSendResetLink = { email, userType ->
+          onSendResetLink(
+              email,
+              userType
+          )
+        },
+        onBack = {
+            onBack()
+        }
+    )
+}
+@Composable
+private fun ForgotPasswordScreen(
     onSendResetLink: (String, String) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier
@@ -86,3 +103,17 @@ fun ForgotPasswordScreen(
         )
     }
 }
+
+@org.jetbrains.compose.ui.tooling.preview.Preview
+@Composable
+private fun ForgotPasswordScreenPreview() {
+    MaterialTheme {
+        ForgotPasswordScreen(
+            onSendResetLink = { _, _ -> },
+            onBack = {}
+        )
+    }
+}
+
+
+

@@ -1,5 +1,6 @@
 package org.example.project.presentation.ui.outlets
 
+import AppIcons
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,9 +27,32 @@ import org.example.project.presentation.components.LoyaltyPrimaryButton
 import org.example.project.presentation.components.OutletData
 import org.example.project.presentation.components.OutletInfoItem
 import org.example.project.presentation.design.LoyaltyExtendedColors
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun OutletDetailScreen(
+fun OutletDetailScreenRoute(
+    onBack: () -> Unit,
+    onEdit: () -> Unit,
+) {
+    OutletDetailScreen(
+        outlet = OutletData(
+            id = "graeci",
+            name = "Andrea McKinney",
+            location = "similique",
+            category = "no",
+            distance = "fusce",
+            phone = "(799) 236-3739",
+            email = "troy.joseph@example.com",
+            website = "at",
+            isActive = false
+        ),
+        onBack = onBack,
+        onEdit = onEdit,
+    )
+}
+
+@Composable
+private fun OutletDetailScreen(
     outlet: OutletData,
     onBack: () -> Unit,
     onEdit: () -> Unit,
@@ -160,4 +184,26 @@ fun OutletDetailScreen(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun OutletDetailScreenPreview() {
+    OutletDetailScreen(
+        outlet = OutletData(
+            id = "",
+            name = "",
+            location = "",
+            category = "",
+            distance = "",
+            phone = "",
+            email = "",
+            website = "",
+            isActive = false
+
+
+        ),
+        onBack = {},
+        onEdit = {}
+    )
 }

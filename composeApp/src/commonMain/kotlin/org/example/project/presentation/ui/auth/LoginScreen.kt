@@ -24,9 +24,40 @@ import org.example.project.presentation.components.LoyaltyPrimaryButton
 import org.example.project.presentation.components.LoyaltyTextField
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun LoginScreen(
+fun LoginScreenRout(
+    onLogin: (String, String, String) -> Unit,
+    onForgotPassword: () -> Unit,
+    onRegister: () -> Unit,
+    onMerchantLogin: () -> Unit
+) {
+    LoginScreen(
+        onLogin = { email, password, userType ->
+           onLogin(
+               email,
+               password,
+               userType
+           )
+        },
+        onForgotPassword = {
+            // Handle forgot password navigation
+            onForgotPassword()
+        },
+        onRegister = {
+            // Handle register navigation
+            onRegister()
+        },
+        onMerchantLogin = {
+            // Handle merchant login navigation
+            onLogin("","","Merchant")
+        }
+    )
+}
+
+@Composable
+private fun LoginScreen(
     onLogin: (String, String, String) -> Unit,
     onForgotPassword: () -> Unit,
     onRegister: () -> Unit,
@@ -122,3 +153,18 @@ fun LoginScreen(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun LoginScreenPreview() {
+    LoginScreen(
+        onLogin = { _, _, _ -> },
+        onForgotPassword = {},
+        onRegister = {},
+        onMerchantLogin = {}
+    )
+}
+
+
+
+

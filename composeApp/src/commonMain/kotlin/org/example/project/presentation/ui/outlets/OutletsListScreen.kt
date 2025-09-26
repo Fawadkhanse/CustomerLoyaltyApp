@@ -23,14 +23,33 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+
 import org.example.project.presentation.components.LoyaltyPrimaryButton
 import org.example.project.presentation.ui.transaction.OutletListData
 import org.example.project.presentation.ui.transaction.OutletListItem
 import org.example.project.presentation.design.LoyaltyExtendedColors
+import org.jetbrains.compose.ui.tooling.preview.Preview
+
+@Composable
+fun OutletsListScreenRoute(
+    outlets: List<OutletListData>,
+    onBack: () -> Unit,
+    onAddOutlet: () -> Unit,
+    onOutletClick: (OutletListData) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    OutletsListScreen(
+        outlets = outlets,
+        onBack = onBack,
+        onAddOutlet = onAddOutlet,
+        onOutletClick = onOutletClick,
+        modifier = modifier
+    )
+}
 
 
 @Composable
-fun OutletsListScreen(
+private fun OutletsListScreen(
     outlets: List<OutletListData>,
     onBack: () -> Unit,
     onAddOutlet: () -> Unit,
@@ -119,4 +138,48 @@ fun OutletsListScreen(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun OutletsListScreenPreview() {
+    OutletsListScreen(
+        outlets = listOf(
+            OutletListData(
+                id = "inceptos",
+                name = "Ivory Potter",
+                address = "sadipscing",
+                phone = "(302) 360-7415",
+                isActive = false
+            ),
+            OutletListData(
+                id = "invenire",
+                name = "Karl Finley",
+                address = "salutatus",
+                phone = "(178) 753-4981",
+                isActive = false
+            ),
+            OutletListData(
+                id = "noster",
+                name = "Matt Richards",
+                address = "sale",
+                phone = "(170) 581-2099",
+                isActive = false
+            ),
+        ),
+        onBack = {},
+        onAddOutlet = {},
+        onOutletClick = {}
+    )
+}
+
+@Preview
+@Composable
+private fun OutletsListScreenEmptyPreview() {
+    OutletsListScreen(
+        outlets = emptyList(),
+        onBack = {},
+        onAddOutlet = {},
+        onOutletClick = {}
+    )
 }

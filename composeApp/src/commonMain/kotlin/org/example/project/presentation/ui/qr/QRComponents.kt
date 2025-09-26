@@ -142,25 +142,7 @@ fun CustomerFoundBottomSheet(
     }
 }
 
-@Composable
-@Preview(showBackground = true, widthDp = 375, heightDp = 812)
-fun QRCodeDisplayScreenPreview() {
-    QRCodeDisplayScreen(
-        customerName = "Jane Doe",
-        qrCodeData = "1234567890",
-        onShareQR = {},
-        onDownloadQR = {}
-    )
-}
 
-@Composable
-@Preview(showBackground = true, widthDp = 375, heightDp = 812)
-fun QRScannerScreenPreview() {
-    QRScannerScreen(
-        onQRScanned = {},
-        onBack = {}
-    )
-}
 
 @Composable
 @Preview(showBackground = true)

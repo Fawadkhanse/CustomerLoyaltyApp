@@ -11,10 +11,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.example.project.presentation.design.LoyaltyColors
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
-// 👤 Complete Profile Screen
 @Composable
-fun ProfileScreen(
+fun ProfileScreenRoute(
+    onEditProfile: () -> Unit,
+    onChangePassword: () -> Unit,
+    onLogout: () -> Unit
+) {
+ProfileScreen(
+    name = "Marsha Alston",
+    email = "wilbert.gregory@example.com",
+    phone = "(736) 376-0787",
+    profileImageUrl = "http://www.bing.com/search?q=volutpat",
+    onEditProfile = {},
+    onChangePassword = {},
+    onLogout = {},
+)
+}
+@Composable
+private fun ProfileScreen(
     name: String,
     email: String,
     phone: String,
@@ -64,4 +80,18 @@ fun ProfileScreen(
 
         Spacer(modifier = Modifier.weight(1f))
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ProfileScreenPreview() {
+    ProfileScreen(
+        name = "Marsha Alston",
+        email = "wilbert.gregory@example.com",
+        phone = "(736) 376-0787",
+        profileImageUrl = "http://www.bing.com/search?q=volutpat",
+        onEditProfile = {},
+        onChangePassword = {},
+        onLogout = {}
+    )
 }

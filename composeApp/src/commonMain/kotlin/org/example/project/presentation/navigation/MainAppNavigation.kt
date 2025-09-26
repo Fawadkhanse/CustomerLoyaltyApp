@@ -5,11 +5,26 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import org.example.project.presentation.components.OutletData
 import org.example.project.presentation.navigation.Screen.Screen
+import org.example.project.presentation.notfication.NotificationsScreen
+import org.example.project.presentation.notfication.NotificationsScreenRoute
+import org.example.project.presentation.ui.coupons.CouponDetailScreenRout
+import org.example.project.presentation.ui.coupons.CouponsScreenRoute
+import org.example.project.presentation.ui.home.CustomerHomeScreenRoute
+import org.example.project.presentation.ui.home.MerchantDashboardRoute
+import org.example.project.presentation.ui.outlets.OutletDetailScreenRoute
+import org.example.project.presentation.ui.outlets.OutletsScreenRoute
+import org.example.project.presentation.ui.profile.ChangePasswordScreenRoute
+import org.example.project.presentation.ui.profile.EditProfileScreenRoute
+import org.example.project.presentation.ui.profile.ProfileScreenRoute
+import org.example.project.presentation.ui.qr.QRScannerScreenRoute
+import org.example.project.presentation.ui.transaction.TransactionHistoryScreenRoute
 
 @Composable
 fun MainAppNavigation(
@@ -58,102 +73,116 @@ fun MainAppNavigation(
 }
 
 // Customer Navigation Routes
-private fun androidx.navigation.NavGraphBuilder.customerNavigation(
+private fun NavGraphBuilder.customerNavigation(
     navController: NavHostController,
     onLogout: () -> Unit
 ) {
     // Home Screen
     composable(Screen.Home.route) {
-        CustomerHomeScreenWrapper(navController)
+        CustomerHomeScreenRoute(
+            onNavigateToProfile = {},
+            onNavigateToCouponDetails = {},
+            onNavigateToAllCoupons = {})
     }
 
     // My QR Screen
     composable(Screen.MyQR.route) {
-        CustomerQRScreen(navController)
+        QRScannerScreenRoute(onBack = {}
+
+
+        )
     }
 
     // Coupons Screen
     composable(Screen.Coupons.route) {
-        CustomerCouponsScreen(navController)
+        CouponsScreenRoute(onBack = {}, onCouponClick = {})
     }
 
     // Profile Screen
     composable(Screen.Profile.route) {
-        CustomerProfileScreen(navController, onLogout)
+        ProfileScreenRoute(onEditProfile = {}, onChangePassword = {}, onLogout = {}
+
+
+        )
     }
 
     // Coupon Detail Screen (with parameter)
     composable(Screen.CouponDetail.route) { backStackEntry ->
         val couponId = backStackEntry.arguments?.getString("couponId") ?: ""
-        CouponDetailScreenWrapper(navController, couponId)
+        CouponDetailScreenRout(onBack = {}, onRedeem = {}
+
+        )
     }
 
     // Shared Screens
     composable(Screen.Notifications.route) {
-        NotificationsScreenWrapper(navController)
+        NotificationsScreenRoute(onBack = {}, onNotificationClick = {})
     }
 
     composable(Screen.EditProfile.route) {
-        EditProfileScreenWrapper(navController)
+        EditProfileScreenRoute(
+            onBack = {},
+
+
+        )
     }
 
     composable(Screen.ChangePassword.route) {
-        ChangePasswordScreen(navController)
+        ChangePasswordScreenRoute()
     }
 }
 
 // Merchant Navigation Routes
-private fun androidx.navigation.NavGraphBuilder.merchantNavigation(
+private fun NavGraphBuilder.merchantNavigation(
     navController: NavHostController,
     onLogout: () -> Unit
 ) {
     // Dashboard Screen
     composable(Screen.Dashboard.route) {
-        MerchantDashboardScreenWrapper(navController)
+        MerchantDashboardRoute(onNavigateToAllTransactions = {})
     }
 
     // Scan QR Screen
     composable(Screen.ScanQR.route) {
-        MerchantQRScanScreen(navController)
+        QRScannerScreenRoute {  }
     }
 
     // Outlets Screen
     composable(Screen.Outlets.route) {
-        MerchantOutletsScreen(navController)
+        OutletsScreenRoute()
     }
 
     // Transactions Screen
     composable(Screen.Transactions.route) {
-        MerchantTransactionsScreen(navController)
+        TransactionHistoryScreenRoute()
     }
 
     // Profile Screen
     composable(Screen.Profile.route) {
-        MerchantProfileScreen(navController, onLogout)
+        ProfileScreenRoute(onEditProfile = {}, onChangePassword = {}, onLogout = {})
     }
 
     // Outlet Detail Screen (with parameter)
     composable(Screen.OutletDetail.route) { backStackEntry ->
         val outletId = backStackEntry.arguments?.getString("outletId") ?: ""
-        OutletDetailScreenWrapper(navController, outletId)
+        OutletDetailScreenRoute( onBack = {}, onEdit = {})
     }
 
     // Add Outlet Screen
-    composable(Screen.AddOutlet.route) {
-        AddOutletScreen(navController)
-    }
+//    composable(Screen.AddOutlet.route) {
+//        AddOutletScreen(navController)
+//    }
 
-    // Shared Screens
-    composable(Screen.Notifications.route) {
-        NotificationsScreenWrapper(navController)
-    }
+
 
     composable(Screen.EditProfile.route) {
-        EditProfileScreenWrapper(navController)
+        EditProfileScreenRoute(
+            onBack = {},
+            onSave = { string: String, string1: String, string2: String -> })
     }
 
     composable(Screen.ChangePassword.route) {
-        ChangePasswordScreen(navController)
+        ChangePasswordScreenRoute()
     }
 }
 
