@@ -19,10 +19,12 @@ import org.example.project.presentation.ui.coupons.CouponsScreenRoute
 import org.example.project.presentation.ui.home.CustomerHomeScreenRoute
 import org.example.project.presentation.ui.home.MerchantDashboardRoute
 import org.example.project.presentation.ui.outlets.OutletDetailScreenRoute
+import org.example.project.presentation.ui.outlets.OutletsListScreenRoute
 import org.example.project.presentation.ui.outlets.OutletsScreenRoute
 import org.example.project.presentation.ui.profile.ChangePasswordScreenRoute
 import org.example.project.presentation.ui.profile.EditProfileScreenRoute
 import org.example.project.presentation.ui.profile.ProfileScreenRoute
+import org.example.project.presentation.ui.qr.QRCodeDisplayScreenRoute
 import org.example.project.presentation.ui.qr.QRScannerScreenRoute
 import org.example.project.presentation.ui.transaction.TransactionHistoryScreenRoute
 
@@ -87,7 +89,7 @@ private fun NavGraphBuilder.customerNavigation(
 
     // My QR Screen
     composable(Screen.MyQR.route) {
-        QRScannerScreenRoute(onBack = {}
+        QRCodeDisplayScreenRoute(onBack = {}
 
 
         )
@@ -100,7 +102,13 @@ private fun NavGraphBuilder.customerNavigation(
 
     // Profile Screen
     composable(Screen.Profile.route) {
-        ProfileScreenRoute(onEditProfile = {}, onChangePassword = {}, onLogout = {}
+        ProfileScreenRoute(onEditProfile = {
+            navController.navigate(Screen.EditProfile.route)
+        }, onChangePassword = {
+            navController.navigate(Screen.ChangePassword.route)
+        }, onLogout = {
+            onLogout()
+        }
 
 
         )
@@ -149,7 +157,7 @@ private fun NavGraphBuilder.merchantNavigation(
 
     // Outlets Screen
     composable(Screen.Outlets.route) {
-        OutletsScreenRoute()
+        OutletsListScreenRoute(onBack = {}, onAddOutlet = {}, onOutletClick = {}, )
     }
 
     // Transactions Screen
@@ -159,13 +167,24 @@ private fun NavGraphBuilder.merchantNavigation(
 
     // Profile Screen
     composable(Screen.Profile.route) {
-        ProfileScreenRoute(onEditProfile = {}, onChangePassword = {}, onLogout = {})
+        ProfileScreenRoute(onEditProfile = {
+            navController.navigate(Screen.EditProfile.route)
+        }, onChangePassword = {
+            navController.navigate(Screen.ChangePassword.route)
+        }, onLogout = {
+            onLogout()
+        })
     }
 
     // Outlet Detail Screen (with parameter)
     composable(Screen.OutletDetail.route) { backStackEntry ->
         val outletId = backStackEntry.arguments?.getString("outletId") ?: ""
-        OutletDetailScreenRoute( onBack = {}, onEdit = {})
+        OutletDetailScreenRoute( onBack = {
+            navController.popBackStack()
+        }, onEdit = {
+
+
+        })
     }
 
     // Add Outlet Screen

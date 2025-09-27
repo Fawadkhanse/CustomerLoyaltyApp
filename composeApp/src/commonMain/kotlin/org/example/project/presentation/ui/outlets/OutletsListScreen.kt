@@ -32,14 +32,13 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun OutletsListScreenRoute(
-    outlets: List<OutletListData>,
     onBack: () -> Unit,
     onAddOutlet: () -> Unit,
     onOutletClick: (OutletListData) -> Unit,
     modifier: Modifier = Modifier
 ) {
     OutletsListScreen(
-        outlets = outlets,
+        outlets = list,
         onBack = onBack,
         onAddOutlet = onAddOutlet,
         onOutletClick = onOutletClick,
@@ -140,33 +139,34 @@ private fun OutletsListScreen(
     }
 }
 
+val list = listOf(
+OutletListData(
+id = "inceptos",
+name = "Ivory Potter",
+address = "sadipscing",
+phone = "(302) 360-7415",
+isActive = false
+),
+OutletListData(
+id = "invenire",
+name = "Karl Finley",
+address = "salutatus",
+phone = "(178) 753-4981",
+isActive = false
+),
+OutletListData(
+id = "noster",
+name = "Matt Richards",
+address = "sale",
+phone = "(170) 581-2099",
+isActive = false
+),
+)
 @Preview
 @Composable
 private fun OutletsListScreenPreview() {
     OutletsListScreen(
-        outlets = listOf(
-            OutletListData(
-                id = "inceptos",
-                name = "Ivory Potter",
-                address = "sadipscing",
-                phone = "(302) 360-7415",
-                isActive = false
-            ),
-            OutletListData(
-                id = "invenire",
-                name = "Karl Finley",
-                address = "salutatus",
-                phone = "(178) 753-4981",
-                isActive = false
-            ),
-            OutletListData(
-                id = "noster",
-                name = "Matt Richards",
-                address = "sale",
-                phone = "(170) 581-2099",
-                isActive = false
-            ),
-        ),
+        outlets =list,
         onBack = {},
         onAddOutlet = {},
         onOutletClick = {}

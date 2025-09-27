@@ -24,9 +24,15 @@ ProfileScreen(
     email = "wilbert.gregory@example.com",
     phone = "(736) 376-0787",
     profileImageUrl = "http://www.bing.com/search?q=volutpat",
-    onEditProfile = {},
-    onChangePassword = {},
-    onLogout = {},
+    onEditProfile = {
+        onEditProfile()
+    },
+    onChangePassword = {
+        onChangePassword()
+    },
+    onLogout = {
+        onLogout()
+    },
 )
 }
 @Composable

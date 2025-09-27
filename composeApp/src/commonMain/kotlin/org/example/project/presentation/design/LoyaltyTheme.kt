@@ -128,7 +128,7 @@ val LoyaltyTypography = Typography(
 // 🎨 Main Theme Composable
 @Composable
 fun LoyaltyTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
@@ -142,22 +142,23 @@ fun LoyaltyTheme(
 
 // 🎯 Extended Colors for Custom Components
 object LoyaltyExtendedColors {
+    val darkTheme: Boolean = false
     @Composable
-    fun secondaryText() = if (isSystemInDarkTheme()) {
+    fun secondaryText() = if (darkTheme) {
         LoyaltyColors.SecondaryTextDark
     } else {
         LoyaltyColors.SecondaryTextLight
     }
 
     @Composable
-    fun cardBackground() = if (isSystemInDarkTheme()) {
+    fun cardBackground() = if (darkTheme) {
         LoyaltyColors.CardBackgroundDark
     } else {
         LoyaltyColors.CardBackgroundLight
     }
 
     @Composable
-    fun border() = if (isSystemInDarkTheme()) {
+    fun border() = if (darkTheme) {
         LoyaltyColors.BorderDark
     } else {
         LoyaltyColors.BorderLight

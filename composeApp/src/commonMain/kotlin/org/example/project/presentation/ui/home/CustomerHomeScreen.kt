@@ -26,9 +26,9 @@ fun CustomerHomeScreenRoute(
         userName = "jone",
         userPoints = 0,
         tier = "1",
-        promotions = listOf(),
-        availableCoupons = listOf(),
-        recentActivity = listOf(),
+        promotions = listPromo,
+        availableCoupons =listCoupon,
+        recentActivity = list,
 
     )
 }
@@ -103,8 +103,24 @@ fun CustomerHomeScreenRoute(
     }
 }
 val listPromo = listOf(
-    PromotionData("1", "Promotion 1", null, "2023-12-31"),
-    PromotionData("2", "Promotion 2", null, "2024-01-15")
+    PromotionData(
+        id = "promo_001",
+        title = "Double Points Weekend",
+        imageUrl = "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=200&fit=crop",
+        expiryDate = "Dec 31, 2024"
+    ),
+    PromotionData(
+        id = "promo_002",
+        title = "Buy 2 Get 1 Free Coffee",
+        imageUrl = "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=200&fit=crop",
+        expiryDate = "Jan 15, 2025"
+    ),
+    PromotionData(
+        id = "promo_003",
+        title = "20% Off All Desserts",
+        imageUrl = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&h=200&fit=crop",
+        expiryDate = "Feb 28, 2025"
+    )
 )
 val listCoupon = listOf(
     CouponData("1", "Coupon 1", "Description 1", 100, "2023-12-31"),

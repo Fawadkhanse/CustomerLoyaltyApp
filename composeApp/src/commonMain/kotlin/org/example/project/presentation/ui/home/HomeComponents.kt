@@ -12,11 +12,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import org.example.project.presentation.ui.coupons.CouponData
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
@@ -152,45 +158,99 @@ fun PromotionsSection(
     }
 }
 
+
+
 @Composable
- fun PromotionCard(
+fun PromotionCard(
     promotion: PromotionData,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null
 ) {
     Card(
         modifier = modifier
             .width(280.dp)
-            .height(160.dp),
+            .height(160.dp)
+            .clickable { onClick?.invoke() },
         colors = CardDefaults.cardColors(
             containerColor = LoyaltyExtendedColors.cardBackground()
         ),
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            contentAlignment = Alignment.BottomStart
-        ) {
-            Column {
-                Text(
-                    text = promotion.title,
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+        Box(modifier = Modifier.fillMaxSize()) {
+            // Background
+            if (!promotion.imageUrl.isNullOrEmpty()) {
+                // Just load image - no loading/error states
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalPlatformContext.current)
+                        .data(promotion.imageUrl)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = promotion.title,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
                 )
+            } else {
+                // Gradient background for no image
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            brush = Brush.linearGradient(
+                                colors = listOf(
+                                    LoyaltyColors.OrangePink.copy(alpha = 0.2f),
+                                    LoyaltyColors.ButteryYellow.copy(alpha = 0.3f)
+                                )
+                            )
+                        )
+                )
+            }
 
-                Text(
-                    text = "Expires: ${promotion.expiryDate}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = LoyaltyExtendedColors.secondaryText(),
-                    modifier = Modifier.padding(top = 4.dp)
-                )
+            // Dark overlay for text
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                Color.Black.copy(alpha = 0.6f)
+                            )
+                        )
+                    )
+            )
+
+            // Text content
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                contentAlignment = Alignment.BottomStart
+            ) {
+                Column {
+                    Text(
+                        text = promotion.title,
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "Expires: ${promotion.expiryDate}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.White.copy(alpha = 0.9f)
+                    )
+                }
             }
         }
     }
 }
+
+
 
 @Composable
  fun CouponsSection(

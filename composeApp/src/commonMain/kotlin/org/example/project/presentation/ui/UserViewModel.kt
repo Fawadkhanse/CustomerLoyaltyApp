@@ -33,13 +33,13 @@ class UserViewModel(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
     init {
-        loadUsers()
+       // loadUsers()
     }
 
     fun loadUsers() {
         viewModelScope.launch {
             remoteRepository.makeApiRequest(
-                endpoint = ApiEndpoints.USERS,
+                endpoint = ApiEndpoints.MERCHANTS,
                 httpMethod = HttpMethod.GET
             ).collect { resource ->
                 _usersState.value = when (resource) {
@@ -63,7 +63,7 @@ class UserViewModel(
         viewModelScope.launch {
             remoteRepository.makeApiRequest(
                 requestModel = request,
-                endpoint = ApiEndpoints.USERS
+                endpoint = ApiEndpoints.REGISTER
             ).collect { resource ->
                 _createUserState.value = when (resource) {
                     is Resource.Success -> {
@@ -96,7 +96,7 @@ class UserViewModel(
     fun makeGetUsersCall(result: (List<User>) -> Unit) {
         viewModelScope.launch {
             remoteRepository.makeApiRequest(
-                endpoint = ApiEndpoints.USERS,
+                endpoint = ApiEndpoints.REGISTER,
                 httpMethod = HttpMethod.GET
             ).collect<List<User>> { userList ->
                 result.invoke(userList)
@@ -109,7 +109,7 @@ class UserViewModel(
         viewModelScope.launch {
             remoteRepository.makeApiRequest(
                 requestModel = request,
-                endpoint = ApiEndpoints.USERS
+                endpoint = ApiEndpoints.REGISTER
             ).collect<User> { user ->
                 result.invoke(user)
             }

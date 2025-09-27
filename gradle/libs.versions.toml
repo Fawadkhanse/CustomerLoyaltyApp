@@ -17,6 +17,8 @@ koin = "3.5.3"                    # ← Fixed version
 koin-compose = "1.1.2"            # ← Separate version for koin-compose
 kotlinxSerializationJson = "1.9.0"
 ktor = "2.3.11"
+coil = "3.3.0" # Latest version
+
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -42,6 +44,8 @@ ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "k
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 # Navigation
 compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "compose-navigation" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+coil-network-ktor = { module = "io.coil-kt:coil-network-ktor3", version.ref = "coil" }
 
 
 [plugins]

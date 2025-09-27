@@ -34,12 +34,12 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun TransactionHistoryScreenRoute() {
     TransactionHistoryScreen(
-        transactions = listOf(),
+        transactions = list,
         onBack = {},
         onDateRangeFilter = {},
         onOutletFilter = {},
-        selectedDateRange = "ad",
-        selectedOutlet = "constituto",
+        selectedDateRange = "This Month",
+        selectedOutlet = "Pavilion KL",
 
 
         )
@@ -179,44 +179,45 @@ private fun TransactionHistoryScreen(
         }
     }
 }
+val list = listOf(
+    TransactionHistoryData(
+        id = "luptatum",
+        customerName = "Dennis Wilkins",
+        points = 7897,
+        dateTime = "nam",
+        type = "class",
+        description = "falli",
+        outletName = "Roslyn Soto"
+
+    ),
+    TransactionHistoryData(
+        id = "vel",
+        customerName = "Moises Norris",
+        points = 7037,
+        dateTime = "sapien",
+        type = "fastidii",
+        description = "nam",
+        outletName = "Micah Yang"
+
+
+    ),
+    TransactionHistoryData(
+        id = "adolescens",
+        customerName = "Polly Leonard",
+        points = 2279,
+        dateTime = "ac",
+        type = "prompta",
+        description = "solum",
+        outletName = "Lucile Stephens"
+
+    )
+)
 
 @Preview
 @Composable
 private fun TransactionHistoryScreenPreview() {
     TransactionHistoryScreen(
-        transactions = listOf(
-            TransactionHistoryData(
-                id = "luptatum",
-                customerName = "Dennis Wilkins",
-                points = 7897,
-                dateTime = "nam",
-                type = "class",
-                description = "falli",
-                outletName = "Roslyn Soto"
-
-            ),
-            TransactionHistoryData(
-                id = "vel",
-                customerName = "Moises Norris",
-                points = 7037,
-                dateTime = "sapien",
-                type = "fastidii",
-                description = "nam",
-                outletName = "Micah Yang"
-
-
-            ),
-            TransactionHistoryData(
-                id = "adolescens",
-                customerName = "Polly Leonard",
-                points = 2279,
-                dateTime = "ac",
-                type = "prompta",
-                description = "solum",
-                outletName = "Lucile Stephens"
-
-            )
-        ),
+        transactions =list ,
         onBack = {},
         onDateRangeFilter = {},
         onOutletFilter = {},

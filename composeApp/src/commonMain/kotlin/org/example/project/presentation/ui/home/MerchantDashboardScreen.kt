@@ -147,74 +147,74 @@ private fun MerchantDashboardScreen(
                 )
             }
         }
-
-        item {
-            // Performance Chart Placeholder
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = LoyaltyExtendedColors.cardBackground()
-                ),
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Performance",
-                            style = MaterialTheme.typography.headlineSmall,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontWeight = FontWeight.SemiBold
-                        )
-
-                        Row {
-                            listOf("Today", "Week", "Month").forEach { period ->
-                                Surface(
-                                    color = if (period == "Today") LoyaltyColors.OrangePink
-                                    else Color.Transparent,
-                                    shape = RoundedCornerShape(16.dp)
-                                ) {
-                                    Text(
-                                        text = period,
-                                        style = MaterialTheme.typography.labelMedium,
-                                        color = if (period == "Today") Color.White
-                                        else LoyaltyExtendedColors.secondaryText(),
-                                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Simple chart placeholder
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(100.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(LoyaltyColors.OrangePink.copy(alpha = 0.1f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "Chart Visualization",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = LoyaltyExtendedColors.secondaryText()
-                        )
-                    }
-                }
-            }
-        }
+//
+//        item {
+//            // Performance Chart Placeholder
+//            Card(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(200.dp),
+//                colors = CardDefaults.cardColors(
+//                    containerColor = LoyaltyExtendedColors.cardBackground()
+//                ),
+//                shape = RoundedCornerShape(16.dp)
+//            ) {
+//                Column(
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//                        .padding(16.dp)
+//                ) {
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.SpaceBetween,
+//                        verticalAlignment = Alignment.CenterVertically
+//                    ) {
+//                        Text(
+//                            text = "Performance",
+//                            style = MaterialTheme.typography.headlineSmall,
+//                            color = MaterialTheme.colorScheme.onSurface,
+//                            fontWeight = FontWeight.SemiBold
+//                        )
+//
+//                        Row {
+//                            listOf("Today", "Week", "Month").forEach { period ->
+//                                Surface(
+//                                    color = if (period == "Today") LoyaltyColors.OrangePink
+//                                    else Color.Transparent,
+//                                    shape = RoundedCornerShape(16.dp)
+//                                ) {
+//                                    Text(
+//                                        text = period,
+//                                        style = MaterialTheme.typography.labelMedium,
+//                                        color = if (period == "Today") Color.White
+//                                        else LoyaltyExtendedColors.secondaryText(),
+//                                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+//                                    )
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//                    Spacer(modifier = Modifier.height(16.dp))
+//
+//                    // Simple chart placeholder
+//                    Box(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .height(100.dp)
+//                            .clip(RoundedCornerShape(8.dp))
+//                            .background(LoyaltyColors.OrangePink.copy(alpha = 0.1f)),
+//                        contentAlignment = Alignment.Center
+//                    ) {
+//                        Text(
+//                            text = "Chart Visualization",
+//                            style = MaterialTheme.typography.bodyMedium,
+//                            color = LoyaltyExtendedColors.secondaryText()
+//                        )
+//                    }
+//                }
+//            }
+//        }
 
         item {
             // Recent Transactions

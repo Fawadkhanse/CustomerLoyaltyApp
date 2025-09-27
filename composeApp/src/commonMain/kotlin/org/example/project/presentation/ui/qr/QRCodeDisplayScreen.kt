@@ -29,7 +29,9 @@ import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun QRCodeDisplayScreenRoute(){
+fun QRCodeDisplayScreenRoute(
+    onBack: () -> Unit
+){
         QRCodeDisplayScreen(
             customerName = "Marsha Alston",
             qrCodeData = "sample_qr_code_data",
