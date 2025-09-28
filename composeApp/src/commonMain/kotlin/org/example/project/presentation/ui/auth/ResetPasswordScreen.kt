@@ -69,16 +69,16 @@ private fun ResetPasswordScreen(
             .fillMaxSize()
             .padding(24.dp)
     ) {
-        // Back Button
-        IconButton(
-            onClick = onBack,
-            modifier = Modifier.padding(bottom = 16.dp)
-        ) {
-            Icon(
-                imageVector = AppIcons.ArrowBack,
-                contentDescription = "Back"
-            )
-        }
+//        // Back Button
+//        IconButton(
+//            onClick = onBack,
+//            modifier = Modifier.padding(bottom = 16.dp)
+//        ) {
+//            Icon(
+//                imageVector = AppIcons.ArrowBack,
+//                contentDescription = "Back"
+//            )
+//        }
 
         // Title
         Text(

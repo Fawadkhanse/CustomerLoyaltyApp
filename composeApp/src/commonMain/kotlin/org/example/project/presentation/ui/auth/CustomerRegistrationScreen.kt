@@ -168,16 +168,16 @@ private fun CustomerRegistrationScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            // Back button
-            IconButton(
-                onClick = onBack,
-                modifier = Modifier.padding(bottom = 16.dp)
-            ) {
-                Icon(
-                    imageVector = AppIcons.ArrowBack,
-                    contentDescription = "Back"
-                )
-            }
+//            // Back button
+//            IconButton(
+//                onClick = onBack,
+//                modifier = Modifier.padding(bottom = 16.dp)
+//            ) {
+//                Icon(
+//                    imageVector = AppIcons.ArrowBack,
+//                    contentDescription = "Back"
+//                )
+//            }
 
             // Header
             Text(

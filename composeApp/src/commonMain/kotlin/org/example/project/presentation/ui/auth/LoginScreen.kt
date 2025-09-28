@@ -48,7 +48,13 @@ fun LoginScreenRoute(
 
         },
         onLoginButtonClicked = { email, password ->
-          viewModel.login(email, password)
+            onLogin(
+                email,
+                password,
+                "customer"
+            )
+
+         // viewModel.login(email, password)
         },
         onForgotPassword = onForgotPassword,
         onRegister = onRegister,

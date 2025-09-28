@@ -1,52 +1,87 @@
+// File: composeApp/src/commonMain/kotlin/org/example/project/MyApp.kt
 package org.example.project
 
-import AppIcons
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.rememberNavController
-import org.example.project.presentation.LoyaltyApp
-import org.example.project.presentation.navigation.AppNavigation
+import org.example.project.presentation.components.AppBarHeader
+
+import org.example.project.presentation.components.MyAppBackground
+import org.example.project.presentation.design.LoyaltyTheme
+import org.example.project.presentation.navigation.MyAppNavHost
 
 @Composable
 fun App() {
-    LoyaltyApp()
+    LoyaltyTheme {
+        val appState = rememberMyAppState()
+        MyApp(appState = appState)
+    }
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AppTopBar(
-    title: String,
-    onBackClick: () -> Unit,
-    canNavigateBack: Boolean
-) {
-    TopAppBar(
-        title = {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge
-            )
-        },
-        navigationIcon = {
-            if (canNavigateBack) {
-                IconButton(onClick = onBackClick) {
-                    Icon(
-                        imageVector = AppIcons.ArrowBack,
-                        contentDescription = "Back"
-                    )
-                }
-            }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            titleContentColor = MaterialTheme.colorScheme.onSurface
-        )
-    )
+fun MyApp(appState: MyAppState, modifier: Modifier = Modifier) {
+    MyAppBackground(
+        modifier = modifier,
+    ) {
+        MyAppInternal(modifier, appState)
+    }
 }
 
+@Composable
+internal fun MyAppInternal(
+    modifier: Modifier = Modifier,
+    appState: MyAppState,
+) {
+    val defaultTitle = "Loyalty App"
+    var topBarTitle by rememberSaveable { mutableStateOf(defaultTitle) }
+    var isTopBarVisible by rememberSaveable { mutableStateOf(false) }
+    var isBottomTabVisible by rememberSaveable { mutableStateOf(false) }
+
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
+        bottomBar = {
+            if (isBottomTabVisible) {
+                // Add your bottom navigation here
+                // LoyaltyBottomNavigationBar(...)
+            }
+        }
+    ) { padding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            Column(
+                Modifier.fillMaxSize(),
+            ) {
+                AppBarHeader(
+                    title = topBarTitle,
+                    visible = isTopBarVisible,
+                    backNavigationClick = {
+                        appState.navigateBack()
+                    }
+                )
+
+                MyAppNavHost(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    updateTopBottomAppBar = { topBarVisible, title, bottomTabVisible ->
+                        if (topBarTitle != title || isTopBarVisible != topBarVisible || isBottomTabVisible != bottomTabVisible) {
+                            topBarTitle = title
+                            isTopBarVisible = topBarVisible
+                            isBottomTabVisible = bottomTabVisible
+                        }
+                    },
+                    navController = appState.navController,
+                )
+            }
+        }
+    }
+}
 enum class BottomTabItem(
     val title: String,
     val icon: androidx.compose.ui.graphics.vector.ImageVector,

@@ -47,14 +47,14 @@ fun LoyaltyApp() {
                 }
             )
         } else {
-            // Authentication Flow - User is not logged in
-            authenticationNavigation(
-                navController = navController,
-                onLoginSuccess = { userType ->
-                    currentUserType = userType
-                    isLoggedIn = true
-                }
-            )
+//            // Authentication Flow - User is not logged in
+//            authenticationNavigation(
+//                navController = navController,
+//                onLoginSuccess = { userType ->
+//                    currentUserType = userType
+//                    isLoggedIn = true
+//                }
+//            )
         }
     }
 }
