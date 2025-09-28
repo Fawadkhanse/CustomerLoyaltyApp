@@ -17,12 +17,12 @@ fun NavHostController.navigateToOutletDetail(outletId: String) {
 }
 
 // Safe navigation - prevents multiple clicks
-fun NavHostController.navigateSafely(route: String) {
+fun NavHostController.navigateSafely(route: String,popUpTo: Screen? = null) {
     if (currentDestination?.route != route) {
-        navigate(route)
+        navigate(route,)
     }
 }
 
-fun NavHostController.navigateToScreenSafely(screen: Screen) {
-    navigateSafely(screen.route)
+fun NavHostController.navigateToScreenSafely(screen: Screen,popUpTo: Screen? = null) {
+    navigateSafely(screen.route,popUpTo)
 }

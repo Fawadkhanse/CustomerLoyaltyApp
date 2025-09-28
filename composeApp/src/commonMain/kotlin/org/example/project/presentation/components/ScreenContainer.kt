@@ -1,6 +1,7 @@
 // File: presentation/components/ScreenContainer.kt
 package org.example.project.presentation.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -22,16 +23,20 @@ fun ScreenContainer(
     modifier: Modifier = Modifier,
     currentPrompt: PromptTypeShow? = null,
     horizontalPadding: Dp = 16.dp,
-    verticalPadding: Dp = 0.dp,
+    verticalPadding: Dp = 24.dp,
+    topPadding: Dp = 0.dp,
+    bottomPadding: Dp = 0.dp,
     content: @Composable () -> Unit
+
 ) {
     Box(
         modifier = modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
             .padding(
                 horizontal = horizontalPadding,
                 vertical = verticalPadding
-            )
+            ).padding(top = topPadding, bottom = bottomPadding)
     ) {
         content()
     }

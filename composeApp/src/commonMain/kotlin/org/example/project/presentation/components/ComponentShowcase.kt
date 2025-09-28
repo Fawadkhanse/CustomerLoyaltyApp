@@ -575,7 +575,7 @@ fun ComponentShowcase() {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun ComponentShowcasePreview() {
     ComponentShowcase()

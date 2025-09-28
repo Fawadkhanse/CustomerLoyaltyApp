@@ -69,26 +69,7 @@ class AuthViewModel(
         }
     }
 
-    fun register(
-        name: String,
-        email: String,
-        phone: String,
-        password: String,
-        password2: String,
-        role: String = "customer",
-        profileImage: String = "",
-        tc: Boolean = true
-    ) {
-        val request = UserRegistrationRequest(
-            name = name,
-            email = email,
-            phone = phone,
-            password = password,
-            password2 = password2,
-            role = role,
-            profileImage = profileImage,
-        )
-
+    fun register(request: UserRegistrationRequest) {
         viewModelScope.launch {
             remoteRepository.makeApiRequest(
                 requestModel = request,
@@ -113,8 +94,8 @@ class AuthViewModel(
         }
     }
 
-    fun resetPassword(uid: String, token: String, newPassword: String, confirmPassword: String) {
-        val request = ResetPasswordRequest(uid, token, newPassword, confirmPassword)
+    fun resetPassword(request: ResetPasswordRequest) {
+
         viewModelScope.launch {
             remoteRepository.makeApiRequest(
                 requestModel = request,
@@ -138,20 +119,22 @@ class AuthViewModel(
             }
         }
     }
+    // endregion
 
+    // region Session
     fun logout() {
         _isLoggedIn.value = false
         _currentUser.value = null
         clearAllStates()
     }
 
-    private fun clearAllStates() {
+    fun clearAllStates() {
         _loginState.value = Resource.None
         _registerState.value = Resource.None
         _forgotPasswordState.value = Resource.None
         _resetPasswordState.value = Resource.None
         _changePasswordState.value = Resource.None
     }
-    // endregion
+
 }
 

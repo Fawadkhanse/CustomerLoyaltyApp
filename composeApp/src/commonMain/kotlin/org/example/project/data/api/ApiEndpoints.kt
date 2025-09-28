@@ -4,9 +4,6 @@ package org.example.project.data.api
 object ApiEndpoints {
     // Update this to your actual Django server URL
     private const val BASE_URL = "http://10.0.2.2:8000" // For Android emulator
-    // private const val BASE_URL = "http://localhost:8000" // For iOS simulator
-    // private const val BASE_URL = "https://your-production-server.com" // For production
-
     // Auth endpoints - matching your Django URLs
     const val REGISTER = "$BASE_URL/api/user/register/"
     const val LOGIN = "$BASE_URL/api/user/login/"

@@ -2,25 +2,27 @@ package org.example.project.presentation.navigation
 
 
 import androidx.compose.runtime.*
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navigation
 import org.example.project.presentation.navigation.Screen.Screen
 import org.example.project.presentation.ui.auth.CustomerRegistrationScreenRoute
-import org.example.project.presentation.ui.auth.ForgotPasswordScreenRout
+import org.example.project.presentation.ui.auth.ForgotPasswordScreenRoute
 import org.example.project.presentation.ui.auth.LoginScreenRoute
 import org.example.project.presentation.ui.auth.OnboardingScreenRoute
 import org.example.project.presentation.ui.auth.ResetPasswordScreenRoute
 import org.example.project.presentation.ui.splash.AppSplashScreenRoute
 
-@Composable
-fun AuthenticationNavigation(
+
+fun NavGraphBuilder.authenticationNavigation(
     navController: NavHostController,
     onLoginSuccess: (UserType) -> Unit
 ) {
-    NavHost(
-        navController = navController,
-        startDestination = Screen.Welcome.route
+    navigation(
+        startDestination = Screen.Welcome.route,
+        route= Screen.AuthFlow.route
     ) {
         // Welcome Screen
         composable(Screen.Welcome.route) {
@@ -80,7 +82,7 @@ fun AuthenticationNavigation(
 
         // Forgot Password Screen
         composable(Screen.ForgotPassword.route) {
-            ForgotPasswordScreenRout(
+            ForgotPasswordScreenRoute(
                 onSendResetLink = { email, userType ->
                     navController.navigateToScreen(Screen.ResetPassword)
                 },
@@ -93,14 +95,20 @@ fun AuthenticationNavigation(
         // Reset Password Screen
         composable(Screen.ResetPassword.route) {
             ResetPasswordScreenRoute(
-                onResetPassword = { email, newPassword, confirmPassword, userType ->
-                    // Handle password reset
-                    navController.navigateToScreen(Screen.Login)
+                navigateToLogin = {
+                    // Clear everything in the backstack
+                    navController.popBackStack(Screen.Welcome.route,true)
+
+                    // Navigate fresh to Login
+                    navController.navigateToScreenSafely(Screen.Welcome)
+
+
                 },
                 onBack = {
                     navController.popBackStack()
-                }
+                },
             )
         }
+
     }
 }

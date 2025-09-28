@@ -7,11 +7,6 @@ import org.example.project.presentation.design.LoyaltyTheme
 import org.example.project.presentation.navigation.*
 
 
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.navigation.compose.rememberNavController
-import org.example.project.presentation.design.LoyaltyTheme
-import org.example.project.presentation.navigation.*
 import org.example.project.presentation.navigation.Screen.Screen
 
 /**
@@ -53,7 +48,7 @@ fun LoyaltyApp() {
             )
         } else {
             // Authentication Flow - User is not logged in
-            AuthenticationNavigation(
+            authenticationNavigation(
                 navController = navController,
                 onLoginSuccess = { userType ->
                     currentUserType = userType
