@@ -8,7 +8,8 @@ import org.example.project.data.repository.UserRepository
 import org.example.project.domain.RemoteRepository
 import org.example.project.domain.usecase.CreateUserUseCase
 import org.example.project.domain.usecase.GetUsersUseCase
-import org.example.project.presentation.ui.UserViewModel
+import org.example.project.presentation.common.PromptsViewModel
+import org.example.project.presentation.ui.auth.viewmodel.AuthViewModel
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 
@@ -37,17 +38,14 @@ val  appModule = module {
     factory<CreateUserUseCase> {
         CreateUserUseCase(userRepository = get())
     }
-    factory<UserViewModel> { UserViewModel(get()) }
-    // ViewModels - ✅ Use factory instead of viewModel for cross-platform
-//    factory<UserViewModel> {
-//        UserViewModel(
-////            getUsersUseCase = get(),
-////            createUserUseCase = get()
-//        )
-//    }
+    val viewModelModule = module {
+        // ViewModels
+        factory<UserViewModel> { UserViewModel(get()) }
+        factory<AuthViewModel> { AuthViewModel(get()) }
+        factory<PromptsViewModel> { PromptsViewModel() }
+    }
+
 }
-
-
 // Helper function to initialize Koin
 fun initKoin() {
   startKoin {
