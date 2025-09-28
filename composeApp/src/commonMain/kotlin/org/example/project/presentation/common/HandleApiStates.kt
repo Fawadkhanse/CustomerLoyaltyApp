@@ -50,6 +50,8 @@ fun <T> HandleResourceState(
             }
             onSuccess(state.data)
         }
+
+        else -> {}
     }
 }
 
@@ -105,6 +107,8 @@ fun <T : Any> HandleApiResponse(
                 }
             }
         }
+
+        Resource.None -> {}
     }
 }
 
@@ -147,6 +151,8 @@ fun <T> HandleStateWithCustomError(
             }
             onSuccess(state.data)
         }
+
+        Resource.None -> {}
     }
 }
 

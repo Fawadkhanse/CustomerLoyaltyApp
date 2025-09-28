@@ -13,15 +13,7 @@ import org.example.project.domain.models.Resource
 /**
  * Maps the success data of a Resource to another type
  */
-inline fun <T, R> Flow<Resource<T>>.mapResource(
-    crossinline transform: (T) -> R
-): Flow<Resource<R>> = map { resource ->
-    when (resource) {
-        is Resource.Success -> Resource.Success(transform(resource.data))
-        is Resource.Error -> Resource.Error(resource.exception)
-        is Resource.Loading -> Resource.Loading
-    }
-}
+
 
 /**
  * Handles errors in the flow and converts them to Resource.Error

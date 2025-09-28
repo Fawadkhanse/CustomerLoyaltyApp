@@ -26,29 +26,20 @@ val  appModule = module {
     }
     single<RemoteRepository> { RemoteRepositoryImpl(get()) }
     // Specific Repositories
-    single<UserRepository> {
-        UserRepository(genericRepository = get())
-    }
 
-    // Use Cases
-    factory<GetUsersUseCase> {
-        GetUsersUseCase(userRepository = get())
-    }
 
-    factory<CreateUserUseCase> {
-        CreateUserUseCase(userRepository = get())
-    }
-    val viewModelModule = module {
-        // ViewModels
-        factory<UserViewModel> { UserViewModel(get()) }
-        factory<AuthViewModel> { AuthViewModel(get()) }
-        factory<PromptsViewModel> { PromptsViewModel() }
-    }
 
 }
+val viewModelModule = module {
+    factory<AuthViewModel> { AuthViewModel(get()) }
+    factory<PromptsViewModel> { PromptsViewModel() }
+}
+
 // Helper function to initialize Koin
 fun initKoin() {
-  startKoin {
-        modules(appModule)
+    startKoin {
+        modules(
+            listOf(appModule, viewModelModule)
+        )
     }
 }

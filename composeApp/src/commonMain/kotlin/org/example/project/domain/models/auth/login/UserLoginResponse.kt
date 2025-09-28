@@ -7,9 +7,9 @@ import org.example.project.domain.models.auth.register.TokenResponse
 @Serializable
 data class UserLoginResponse(
     @SerialName("token")
-    val token: TokenResponse,
+    val token: TokenResponse?=null,
     @SerialName("message")
-    val message: String,
+    val message: String?=null,
     @SerialName("user")
-    val user: UserDataResponse
+    val user: UserDataResponse?=null
 )

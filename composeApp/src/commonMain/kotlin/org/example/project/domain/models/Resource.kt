@@ -8,6 +8,8 @@ sealed class Resource<out T> {
     data class Success<out T>(val data: T) : Resource<T>()
     data class Error(val exception: Throwable) : Resource<Nothing>()
     object Loading : Resource<Nothing>()
+    object None : Resource<Nothing>()
+
 
     val isLoading: Boolean
         get() = this is Loading
@@ -27,12 +29,14 @@ sealed class Resource<out T> {
         is Success -> data
         is Error -> throw exception
         is Loading -> throw IllegalStateException("Resource is still loading")
+        None -> throw IllegalStateException("Resource is None")
     }
 
     inline fun <R> map(transform: (T) -> R): Resource<R> = when (this) {
         is Success -> Success(transform(data))
         is Error -> Error(exception)
         is Loading -> Loading
+        None -> throw IllegalStateException("Resource is None")
     }
 
     inline fun onSuccess(action: (T) -> Unit): Resource<T> {

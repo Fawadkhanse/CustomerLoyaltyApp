@@ -35,6 +35,7 @@ import org.example.project.presentation.components.LoyaltyTextField
 import org.example.project.presentation.components.TermsAndPrivacyText
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
+import org.example.project.utils.isValidEmail
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -52,7 +53,7 @@ fun CustomerRegistrationScreenRoute(
             onBack()
         },
         onLoginClick = {
-            onLoginClick()
+            onBack()
         }
     )
 
@@ -232,7 +233,7 @@ fun CustomerRegistrationScreen(
                 },
                 label = "Password",
                 placeholder = "Create a password",
-                leadingIcon = AppIcons.Settings, // Replace with lock icon
+                leadingIcon = AppIcons.Password, // Replace with lock icon
                 isPassword = true,
                 isError = passwordError != null,
                 errorMessage = passwordError,
@@ -248,7 +249,7 @@ fun CustomerRegistrationScreen(
                 },
                 label = "Confirm Password",
                 placeholder = "Confirm your password",
-                leadingIcon = AppIcons.Settings, // Replace with lock icon
+                leadingIcon = AppIcons.Password, // Replace with lock icon
                 isPassword = true,
                 isError = confirmPasswordError != null,
                 errorMessage = confirmPasswordError,
@@ -333,10 +334,7 @@ fun CustomerRegistrationScreen(
         Spacer(modifier = Modifier.height(32.dp))
     }
 }
-private fun isValidEmail(email: String): Boolean {
-    val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$".toRegex()
-    return emailRegex.matches(email)
-}
+
 
 
 

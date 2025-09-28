@@ -8,7 +8,7 @@ import androidx.navigation.compose.composable
 import org.example.project.presentation.navigation.Screen.Screen
 import org.example.project.presentation.ui.auth.CustomerRegistrationScreenRoute
 import org.example.project.presentation.ui.auth.ForgotPasswordScreenRout
-import org.example.project.presentation.ui.auth.LoginScreenRout
+import org.example.project.presentation.ui.auth.LoginScreenRoute
 import org.example.project.presentation.ui.auth.OnboardingScreenRoute
 import org.example.project.presentation.ui.auth.ResetPasswordScreenRoute
 import org.example.project.presentation.ui.splash.AppSplashScreenRoute
@@ -46,7 +46,7 @@ fun AuthenticationNavigation(
 
         // Login Screen
         composable(Screen.Login.route) {
-            LoginScreenRout(
+            LoginScreenRoute(
                 onLogin = { email, password, userType ->
                     // Handle login logic here
                     val type = if (userType == "Merchant") UserType.MERCHANT else UserType.CUSTOMER

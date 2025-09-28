@@ -1,13 +1,11 @@
 package org.example.project.presentation.ui.auth.viewmodel
 
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
 import org.example.project.data.api.ApiEndpoints
 import org.example.project.data.api.HttpMethod
 import org.example.project.domain.RemoteRepository
@@ -16,27 +14,33 @@ import org.example.project.domain.models.auth.login.UserLoginRequest
 import org.example.project.domain.models.auth.login.UserLoginResponse
 import org.example.project.domain.models.auth.register.UserRegistrationRequest
 import org.example.project.domain.models.auth.register.UserRegistrationResponse
-import org.example.project.domain.models.auth.resetpassword.*
-import org.example.project.utils.toPojo
+import org.example.project.domain.models.auth.resetpassword.ChangePasswordRequest
+import org.example.project.domain.models.auth.resetpassword.ChangePasswordResponse
+import org.example.project.domain.models.auth.resetpassword.ForgotPasswordRequest
+import org.example.project.domain.models.auth.resetpassword.ForgotPasswordResponse
+import org.example.project.domain.models.auth.resetpassword.ResetPasswordRequest
+import org.example.project.domain.models.auth.resetpassword.ResetPasswordResponse
+import org.example.project.presentation.common.BaseViewModel
 
 class AuthViewModel(
     private val remoteRepository: RemoteRepository
-) : ViewModel() {
+) : BaseViewModel() {
 
-    private val _loginState = MutableStateFlow<Resource<UserLoginResponse>?>(null)
-    val loginState: StateFlow<Resource<UserLoginResponse>?> = _loginState.asStateFlow()
+    // region StateFlows
+    private val _loginState = MutableStateFlow<Resource<UserLoginResponse>>(Resource.None)
+    val loginState: StateFlow<Resource<UserLoginResponse>> = _loginState.asStateFlow()
 
-    private val _registerState = MutableStateFlow<Resource<UserRegistrationResponse>?>(null)
-    val registerState: StateFlow<Resource<UserRegistrationResponse>?> = _registerState.asStateFlow()
+    private val _registerState = MutableStateFlow<Resource<UserRegistrationResponse>>(Resource.None)
+    val registerState: StateFlow<Resource<UserRegistrationResponse>> = _registerState.asStateFlow()
 
-    private val _forgotPasswordState = MutableStateFlow<Resource<ForgotPasswordResponse>?>(null)
-    val forgotPasswordState: StateFlow<Resource<ForgotPasswordResponse>?> = _forgotPasswordState.asStateFlow()
+    private val _forgotPasswordState = MutableStateFlow<Resource<ForgotPasswordResponse>>(Resource.None)
+    val forgotPasswordState: StateFlow<Resource<ForgotPasswordResponse>> = _forgotPasswordState.asStateFlow()
 
-    private val _resetPasswordState = MutableStateFlow<Resource<ResetPasswordResponse>?>(null)
-    val resetPasswordState: StateFlow<Resource<ResetPasswordResponse>?> = _resetPasswordState.asStateFlow()
+    private val _resetPasswordState = MutableStateFlow<Resource<ResetPasswordResponse>>(Resource.None)
+    val resetPasswordState: StateFlow<Resource<ResetPasswordResponse>> = _resetPasswordState.asStateFlow()
 
-    private val _changePasswordState = MutableStateFlow<Resource<ChangePasswordResponse>?>(null)
-    val changePasswordState: StateFlow<Resource<ChangePasswordResponse>?> = _changePasswordState.asStateFlow()
+    private val _changePasswordState = MutableStateFlow<Resource<ChangePasswordResponse>>(Resource.None)
+    val changePasswordState: StateFlow<Resource<ChangePasswordResponse>> = _changePasswordState.asStateFlow()
 
     // User session management
     private val _isLoggedIn = MutableStateFlow(false)
@@ -44,30 +48,22 @@ class AuthViewModel(
 
     private val _currentUser = MutableStateFlow<UserLoginResponse?>(null)
     val currentUser: StateFlow<UserLoginResponse?> = _currentUser.asStateFlow()
+    // endregion
+
+    // region API calls
 
     fun login(email: String, password: String, userType: String = "customer") {
         val request = UserLoginRequest(email, password)
         viewModelScope.launch {
-            _loginState.value = Resource.Loading
             remoteRepository.makeApiRequest(
                 requestModel = request,
                 endpoint = ApiEndpoints.LOGIN,
                 httpMethod = HttpMethod.POST
-            ).collect { resource ->
-                _loginState.value = when (resource) {
-                    is Resource.Success -> {
-                        try {
-                            val loginResponse = resource.data.toPojo<UserLoginResponse>()
-                            _currentUser.value = loginResponse
-                            _isLoggedIn.value = true
-                            // Store tokens securely here (implement token storage)
-                            Resource.Success(loginResponse)
-                        } catch (e: Exception) {
-                            Resource.Error(e)
-                        }
-                    }
-                    is Resource.Error -> Resource.Error(resource.exception)
-                    is Resource.Loading -> Resource.Loading
+            ).collectAsResource<UserLoginResponse> { result ->
+                _loginState.value = result
+                if (result is Resource.Success) {
+                    _currentUser.value = result.data
+                    _isLoggedIn.value = true
                 }
             }
         }
@@ -91,28 +87,15 @@ class AuthViewModel(
             password2 = password2,
             role = role,
             profileImage = profileImage,
-            termsAndConditions = tc
         )
 
         viewModelScope.launch {
-            _registerState.value = Resource.Loading
             remoteRepository.makeApiRequest(
                 requestModel = request,
                 endpoint = ApiEndpoints.REGISTER,
                 httpMethod = HttpMethod.POST
-            ).collect { resource ->
-                _registerState.value = when (resource) {
-                    is Resource.Success -> {
-                        try {
-                            val registerResponse = resource.data.toPojo<UserRegistrationResponse>()
-                            Resource.Success(registerResponse)
-                        } catch (e: Exception) {
-                            Resource.Error(e)
-                        }
-                    }
-                    is Resource.Error -> Resource.Error(resource.exception)
-                    is Resource.Loading -> Resource.Loading
-                }
+            ).collectAsResource<UserRegistrationResponse> { result ->
+                _registerState.value = result
             }
         }
     }
@@ -120,23 +103,12 @@ class AuthViewModel(
     fun forgotPassword(email: String) {
         val request = ForgotPasswordRequest(email)
         viewModelScope.launch {
-            _forgotPasswordState.value = Resource.Loading
             remoteRepository.makeApiRequest(
                 requestModel = request,
                 endpoint = ApiEndpoints.FORGOT_PASSWORD,
                 httpMethod = HttpMethod.POST
-            ).collect { resource ->
-                _forgotPasswordState.value = when (resource) {
-                    is Resource.Success -> {
-                        try {
-                            Resource.Success(resource.data.toPojo<ForgotPasswordResponse>())
-                        } catch (e: Exception) {
-                            Resource.Error(e)
-                        }
-                    }
-                    is Resource.Error -> Resource.Error(resource.exception)
-                    is Resource.Loading -> Resource.Loading
-                }
+            ).collectAsResource<ForgotPasswordResponse> { result ->
+                _forgotPasswordState.value = result
             }
         }
     }
@@ -144,23 +116,12 @@ class AuthViewModel(
     fun resetPassword(uid: String, token: String, newPassword: String, confirmPassword: String) {
         val request = ResetPasswordRequest(uid, token, newPassword, confirmPassword)
         viewModelScope.launch {
-            _resetPasswordState.value = Resource.Loading
             remoteRepository.makeApiRequest(
                 requestModel = request,
                 endpoint = ApiEndpoints.RESET_PASSWORD,
                 httpMethod = HttpMethod.POST
-            ).collect { resource ->
-                _resetPasswordState.value = when (resource) {
-                    is Resource.Success -> {
-                        try {
-                            Resource.Success(resource.data.toPojo<ResetPasswordResponse>())
-                        } catch (e: Exception) {
-                            Resource.Error(e)
-                        }
-                    }
-                    is Resource.Error -> Resource.Error(resource.exception)
-                    is Resource.Loading -> Resource.Loading
-                }
+            ).collectAsResource<ResetPasswordResponse> { result ->
+                _resetPasswordState.value = result
             }
         }
     }
@@ -168,23 +129,12 @@ class AuthViewModel(
     fun changePassword(oldPassword: String, newPassword: String, confirmPassword: String) {
         val request = ChangePasswordRequest(oldPassword, newPassword, confirmPassword)
         viewModelScope.launch {
-            _changePasswordState.value = Resource.Loading
             remoteRepository.makeApiRequest(
                 requestModel = request,
                 endpoint = ApiEndpoints.CHANGE_PASSWORD,
                 httpMethod = HttpMethod.POST
-            ).collect { resource ->
-                _changePasswordState.value = when (resource) {
-                    is Resource.Success -> {
-                        try {
-                            Resource.Success(resource.data.toPojo<ChangePasswordResponse>())
-                        } catch (e: Exception) {
-                            Resource.Error(e)
-                        }
-                    }
-                    is Resource.Error -> Resource.Error(resource.exception)
-                    is Resource.Loading -> Resource.Loading
-                }
+            ).collectAsResource<ChangePasswordResponse> { result ->
+                _changePasswordState.value = result
             }
         }
     }
@@ -192,21 +142,16 @@ class AuthViewModel(
     fun logout() {
         _isLoggedIn.value = false
         _currentUser.value = null
-        // Clear stored tokens here
         clearAllStates()
     }
 
     private fun clearAllStates() {
-        _loginState.value = null
-        _registerState.value = null
-        _forgotPasswordState.value = null
-        _resetPasswordState.value = null
-        _changePasswordState.value = null
+        _loginState.value = Resource.None
+        _registerState.value = Resource.None
+        _forgotPasswordState.value = Resource.None
+        _resetPasswordState.value = Resource.None
+        _changePasswordState.value = Resource.None
     }
-
-    fun clearLoginState() { _loginState.value = null }
-    fun clearRegisterState() { _registerState.value = null }
-    fun clearForgotPasswordState() { _forgotPasswordState.value = null }
-    fun clearResetPasswordState() { _resetPasswordState.value = null }
-    fun clearChangePasswordState() { _changePasswordState.value = null }
+    // endregion
 }
+

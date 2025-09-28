@@ -16,9 +16,9 @@ data class UserRegistrationRequest(
     @SerialName("password2")
     val password2: String,
     @SerialName("role")
-    val role: String,
+    val role: String = "customer", // or "merchant"
     @SerialName("profile_image")
-    val profileImage: String,
+    val profileImage: String = "",
     @SerialName("tc")
-    val termsAndConditions: Boolean
+    val tc: Boolean = true
 )

@@ -205,7 +205,7 @@ fun LoyaltyTextField(
                 {
                     IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
                         Icon(
-                            imageVector = if (isPasswordVisible) AppIcons.Info else AppIcons.Info, // Replace with visibility icons
+                            imageVector = if (isPasswordVisible) AppIcons.PasswordHide else AppIcons.PasswordShow, // Replace with visibility icons
                             contentDescription = if (isPasswordVisible) "Hide password" else "Show password"
                         )
                     }
