@@ -260,7 +260,7 @@ enum class CustomerBottomNavItems(
     HOME("Home", AppIcons.Info, "home"), // Replace with home icon
     MY_QR("My QR", AppIcons.Info, "qr"), // Replace with QR icon
     COUPONS("Coupons", AppIcons.Info, "coupons"), // Replace with coupon icon
-    PROFILE("Profile", SimpleIcons.Person, "profile")
+    PROFILE("Profile", AppIcons.Person, "profile")
 }
 
 enum class MerchantBottomNavItems(
@@ -272,7 +272,7 @@ enum class MerchantBottomNavItems(
     SCAN_QR("Scan QR", AppIcons.Info, "scan"), // Replace with QR scan icon
     OUTLETS("Outlets", AppIcons.Info, "outlets"), // Replace with store icon
     TRANSACTIONS("Transactions", AppIcons.Info, "transactions"), // Replace with transaction icon
-    PROFILE("Profile", SimpleIcons.Person, "profile")
+    PROFILE("Profile", AppIcons.Person, "profile")
 }
 
 enum class UserType {

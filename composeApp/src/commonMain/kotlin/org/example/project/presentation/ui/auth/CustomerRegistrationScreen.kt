@@ -2,12 +2,9 @@ package org.example.project.presentation.ui.auth
 
 
 import AppIcons
-import SimpleIcons
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,7 +20,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,9 +32,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import org.example.project.presentation.components.LoyaltyPrimaryButton
 import org.example.project.presentation.components.LoyaltyTextField
+import org.example.project.presentation.components.TermsAndPrivacyText
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
-import org.example.project.presentation.ui.auth.components.UserTypeSelector
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -188,7 +184,7 @@ fun CustomerRegistrationScreen(
                 },
                 label = "Full Name",
                 placeholder = "Enter your full name",
-                leadingIcon = SimpleIcons.Person,
+                leadingIcon = AppIcons.Person,
                 isError = nameError != null,
                 errorMessage = nameError,
                 enabled = !isLoading
@@ -203,7 +199,7 @@ fun CustomerRegistrationScreen(
                 },
                 label = "Email Address",
                 placeholder = "Enter your email",
-                leadingIcon = AppIcons.Info, // Replace with email icon
+                leadingIcon = AppIcons.Email, // Replace with email icon
                 keyboardType = KeyboardType.Email,
                 isError = emailError != null,
                 errorMessage = emailError,
@@ -219,7 +215,7 @@ fun CustomerRegistrationScreen(
                 },
                 label = "Phone Number",
                 placeholder = "+1 (555) 123-4567",
-                leadingIcon = AppIcons.Info, // Replace with phone icon
+                leadingIcon = AppIcons.Phone, // Replace with phone icon
                 keyboardType = KeyboardType.Phone,
                 isError = phoneError != null,
                 errorMessage = phoneError,
@@ -262,7 +258,7 @@ fun CustomerRegistrationScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Terms and Conditions Checkbox
+// Terms and Conditions Checkbox with Spannable Text
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.Top
@@ -279,49 +275,21 @@ fun CustomerRegistrationScreen(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = "I agree to the Terms of Service and Privacy Policy",
-                    style = MaterialTheme.typography.bodyMedium,
+            // Use the spannable text component
+            TermsAndPrivacyText(
+                onTermsClick = {
+                    // Navigate to Terms of Service
+                    // TODO: Add navigation to terms screen
+                },
+                onPrivacyClick = {
+                    // Navigate to Privacy Policy
+                    // TODO: Add navigation to privacy screen
+                },
+                modifier = Modifier.weight(1f),
+                textStyle = MaterialTheme.typography.bodyMedium.copy(
                     color = MaterialTheme.colorScheme.onBackground
                 )
-
-                Row(
-                    modifier = Modifier.padding(top = 4.dp)
-                ) {
-                    TextButton(
-                        onClick = { /* Navigate to Terms */ },
-                        enabled = !isLoading,
-                        contentPadding = PaddingValues(0.dp)
-                    ) {
-                        Text(
-                            text = "Terms of Service",
-                            color = LoyaltyColors.OrangePink,
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    }
-
-                    Text(
-                        text = " and ",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = LoyaltyExtendedColors.secondaryText()
-                    )
-
-                    TextButton(
-                        onClick = { /* Navigate to Privacy Policy */ },
-                        enabled = !isLoading,
-                        contentPadding = PaddingValues(0.dp)
-                    ) {
-                        Text(
-                            text = "Privacy Policy",
-                            color = LoyaltyColors.OrangePink,
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    }
-                }
-            }
+            )
         }
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -359,7 +327,6 @@ fun CustomerRegistrationScreen(
                 text = "Login",
                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
                 color = LoyaltyColors.OrangePink,
-                modifier = Modifier.clickable(enabled = !isLoading) { onLoginClick() }
             )
         }
 
@@ -371,214 +338,10 @@ private fun isValidEmail(email: String): Boolean {
     return emailRegex.matches(email)
 }
 
-// Enhanced Registration Screen with User Type Selection
-@Composable
-fun EnhancedCustomerRegistrationScreen(
-    onRegister: (String, String, String, String, String) -> Unit, // name, email, phone, password, userType
-    onBack: () -> Unit,
-    onLoginClick: () -> Unit = {},
-    modifier: Modifier = Modifier
-) {
-    var userType by remember { mutableStateOf("Customer") }
-    var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var phone by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
-    var businessName by remember { mutableStateOf("") } // For merchants
-    var agreeToTerms by remember { mutableStateOf(false) }
-    var isLoading by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .verticalScroll(rememberScrollState())
-            .padding(24.dp)
-    ) {
-        // Back button
-        IconButton(
-            onClick = onBack,
-            modifier = Modifier.padding(bottom = 16.dp)
-        ) {
-            Icon(
-                imageVector = AppIcons.ArrowBack,
-                contentDescription = "Back"
-            )
-        }
-
-        // Header
-        Text(
-            text = "Create Account",
-            style = MaterialTheme.typography.headlineLarge,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 32.dp)
-        )
-
-        // User Type Selection
-        UserTypeSelector(
-            selectedType = userType,
-            onTypeSelected = { userType = it },
-            modifier = Modifier.padding(bottom = 24.dp)
-        )
-
-        // Common Fields
-        Column(
-            verticalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
-            // Business Name (for merchants only)
-            if (userType == "Merchant") {
-                LoyaltyTextField(
-                    value = businessName,
-                    onValueChange = { businessName = it },
-                    label = "Business Name",
-                    placeholder = "Enter your business name",
-                    leadingIcon = AppIcons.Info, // Replace with store icon
-                    enabled = !isLoading
-                )
-            }
-
-            // Full Name
-            LoyaltyTextField(
-                value = name,
-                onValueChange = { name = it },
-                label = if (userType == "Merchant") "Contact Person Name" else "Full Name",
-                placeholder = "Enter your full name",
-                leadingIcon = SimpleIcons.Person,
-                enabled = !isLoading
-            )
-
-            // Email
-            LoyaltyTextField(
-                value = email,
-                onValueChange = { email = it },
-                label = "Email Address",
-                placeholder = "Enter your email",
-                leadingIcon = AppIcons.Info, // Replace with email icon
-                keyboardType = KeyboardType.Email,
-                enabled = !isLoading
-            )
-
-            // Phone Number
-            LoyaltyTextField(
-                value = phone,
-                onValueChange = { phone = it },
-                label = "Phone Number",
-                placeholder = "+1 (555) 123-4567",
-                leadingIcon = AppIcons.Info, // Replace with phone icon
-                keyboardType = KeyboardType.Phone,
-                enabled = !isLoading
-            )
-
-            // Password
-            LoyaltyTextField(
-                value = password,
-                onValueChange = { password = it },
-                label = "Password",
-                placeholder = "Create a password",
-                leadingIcon = AppIcons.Settings, // Replace with lock icon
-                isPassword = true,
-                enabled = !isLoading
-            )
-
-            // Confirm Password
-            LoyaltyTextField(
-                value = confirmPassword,
-                onValueChange = { confirmPassword = it },
-                label = "Confirm Password",
-                placeholder = "Confirm your password",
-                leadingIcon = AppIcons.Settings, // Replace with lock icon
-                isPassword = true,
-                isError = confirmPassword.isNotEmpty() && password != confirmPassword,
-                errorMessage = if (confirmPassword.isNotEmpty() && password != confirmPassword)
-                    "Passwords do not match" else null,
-                enabled = !isLoading
-            )
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Terms and Conditions
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Checkbox(
-                checked = agreeToTerms,
-                onCheckedChange = { agreeToTerms = it },
-                enabled = !isLoading,
-                colors = CheckboxDefaults.colors(
-                    checkedColor = LoyaltyColors.OrangePink
-                )
-            )
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Text(
-                text = "I agree to the Terms of Service and Privacy Policy",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // Register Button
-        LoyaltyPrimaryButton(
-            text = "Create Account",
-            onClick = {
-                val finalName = if (userType == "Merchant" && businessName.isNotEmpty()) {
-                    "$businessName ($name)"
-                } else {
-                    name
-                }
-                onRegister(finalName.trim(), email.trim(), phone.trim(), password, userType)
-            },
-            enabled = !isLoading && agreeToTerms &&
-                    name.isNotBlank() && email.isNotBlank() &&
-                    phone.isNotBlank() && password.isNotBlank() &&
-                    confirmPassword.isNotBlank() && password == confirmPassword &&
-                    (userType != "Merchant" || businessName.isNotBlank()),
-            isLoading = isLoading,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Login Link
-        Row(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "Already have an account? ",
-                style = MaterialTheme.typography.bodyMedium,
-                color = LoyaltyExtendedColors.secondaryText()
-            )
-            Text(
-                text = "Login",
-                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                color = LoyaltyColors.OrangePink,
-                modifier = Modifier.clickable(enabled = !isLoading) { onLoginClick() }
-            )
-        }
-    }
-}
 
 @Preview
 @Composable
 private fun CustomerRegistrationScreenPreview() {
     CustomerRegistrationScreen(onRegister = { _, _, _, _ -> }, onBack = {})
-}
-
-@Preview
-@Composable
-private fun EnhancedCustomerRegistrationScreenPreviewCustomer() {
-    EnhancedCustomerRegistrationScreen(onRegister = { _, _, _, _, _ -> }, onBack = {})
-}
-@Preview
-@Composable
-private fun EnhancedCustomerRegistrationScreenPreviewMerchant() {
-    EnhancedCustomerRegistrationScreen(onRegister = { _, _, _, _, _ -> }, onBack = {})
 }

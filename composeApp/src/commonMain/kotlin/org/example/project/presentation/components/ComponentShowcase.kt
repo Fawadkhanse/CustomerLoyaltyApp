@@ -2,7 +2,6 @@
 package org.example.project.presentation.components
 
 import AppIcons
-import SimpleIcons
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -89,7 +88,7 @@ fun ComponentShowcase() {
             LoyaltyAccentButton(
                 text = "Accent Button",
                 onClick = { },
-                icon = SimpleIcons.Add
+                icon = AppIcons.Add
             )
 
             // Disabled state
@@ -296,7 +295,7 @@ fun ComponentShowcase() {
                     title = "Total Points",
                     value = "2,500",
                     subtitle = "This month",
-                    icon = SimpleIcons.Person,
+                    icon = AppIcons.Person,
                     modifier = Modifier.weight(1f)
                 )
 

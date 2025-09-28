@@ -65,7 +65,7 @@ fun UserScreen(
                     .padding(16.dp)
             ) {
                 Icon(
-                    imageVector = SimpleIcons.Add,
+                    imageVector = AppIcons.Add,
                     contentDescription = "Add User"
                 )
             }
@@ -138,7 +138,7 @@ private fun UserItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = SimpleIcons.Person,
+                imageVector = AppIcons.Person,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(40.dp)

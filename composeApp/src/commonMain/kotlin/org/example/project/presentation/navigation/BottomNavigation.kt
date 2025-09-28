@@ -14,10 +14,10 @@ enum class CustomerBottomNavItems(
     val icon: androidx.compose.ui.graphics.vector.ImageVector,
     val screen: Screen
 ) {
-    HOME("Home", AppIcons.Info, Screen.Home), // Replace AppIcons.Info with your home icon
-    MY_QR("My QR", AppIcons.Info, Screen.MyQR), // Replace with QR icon
-    COUPONS("Coupons", AppIcons.Info, Screen.Coupons), // Replace with coupon icon
-    PROFILE("Profile", SimpleIcons.Person, Screen.Profile)
+    HOME("Home", AppIcons.Home, Screen.Home), // Replace AppIcons.Info with your home icon
+    MY_QR("My QR", AppIcons.QrCode, Screen.MyQR), // Replace with QR icon
+    COUPONS("Coupons", AppIcons.Coupon, Screen.Coupons), // Replace with coupon icon
+    PROFILE("Profile", AppIcons.Person, Screen.Profile)
 }
 
 // Bottom Navigation Items for Merchant
@@ -26,11 +26,11 @@ enum class MerchantBottomNavItems(
     val icon: androidx.compose.ui.graphics.vector.ImageVector,
     val screen: Screen
 ) {
-    HOME("Home", AppIcons.Info, Screen.Dashboard), // Replace with home icon
-    SCAN_QR("Scan QR", AppIcons.Info, Screen.ScanQR), // Replace with scan icon
+    HOME("Home", AppIcons.Home, Screen.Dashboard), // Replace with home icon
+    SCAN_QR("Scan QR", AppIcons.QrScan, Screen.ScanQR), // Replace with scan icon
     OUTLETS("Outlets", AppIcons.Info, Screen.Outlets), // Replace with store icon
     TRANSACTIONS("Transactions", AppIcons.Info, Screen.Transactions), // Replace with transaction icon
-    PROFILE("Profile", SimpleIcons.Person, Screen.Profile)
+    PROFILE("Profile", AppIcons.Person, Screen.Profile)
 }
 
 // User Types

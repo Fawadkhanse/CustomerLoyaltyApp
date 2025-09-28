@@ -84,7 +84,7 @@ private fun OutletsListScreen(
 
             IconButton(onClick = onAddOutlet) {
                 Icon(
-                    imageVector = SimpleIcons.Add,
+                    imageVector = AppIcons.Add,
                     contentDescription = "Add Outlet"
                 )
             }

@@ -1,7 +1,6 @@
 package org.example.project
 
 import AppIcons
-import SimpleIcons
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -144,7 +143,7 @@ enum class BottomTabItem(
     val route: String
 ) {
     HOME("Home", AppIcons.Info, "home"),
-    USERS("Users", SimpleIcons.Person, "users"),
+    USERS("Users", AppIcons.Person, "users"),
     SETTINGS("Settings", AppIcons.Settings, "settings")
 }
 

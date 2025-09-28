@@ -56,7 +56,7 @@ fun HomeScreen(
             NavigationCard(
                 title = "Users",
                 description = "View and manage users",
-                icon = SimpleIcons.Person,
+                icon = AppIcons.Person,
                 onClick = {
                     // Show loading and then navigate
                     promptsViewModel.showLoading()
