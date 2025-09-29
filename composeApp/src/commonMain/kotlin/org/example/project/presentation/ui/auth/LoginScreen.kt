@@ -20,6 +20,7 @@ import org.example.project.presentation.components.ScreenContainer
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.example.project.presentation.ui.auth.viewmodel.AuthViewModel
+import org.example.project.presentation.ui.home.HomeViewModel
 import org.example.project.utils.isValidEmail
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -253,3 +254,5 @@ fun LoginScreenPreview() {
 
 @Composable
 expect fun rememberAuthViewModel(): AuthViewModel
+@Composable
+expect fun rememberHomeViewModel(): HomeViewModel

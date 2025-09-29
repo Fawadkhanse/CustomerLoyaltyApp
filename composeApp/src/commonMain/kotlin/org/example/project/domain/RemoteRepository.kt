@@ -10,6 +10,7 @@ interface RemoteRepository {
         requestModel: Any? = null,
         endpoint: String,
         httpMethod: HttpMethod = HttpMethod.POST,
-        returnErrorBody: Boolean=false
+        returnErrorBody: Boolean=false,
+        isMock: Boolean = false
     ): Flow<Resource<String>>
 }

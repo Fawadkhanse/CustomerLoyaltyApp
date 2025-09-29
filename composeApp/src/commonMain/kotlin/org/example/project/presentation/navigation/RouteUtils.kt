@@ -70,7 +70,7 @@ fun NavController.navigateWithArgsAndPop(
 object AuthNavigationUtils {
     fun NavController.navigateToLoginAndClearStack() {
         navigate(AuthRoutes.Login.route) {
-            popUpTo(0) { inclusive = true }
+            popUpTo(graph.startDestinationRoute ?: "") { inclusive = true }
         }
     }
 
@@ -85,6 +85,7 @@ object AuthNavigationUtils {
 
         navigate(destination) {
             popUpTo(AuthRoutes.AuthFlow.route) { inclusive = true }
+            launchSingleTop = true
         }
     }
 

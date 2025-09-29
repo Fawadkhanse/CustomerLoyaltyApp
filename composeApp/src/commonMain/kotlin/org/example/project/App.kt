@@ -6,6 +6,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import org.example.project.presentation.components.AppBarHeader
 
 import org.example.project.presentation.components.MyAppBackground
@@ -48,7 +49,23 @@ internal fun MyAppInternal(
                 LoyaltyBottomNavigationBar(
                     selectedTab = appState.currentDestination.collectAsState().value?.route ?: "",
                     onTabSelected = { route ->
-                        appState.navigateTo(route)
+                        println("Bottom Nav Click: $route")  // Debug log
+                        println("Current destination: ${appState.currentDestination.value?.route}")  // Debug log
+
+                        // Navigate safely
+                        try {
+                            appState.navController.navigate(route) {
+                                // Pop up to the start destination to avoid building up a stack
+                                popUpTo(appState.navController.graph.findStartDestination().route?:"") {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        } catch (e: Exception) {
+                            println("Navigation error: ${e.message}")
+                        }
+
                     },
                     userType = org.example.project.presentation.navigation.UserType.CUSTOMER
                 )

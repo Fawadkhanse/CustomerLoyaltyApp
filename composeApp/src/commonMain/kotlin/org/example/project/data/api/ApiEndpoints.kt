@@ -16,6 +16,11 @@ object ApiEndpoints {
     const val TOKEN = "$BASE_URL/api/token/"
     const val TOKEN_REFRESH = "$BASE_URL/api/token/refresh/"
 
+    // Home/Dashboard endpoints
+    const val CUSTOMER_HOME = "$BASE_URL/api/customer/home/"  // Add this
+    const val MERCHANT_DASHBOARD = "$BASE_URL/api/merchant/dashboard/"  // Add this
+
+
     // Merchant endpoints
     const val MERCHANTS = "$BASE_URL/api/merchants/merchants/"
     const val OUTLETS = "$BASE_URL/api/merchants/outlets/"

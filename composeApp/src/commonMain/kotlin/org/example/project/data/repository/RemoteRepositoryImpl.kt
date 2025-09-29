@@ -22,7 +22,8 @@ class RemoteRepositoryImpl(
         requestModel: Any?,
         endpoint: String,
         httpMethod: HttpMethod,
-        returnErrorBody: Boolean
+        returnErrorBody: Boolean,
+        isMock: Boolean
     ): Flow<Resource<String>> = flow {
         emit(Resource.Loading)
 
@@ -40,6 +41,9 @@ class RemoteRepositoryImpl(
 
             val body = response.bodyAsText()
             println("Response Body: $body")
+            if (isMock){
+                return@flow emit(Resource.Success(body))
+            }
 
             if (response.status.isSuccess()) {
                 if (body.isNotEmpty()) {

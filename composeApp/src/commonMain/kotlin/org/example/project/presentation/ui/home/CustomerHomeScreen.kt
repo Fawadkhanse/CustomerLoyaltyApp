@@ -7,8 +7,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.example.project.domain.models.Resource
+import org.example.project.domain.models.home.CustomerHomeData
+import org.example.project.domain.models.home.CustomerHomeResponse
+import org.example.project.presentation.common.HandleApiState
+import org.example.project.presentation.common.PromptsViewModel
+import org.example.project.presentation.components.ScreenContainer
+import org.example.project.presentation.ui.auth.rememberHomeViewModel
+import org.example.project.presentation.ui.auth.viewmodel.AuthViewModel
 import org.example.project.presentation.ui.coupons.CouponData
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -18,8 +29,10 @@ fun CustomerHomeScreenRoute(
     onNavigateToCouponDetails: (String) -> Unit,
     onNavigateToAllCoupons: () -> Unit,
 ) {
-
+    val viewModel = rememberHomeViewModel()
+    val homeState by viewModel.homeState.collectAsState()
     CustomerHomeScreen(
+        state = homeState,
         onProfileClick = onNavigateToProfile,
         onCouponClick = { coupon -> onNavigateToCouponDetails(coupon.id) }, // Assuming CouponData has an id
         onViewAllCoupons = onNavigateToAllCoupons,
@@ -36,6 +49,8 @@ fun CustomerHomeScreenRoute(
 
 @Composable
  fun CustomerHomeScreen(
+    state: Resource<CustomerHomeResponse> = Resource.None,
+    promptsViewModel: PromptsViewModel = remember { PromptsViewModel() },
     userName: String,
     userPoints: Int,
     tier: String,
@@ -48,57 +63,69 @@ fun CustomerHomeScreenRoute(
     onViewAllCoupons: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
-    ) {
-        item {
-            // Header with profile
-            CustomerHeader(
-                userName = userName,
-                userProfileImageUrl = userProfileImageUrl,
-                onProfileClick = onProfileClick
-            )
-        }
-
-        item {
-            // Points Balance Card
-            PointsBalanceCard(
-                points = userPoints,
-                tier = tier
-            )
-        }
-
-        item {
-            // Promotions Carousel
-            if (promotions.isNotEmpty()) {
-                PromotionsSection(
-                    promotions = promotions
+     val currentPrompt by promptsViewModel.currentPrompt.collectAsState()
+    var customerDate: CustomerHomeData? = remember { null }
+    ScreenContainer (currentPrompt = currentPrompt) {
+        LazyColumn(
+            modifier = modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            item {
+                // Header with profile
+                CustomerHeader(
+                    userName = userName,
+                    userProfileImageUrl = userProfileImageUrl,
+                    onProfileClick = onProfileClick
                 )
             }
-        }
 
-        item {
-            // Available Coupons
-            if (availableCoupons.isNotEmpty()) {
-                CouponsSection(
-                    coupons = availableCoupons,
-                    onCouponClick = onCouponClick,
-                    onViewAll = onViewAllCoupons
+            item {
+                // Points Balance Card
+                PointsBalanceCard(
+                    points = userPoints,
+                    tier = tier
                 )
             }
-        }
 
-        item {
-            // Recent Activity
-            if (recentActivity.isNotEmpty()) {
-                RecentActivitySection(
-                    activities = recentActivity
-                )
+            item {
+                // Promotions Carousel
+                if (promotions.isNotEmpty()) {
+                    PromotionsSection(
+                        promotions = promotions
+                    )
+                }
             }
+
+            item {
+                // Available Coupons
+                if (availableCoupons.isNotEmpty()) {
+                    CouponsSection(
+                        coupons = availableCoupons,
+                        onCouponClick = onCouponClick,
+                        onViewAll = onViewAllCoupons
+                    )
+                }
+            }
+
+            item {
+                // Recent Activity
+                if (recentActivity.isNotEmpty()) {
+                    RecentActivitySection(
+                        activities = recentActivity
+                    )
+                }
+            }
+        }
+    }
+    HandleApiState(
+        state = state,
+        promptsViewModel = promptsViewModel
+    ) { response ->
+        response.data?.let {
+            customerDate = it
         }
     }
 }
@@ -147,5 +174,8 @@ fun CustomerHomeScreenPreview() {
         onViewAllCoupons = {}
     )
 }
+
+
+
 
 
