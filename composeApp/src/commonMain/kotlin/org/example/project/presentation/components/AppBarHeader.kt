@@ -23,10 +23,7 @@ import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-/**
- * Main AppBar Header component for Loyalty App
- * Supports different configurations similar to Bank Islami pattern
- */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBarHeader(

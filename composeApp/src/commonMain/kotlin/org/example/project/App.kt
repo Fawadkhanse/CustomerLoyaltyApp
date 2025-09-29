@@ -10,6 +10,7 @@ import org.example.project.presentation.components.AppBarHeader
 
 import org.example.project.presentation.components.MyAppBackground
 import org.example.project.presentation.design.LoyaltyTheme
+import org.example.project.presentation.navigation.LoyaltyBottomNavigationBar
 import org.example.project.presentation.navigation.MyAppNavHost
 
 @Composable
@@ -44,8 +45,13 @@ internal fun MyAppInternal(
         contentColor = MaterialTheme.colorScheme.onBackground,
         bottomBar = {
             if (isBottomTabVisible) {
-                // Add your bottom navigation here
-                // LoyaltyBottomNavigationBar(...)
+                LoyaltyBottomNavigationBar(
+                    selectedTab = appState.currentDestination.collectAsState().value?.route ?: "",
+                    onTabSelected = { route ->
+                        appState.navigateTo(route)
+                    },
+                    userType = org.example.project.presentation.navigation.UserType.CUSTOMER
+                )
             }
         }
     ) { padding ->
