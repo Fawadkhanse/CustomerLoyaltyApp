@@ -1,10 +1,10 @@
-package org.example.project.domain.models.auth.login
+package org.example.project.domain.models.profile
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserDataResponse(
+data class GetProfileResponse(
     @SerialName("id")
     val id: String,
     @SerialName("email")
@@ -15,6 +15,12 @@ data class UserDataResponse(
     val role: String,
     @SerialName("phone")
     val phone: String,
-    @SerialName("profileImage")
-    val profileImage: String?
+    @SerialName("profile_image")
+    val profileImage: String?,
+    @SerialName("tc")
+    val tc: Boolean,
+    @SerialName("created_at")
+    val createdAt: String,
+    @SerialName("updated_at")
+    val updatedAt: String
 )

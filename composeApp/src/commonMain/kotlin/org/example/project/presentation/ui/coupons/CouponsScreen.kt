@@ -77,12 +77,12 @@ private fun CouponsScreen(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = onBack) {
-                Icon(
-                    imageVector = AppIcons.ArrowBack,
-                    contentDescription = "Back"
-                )
-            }
+//            IconButton(onClick = onBack) {
+//                Icon(
+//                    imageVector = AppIcons.ArrowBack,
+//                    contentDescription = "Back"
+//                )
+//            }
 
             Text(
                 text = "Coupons",
@@ -92,12 +92,12 @@ private fun CouponsScreen(
                 textAlign = TextAlign.Center
             )
 
-            IconButton(onClick = { }) {
-                Icon(
-                    imageVector = AppIcons.Settings, // Replace with filter icon
-                    contentDescription = "Filter"
-                )
-            }
+//            IconButton(onClick = { }) {
+//                Icon(
+//                    imageVector = AppIcons.Settings, // Replace with filter icon
+//                    contentDescription = "Filter"
+//                )
+//            }
         }
 
         // Tab Row

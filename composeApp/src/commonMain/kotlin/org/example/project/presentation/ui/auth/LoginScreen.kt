@@ -1,6 +1,7 @@
 package org.example.project.presentation.ui.auth
 
 
+import ProfileViewModel
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -21,6 +22,7 @@ import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.example.project.presentation.ui.auth.viewmodel.AuthViewModel
 import org.example.project.presentation.ui.home.HomeViewModel
+import org.example.project.utils.dataholder.AuthData
 import org.example.project.utils.isValidEmail
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -36,26 +38,19 @@ fun LoginScreenRoute(
 
     LoginScreen(
         loginState = loginState,
-        onLogin = {response->
-            if (response.user?.role == "customer") {
+        onLogin = { response ->
+            AuthData.setAuthData(response.user, response.token)
+            response.user?.let {
                 onLogin(
                     response.user.name,
                     response.user.email,
                     response.user.role
                 )
-            }else{
-                onMerchantLogin()
             }
 
         },
         onLoginButtonClicked = { email, password ->
-            onLogin(
-                email,
-                password,
-                "customer"
-            )
-
-         // viewModel.login(email, password)
+          viewModel.login(email, password)
         },
         onForgotPassword = onForgotPassword,
         onRegister = onRegister,
@@ -256,3 +251,6 @@ fun LoginScreenPreview() {
 expect fun rememberAuthViewModel(): AuthViewModel
 @Composable
 expect fun rememberHomeViewModel(): HomeViewModel
+
+@Composable
+expect fun rememberProfileViewModel(): ProfileViewModel

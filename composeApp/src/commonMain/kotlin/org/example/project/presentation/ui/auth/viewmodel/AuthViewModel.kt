@@ -8,6 +8,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.example.project.data.api.ApiEndpoints
 import org.example.project.data.api.HttpMethod
+import org.example.project.data.mockresponses.forgotPasswordResponse
+import org.example.project.data.mockresponses.resetPasswordResponse
+import org.example.project.data.mockresponses.userLoginResponse
+import org.example.project.data.mockresponses.userRegisterResponse
 import org.example.project.domain.RemoteRepository
 import org.example.project.domain.models.Resource
 import org.example.project.domain.models.auth.login.UserLoginRequest
@@ -21,6 +25,7 @@ import org.example.project.domain.models.auth.resetpassword.ForgotPasswordRespon
 import org.example.project.domain.models.auth.resetpassword.ResetPasswordRequest
 import org.example.project.domain.models.auth.resetpassword.ResetPasswordResponse
 import org.example.project.presentation.common.BaseViewModel
+import org.example.project.presentation.common.constent.GlobalVar
 
 class AuthViewModel(
     private val remoteRepository: RemoteRepository
@@ -51,7 +56,6 @@ class AuthViewModel(
     // endregion
 
     // region API calls
-
     fun login(email: String, password: String, userType: String = "customer") {
         val request = UserLoginRequest(email, password)
         viewModelScope.launch {
@@ -59,13 +63,17 @@ class AuthViewModel(
                 requestModel = request,
                 endpoint = ApiEndpoints.LOGIN,
                 httpMethod = HttpMethod.POST
-            ).collectAsResource<UserLoginResponse> { result ->
-                _loginState.value = result
-                if (result is Resource.Success) {
-                    _currentUser.value = result.data
-                    _isLoggedIn.value = true
-                }
-            }
+            ).collectAsResource<UserLoginResponse>(
+                onEmit = { result ->
+                    _loginState.value = result
+                    if (result is Resource.Success) {
+                        _currentUser.value = result.data
+                        _isLoggedIn.value = true
+                    }
+                },
+                useMock = GlobalVar.isMock,
+                mockResponse =userLoginResponse
+            )
         }
     }
 
@@ -75,9 +83,11 @@ class AuthViewModel(
                 requestModel = request,
                 endpoint = ApiEndpoints.REGISTER,
                 httpMethod = HttpMethod.POST
-            ).collectAsResource<UserRegistrationResponse> { result ->
-                _registerState.value = result
-            }
+            ).collectAsResource<UserRegistrationResponse>(
+                onEmit = { _registerState.value = it },
+                useMock = GlobalVar.isMock,
+                mockResponse =userRegisterResponse
+            )
         }
     }
 
@@ -88,22 +98,25 @@ class AuthViewModel(
                 requestModel = request,
                 endpoint = ApiEndpoints.FORGOT_PASSWORD,
                 httpMethod = HttpMethod.POST
-            ).collectAsResource<ForgotPasswordResponse> { result ->
-                _forgotPasswordState.value = result
-            }
+            ).collectAsResource<ForgotPasswordResponse>(
+                onEmit = { _forgotPasswordState.value = it },
+                useMock = GlobalVar.isMock,
+                mockResponse =forgotPasswordResponse
+            )
         }
     }
 
     fun resetPassword(request: ResetPasswordRequest) {
-
         viewModelScope.launch {
             remoteRepository.makeApiRequest(
                 requestModel = request,
                 endpoint = ApiEndpoints.RESET_PASSWORD,
                 httpMethod = HttpMethod.POST
-            ).collectAsResource<ResetPasswordResponse> { result ->
-                _resetPasswordState.value = result
-            }
+            ).collectAsResource<ResetPasswordResponse>(
+                onEmit = { _resetPasswordState.value = it },
+                useMock = GlobalVar.isMock,
+                mockResponse = resetPasswordResponse
+            )
         }
     }
 
@@ -114,11 +127,12 @@ class AuthViewModel(
                 requestModel = request,
                 endpoint = ApiEndpoints.CHANGE_PASSWORD,
                 httpMethod = HttpMethod.POST
-            ).collectAsResource<ChangePasswordResponse> { result ->
-                _changePasswordState.value = result
-            }
+            ).collectAsResource<ChangePasswordResponse>(
+                onEmit = { _changePasswordState.value = it }
+            )
         }
     }
+
     // endregion
 
     // region Session

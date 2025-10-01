@@ -11,7 +11,7 @@ data class CustomerHomeResponse(
     @SerialName("message")
     val message: String?,
     @SerialName("data")
-    val data: CustomerHomeData
+    val data: CustomerHomeData?
 )
 
 @Serializable

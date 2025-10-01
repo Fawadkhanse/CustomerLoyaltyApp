@@ -8,9 +8,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.example.project.presentation.common.PromptsViewModel
+import org.example.project.presentation.components.ScreenContainer
 import org.example.project.presentation.design.LoyaltyColors
+import org.example.project.presentation.ui.auth.rememberProfileViewModel
+import org.example.project.utils.dataholder.AuthData
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -19,21 +26,21 @@ fun ProfileScreenRoute(
     onChangePassword: () -> Unit,
     onLogout: () -> Unit
 ) {
-ProfileScreen(
-    name = "Marsha Alston",
-    email = "wilbert.gregory@example.com",
-    phone = "(736) 376-0787",
-    profileImageUrl = "http://www.bing.com/search?q=volutpat",
-    onEditProfile = {
-        onEditProfile()
-    },
-    onChangePassword = {
-        onChangePassword()
-    },
-    onLogout = {
-        onLogout()
-    },
-)
+    ProfileScreen(
+        name = AuthData.userName,
+        email = AuthData.UserData?.email ?: "",
+        phone = AuthData.UserData?.phone ?: "",
+        profileImageUrl = AuthData.UserData?.profileImage,
+        onEditProfile = {
+            onEditProfile()
+        },
+        onChangePassword = {
+            onChangePassword()
+        },
+        onLogout = {
+            onLogout()
+        },
+    )
 }
 @Composable
 private fun ProfileScreen(
@@ -44,47 +51,46 @@ private fun ProfileScreen(
     onEditProfile: () -> Unit,
     onChangePassword: () -> Unit,
     onLogout: () -> Unit,
-    modifier: Modifier = Modifier
+    promptsViewModel: PromptsViewModel = remember { PromptsViewModel() },
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        // Profile Header
-        ProfileHeader(
-            name = name,
-            email = email,
-            phone = phone,
-            profileImageUrl = profileImageUrl,
-            onEditProfile = onEditProfile,
-            modifier = Modifier.padding(24.dp)
-        )
+    val currentPrompt by promptsViewModel.currentPrompt.collectAsState()
+    ScreenContainer(currentPrompt = currentPrompt) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            // Profile Header
+            ProfileHeader(
+                name = name,
+                email = email,
+                phone = phone,
+                profileImageUrl = profileImageUrl,
+                onEditProfile = onEditProfile,
+                modifier = Modifier.padding(24.dp)
+            )
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Menu Items
-        ProfileMenuItem(
-            title = "Edit Profile",
-            icon = AppIcons.Settings, // Replace with edit icon
-            onClick = onEditProfile
-        )
+            // Menu Items
+            ProfileMenuItem(
+                title = "Edit Profile",
+                icon = AppIcons.Person, // Replace with edit icon
+                onClick = onEditProfile
+            )
 
-        ProfileMenuItem(
-            title = "Change Password",
-            icon = AppIcons.Settings, // Replace with lock icon
-            onClick = onChangePassword
-        )
+            ProfileMenuItem(
+                title = "Change Password",
+                icon = AppIcons.Password, // Replace with lock icon
+                onClick = onChangePassword
+            )
 
-        ProfileMenuItem(
-            title = "Logout",
-            icon = AppIcons.ArrowForward, // Replace with logout icon
-            onClick = onLogout,
-            iconTint = LoyaltyColors.Error,
-            showDivider = false
-        )
+            ProfileMenuItem(
+                title = "Logout",
+                icon = AppIcons.Logout, // Replace with logout icon
+                onClick = onLogout,
+                iconTint = LoyaltyColors.Error,
+                showDivider = false
+            )
 
-        Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(1f))
+        }
     }
 }
 

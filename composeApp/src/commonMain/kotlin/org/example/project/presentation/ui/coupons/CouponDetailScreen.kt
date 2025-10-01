@@ -69,12 +69,12 @@ private fun CouponDetailScreen(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = onBack) {
-                Icon(
-                    imageVector = AppIcons.ArrowBack,
-                    contentDescription = "Back"
-                )
-            }
+//            IconButton(onClick = onBack) {
+//                Icon(
+//                    imageVector = AppIcons.ArrowBack,
+//                    contentDescription = "Back"
+//                )
+//            }
 
             Text(
                 text = "Coupon Details",

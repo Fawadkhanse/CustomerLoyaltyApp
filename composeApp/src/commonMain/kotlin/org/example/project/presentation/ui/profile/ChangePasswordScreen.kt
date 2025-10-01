@@ -172,26 +172,26 @@ fun EnhancedChangePasswordScreen(
             .padding(24.dp)
     ) {
         // Header
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 24.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = onBack) {
-                Icon(AppIcons.ArrowBack, contentDescription = "Back")
-            }
-
-            Text(
-                text = "Change Password",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(Modifier.width(48.dp))
-        }
+//        Row(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(bottom = 24.dp),
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//            IconButton(onClick = onBack) {
+//                Icon(AppIcons.ArrowBack, contentDescription = "Back")
+//            }
+//
+//            Text(
+//                text = "Change Password",
+//                style = MaterialTheme.typography.headlineMedium,
+//                fontWeight = FontWeight.Bold,
+//                modifier = Modifier.weight(1f),
+//                textAlign = TextAlign.Center
+//            )
+//
+//            Spacer(Modifier.width(48.dp))
+//        }
 
         // Security Notice
         Box(
@@ -246,7 +246,7 @@ fun EnhancedChangePasswordScreen(
                     onValueChange = { oldPassword = it },
                     label = "Current Password",
                     placeholder = "Enter your current password",
-                    leadingIcon = AppIcons.Settings,
+                    leadingIcon = AppIcons.Password,
                     isPassword = true,
                     isError = oldPasswordError != null,
                     errorMessage = oldPasswordError,
@@ -263,7 +263,7 @@ fun EnhancedChangePasswordScreen(
                 },
                 label = "New Password",
                 placeholder = "Enter your new password",
-                leadingIcon = AppIcons.Settings,
+                leadingIcon = AppIcons.Password,
                 isPassword = true,
                 isError = newPasswordError != null,
                 errorMessage = newPasswordError,
@@ -281,7 +281,7 @@ fun EnhancedChangePasswordScreen(
                 onValueChange = { confirmPassword = it },
                 label = "Confirm New Password",
                 placeholder = "Confirm your new password",
-                leadingIcon = AppIcons.Settings,
+                leadingIcon = AppIcons.Password,
                 isPassword = true,
                 isError = confirmPasswordError != null,
                 errorMessage = confirmPasswordError,

@@ -21,6 +21,13 @@ inline fun <reified T> String.toPojo(): T {
 inline fun <reified T> T.toJson(): String {
     return jsonInstance.encodeToString(this)
 }
+inline fun <reified T> String.toPojoOrNull(): T? =
+    try {
+        jsonInstance.decodeFromString<T>(this)
+    } catch (e: Exception) {
+        null
+    }
+
 
 fun String.toJsonObject(): JsonObject {
     return Json.parseToJsonElement(this).jsonObject

@@ -1,11 +1,9 @@
 package org.example.project.presentation.ui.home
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -19,8 +17,8 @@ import org.example.project.presentation.common.HandleApiState
 import org.example.project.presentation.common.PromptsViewModel
 import org.example.project.presentation.components.ScreenContainer
 import org.example.project.presentation.ui.auth.rememberHomeViewModel
-import org.example.project.presentation.ui.auth.viewmodel.AuthViewModel
 import org.example.project.presentation.ui.coupons.CouponData
+import org.example.project.utils.dataholder.AuthData
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -31,18 +29,26 @@ fun CustomerHomeScreenRoute(
 ) {
     val viewModel = rememberHomeViewModel()
     val homeState by viewModel.homeState.collectAsState()
+    val promotions by viewModel.promotions.collectAsState()
+    val availableCoupons by viewModel.availableCoupons.collectAsState()
+    val recentActivity by viewModel.recentActivity.collectAsState()
+    val userName by viewModel.userName.collectAsState()
+    val userPoints by viewModel.userPoints.collectAsState()
+    val tier by viewModel.userTier.collectAsState()
     CustomerHomeScreen(
         state = homeState,
         onProfileClick = onNavigateToProfile,
         onCouponClick = { coupon -> onNavigateToCouponDetails(coupon.id) }, // Assuming CouponData has an id
         onViewAllCoupons = onNavigateToAllCoupons,
-        userName = "jone",
-        userPoints = 0,
-        tier = "1",
-        promotions = listPromo,
-        availableCoupons =listCoupon,
-        recentActivity = list,
-
+        userName = AuthData.userName,
+        userPoints = userPoints,
+        tier = tier,
+        promotions = promotions,
+        availableCoupons =availableCoupons,
+        recentActivity = recentActivity,
+        onHomeResponseSuccess = { response ->
+            viewModel.processHomeData(response)
+        }
     )
 }
 
@@ -61,61 +67,61 @@ fun CustomerHomeScreenRoute(
     onProfileClick: () -> Unit,
     onCouponClick: (CouponData) -> Unit,
     onViewAllCoupons: () -> Unit,
-    modifier: Modifier = Modifier
+    onHomeResponseSuccess: (CustomerHomeResponse) -> Unit = {}
 ) {
      val currentPrompt by promptsViewModel.currentPrompt.collectAsState()
-    var customerDate: CustomerHomeData? = remember { null }
-    ScreenContainer (currentPrompt = currentPrompt) {
-        LazyColumn(
-            modifier = modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
-            item {
-                // Header with profile
-                CustomerHeader(
-                    userName = userName,
-                    userProfileImageUrl = userProfileImageUrl,
-                    onProfileClick = onProfileClick
-                )
-            }
+    Column {
+        // Header with profile
 
-            item {
-                // Points Balance Card
-                PointsBalanceCard(
-                    points = userPoints,
-                    tier = tier
-                )
-            }
-
-            item {
-                // Promotions Carousel
-                if (promotions.isNotEmpty()) {
-                    PromotionsSection(
-                        promotions = promotions
+        ScreenContainer (topPadding = 0.dp, currentPrompt = currentPrompt) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                item {
+                    CustomerHeader(
+                        userName = userName,
+                        userProfileImageUrl = userProfileImageUrl,
+                        onProfileClick = onProfileClick
                     )
                 }
-            }
 
-            item {
-                // Available Coupons
-                if (availableCoupons.isNotEmpty()) {
-                    CouponsSection(
-                        coupons = availableCoupons,
-                        onCouponClick = onCouponClick,
-                        onViewAll = onViewAllCoupons
+                item {
+                    // Points Balance Card
+                    PointsBalanceCard(
+                        points = userPoints,
+                        tier = tier
                     )
                 }
-            }
 
-            item {
-                // Recent Activity
-                if (recentActivity.isNotEmpty()) {
-                    RecentActivitySection(
-                        activities = recentActivity
-                    )
+                item {
+                    // Promotions Carousel
+                    if (promotions.isNotEmpty()) {
+                        PromotionsSection(
+                            promotions = promotions
+                        )
+                    }
+                }
+
+                item {
+                    // Available Coupons
+                    if (availableCoupons.isNotEmpty()) {
+                        CouponsSection(
+                            coupons = availableCoupons,
+                            onCouponClick = onCouponClick,
+                            onViewAll = onViewAllCoupons
+                        )
+                    }
+                }
+
+                item {
+                    // Recent Activity
+                    if (recentActivity.isNotEmpty()) {
+                        RecentActivitySection(
+                            activities = recentActivity
+                        )
+                    }
                 }
             }
         }
@@ -125,7 +131,8 @@ fun CustomerHomeScreenRoute(
         promptsViewModel = promptsViewModel
     ) { response ->
         response.data?.let {
-            customerDate = it
+
+           onHomeResponseSuccess(response)
         }
     }
 }
