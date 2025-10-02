@@ -254,3 +254,5 @@ expect fun rememberHomeViewModel(): HomeViewModel
 
 @Composable
 expect fun rememberProfileViewModel(): ProfileViewModel
+// commonMain
+expect fun ByteArray.encodeBase64(): String

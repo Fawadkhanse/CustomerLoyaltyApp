@@ -1,5 +1,6 @@
 package org.example.project.di
 
+import ProfileViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.example.project.data.api.ApiClient
 import org.example.project.data.repository.GenericRepository
@@ -35,6 +36,7 @@ val viewModelModule = module {
     factory<AuthViewModel> { AuthViewModel(get()) }
     factory<PromptsViewModel> { PromptsViewModel() }
     factory<HomeViewModel> { HomeViewModel(get()) }
+    factory<ProfileViewModel> { ProfileViewModel(get()) }
 }
 
 // Helper function to initialize Koin

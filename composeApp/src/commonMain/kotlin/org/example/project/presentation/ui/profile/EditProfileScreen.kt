@@ -18,6 +18,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.mohamedrejeb.calf.core.LocalPlatformContext
+import com.mohamedrejeb.calf.io.readByteArray
+import com.mohamedrejeb.calf.picker.FilePickerFileType
+import com.mohamedrejeb.calf.picker.FilePickerSelectionMode
+import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
+import kotlinx.coroutines.launch
 import org.example.project.domain.models.Resource
 import org.example.project.domain.models.auth.login.UserDataResponse
 import org.example.project.domain.models.profile.UpdateProfileResponse
@@ -26,6 +32,7 @@ import org.example.project.presentation.common.PromptsViewModel
 import org.example.project.presentation.components.*
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
+import org.example.project.presentation.ui.auth.encodeBase64
 import org.example.project.presentation.ui.auth.rememberProfileViewModel
 import org.example.project.utils.dataholder.AuthData
 import org.example.project.utils.isValidEmail
@@ -65,7 +72,6 @@ private fun EditProfileScreen(
     onUpdateSuccess: () -> Unit,
     onBack: () -> Unit,
     onChangeProfilePicture: () -> Unit,
-    modifier: Modifier = Modifier,
     promptsViewModel: PromptsViewModel = remember { PromptsViewModel() }
 ) {
     // Initialize with current user data
@@ -77,6 +83,7 @@ private fun EditProfileScreen(
     var nameError by remember { mutableStateOf<String?>(null) }
     var phoneError by remember { mutableStateOf<String?>(null) }
     var emailError by remember { mutableStateOf<String?>(null) }
+    var selectedImageBase64 by remember { mutableStateOf<String?>(null) }
 
     fun validateName(): Boolean {
         nameError = when {
@@ -111,46 +118,34 @@ private fun EditProfileScreen(
         val isEmailValid = validateEmail()
         return isNameValid && isPhoneValid && isEmailValid
     }
+    val scope = rememberCoroutineScope()
+    val context = LocalPlatformContext.current
+
+    val pickerLauncher = rememberFilePickerLauncher(
+        type = FilePickerFileType.Image,
+        selectionMode = FilePickerSelectionMode.Single,
+        onResult = { files ->
+            scope.launch {
+                files.firstOrNull()?.let { file ->
+                    // Do something with the selected file
+                    // You can get the ByteArray of the file
+                    file.readByteArray(context).encodeBase64()
+
+                }
+            }
+        }
+    )
 
     ScreenContainer(
         currentPrompt = promptsViewModel.currentPrompt.collectAsState().value
     ) {
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .verticalScroll(rememberScrollState())
         ) {
-            // Header with back button
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(onClick = onBack) {
-                    Icon(
-                        imageVector = AppIcons.ArrowBack,
-                        contentDescription = "Back"
-                    )
-                }
-
-                Text(
-                    text = "Edit Profile",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center
-                )
-
-                Spacer(modifier = Modifier.width(48.dp))
-            }
-
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(24.dp),
+                    .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // Profile Picture with Edit
@@ -159,7 +154,7 @@ private fun EditProfileScreen(
                         .size(120.dp)
                         .clip(CircleShape)
                         .background(LoyaltyColors.OrangePink)
-                        .clickable { onChangeProfilePicture() }
+                        .clickable {  pickerLauncher.launch() }
                 ) {
                     Box(
                         modifier = Modifier.fillMaxSize(),
@@ -247,7 +242,6 @@ private fun EditProfileScreen(
                         enabled = updateProfileState !is Resource.Loading
                     )
                 }
-
             Spacer(modifier = Modifier.weight(1f))
 
                 // Save Button

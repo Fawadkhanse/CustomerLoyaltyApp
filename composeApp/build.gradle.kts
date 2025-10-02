@@ -55,6 +55,10 @@ kotlin {
             implementation("io.coil-kt.coil3:coil:3.3.0")
             implementation("io.coil-kt.coil3:coil-compose:3.3.0")
             implementation("io.coil-kt.coil3:coil-network-ktor2:3.3.0")
+
+// For FilePicker
+            implementation("com.mohamedrejeb.calf:calf-file-picker:0.8.0")
+            implementation("network.chaintech:qr-kit:3.1.3")
             //implementation(libs.coil.compose)
           //  implementation(libs.coil.network.ktor)
         }
