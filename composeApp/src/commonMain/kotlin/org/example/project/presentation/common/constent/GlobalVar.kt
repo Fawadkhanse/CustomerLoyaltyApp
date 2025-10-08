@@ -1,5 +1,5 @@
 package org.example.project.presentation.common.constent
 
 object GlobalVar {
-    const val isMock= true
+    const val isMock= false
 }
