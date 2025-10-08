@@ -55,6 +55,7 @@ fun LoginScreenRoute(
           viewModel.login(email, password)
         },
         onMerchantLogin={
+
             onLogin(
                 "name",  "name", "merchant"
 

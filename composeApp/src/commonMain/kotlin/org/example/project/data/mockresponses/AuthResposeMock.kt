@@ -15,7 +15,7 @@ val userLoginResponse = UserLoginResponse(
         id = "est",
         email = "shelia.nixon@example.com",
         name = "Garth Lewis",
-        role = "customer",
+        role = "merchant",
         phone = "(395) 884-9407", profileImage = "scripta"
     )
 )

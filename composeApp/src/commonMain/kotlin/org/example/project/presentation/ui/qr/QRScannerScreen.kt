@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import org.example.project.presentation.components.ScreenContainer
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -43,41 +44,12 @@ fun QRScannerScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    ScreenContainer {
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        // Header
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = onBack) {
-                Icon(
-                    imageVector = AppIcons.ArrowBack,
-                    contentDescription = "Back"
-                )
-            }
-
-            Text(
-                text = "Scan QR",
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
-            )
-
-            IconButton(onClick = { }) {
-                Icon(
-                    imageVector = AppIcons.Settings, // Replace with filter/settings icon
-                    contentDescription = "Settings"
-                )
-            }
-        }
-
         // Camera Preview Container
         Box(
             modifier = Modifier
@@ -122,7 +94,7 @@ fun QRScannerScreen(
                 )
             }
         }
-    }
+    }}
 }
 
 @Preview

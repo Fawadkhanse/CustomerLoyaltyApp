@@ -13,6 +13,8 @@ import org.example.project.presentation.components.MyAppBackground
 import org.example.project.presentation.design.LoyaltyTheme
 import org.example.project.presentation.navigation.LoyaltyBottomNavigationBar
 import org.example.project.presentation.navigation.MyAppNavHost
+import org.example.project.presentation.navigation.UserType
+import org.example.project.utils.dataholder.AuthData
 
 @Composable
 fun App() {
@@ -41,6 +43,11 @@ internal fun MyAppInternal(
     var isTopBarVisible by rememberSaveable { mutableStateOf(false) }
     var isBottomTabVisible by rememberSaveable { mutableStateOf(false) }
 
+    val userType by remember {
+        derivedStateOf {
+            if (AuthData.isMerchant()) UserType.MERCHANT else UserType.CUSTOMER
+        }
+    }
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         contentColor = MaterialTheme.colorScheme.onBackground,
@@ -67,7 +74,7 @@ internal fun MyAppInternal(
                         }
 
                     },
-                    userType = org.example.project.presentation.navigation.UserType.CUSTOMER
+                    userType = userType
                 )
             }
         }

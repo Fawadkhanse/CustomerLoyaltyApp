@@ -26,7 +26,7 @@ object ApiEndpoints {
     const val MERCHANTS = "$BASE_URL/api/merchants/merchants/"
     const val OUTLETS = "$BASE_URL/api/merchants/outlets/"
     const val COUPONS_DETAIL = "$BASE_URL/api/merchants/coupons/"
-
+    const val REDEEM_COUPON = "$BASE_URL/api/merchants/redeem-coupon/"
 
 
     const val PROMOTIONS = "$BASE_URL/api/merchants/promotions/"
