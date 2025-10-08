@@ -1,10 +1,13 @@
 // File: composeApp/src/commonMain/kotlin/org/example/project/presentation/navigation/NavigationExtensions.kt
 package org.example.project.presentation.navigation
 
+
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import org.example.project.presentation.navigation.Screen.Screen
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 // Extension functions for easier navigation - similar to Bank Islami pattern
 fun NavController.safeNavigate(route: String, navOptions: NavOptions? = null) {
@@ -112,5 +115,47 @@ fun NavController.navigateSplashToOther(route: String) {
 fun NavController.navigateAuthFlow(targetRoute: String) {
     navigate(targetRoute) {
         popUpTo(Screen.AuthFlow.route) { inclusive = true }
+    }
+}
+
+// --- Simple cross-platform URL encoder ---
+fun String.encodeForRoute(): String =
+    this.replace("/", "%2F")
+        .replace("?", "%3F")
+        .replace("#", "%23")
+        .replace("&", "%26")
+
+fun String.decodeFromRoute(): String =
+    this.replace("%2F", "/")
+        .replace("%3F", "?")
+        .replace("%23", "#")
+        .replace("%26", "&")
+
+/**
+ * Extension to navigate with a JSON-encoded object argument.
+ * Safe for Kotlin Multiplatform (no Android-specific Uri dependency).
+ */
+inline fun <reified T> NavController.navigateWithJson(
+    baseRoute: String,
+    data: T
+) {
+    val json = Json.encodeToString(data)
+    val encoded = json.encodeForRoute()
+    val routeWithArg = "$baseRoute/$encoded"
+    this.navigate(routeWithArg)
+}
+
+/**
+ * Decode JSON argument safely.
+ */
+inline fun <reified T> String?.decodeJson(): T? {
+    return this?.let {
+        try {
+            val decoded = it.decodeFromRoute()
+            Json.decodeFromString<T>(decoded)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 }

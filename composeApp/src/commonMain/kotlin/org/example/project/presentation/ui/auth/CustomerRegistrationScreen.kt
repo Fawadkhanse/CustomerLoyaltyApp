@@ -43,6 +43,7 @@ import org.example.project.presentation.components.TermsAndPrivacyText
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.example.project.utils.dataholder.AuthData
+import org.example.project.utils.dataholder.TokenManager
 import org.example.project.utils.isValidEmail
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -57,13 +58,14 @@ fun CustomerRegistrationScreenRoute(
     CustomerRegistrationScreen(
         registerState = registerState,
         onRegister = { response ->
+            TokenManager.setAccessToken(response.token?.access)
             AuthData.setAuthData(response.user,response.token)
             viewModel.clearAllStates()
             if (response.user != null && response.token != null) {
                 onRegister(
-                    response.user.name,
-                    response.user.email,
-                    response.user.phone,
+                    response.user.name?:"",
+                    response.user.email?:"",
+                    response.user.phone?:"",
                     "" // Don't pass password back
                 )
             }
@@ -76,7 +78,7 @@ fun CustomerRegistrationScreenRoute(
                 password = password,
                 password2 = confirmPassword,
                 role = "customer",
-                profileImage = "",
+                profileImage = "djlajlgdjaadjflajflajlfjaldfl",
             )
             viewModel.register(request)
         },

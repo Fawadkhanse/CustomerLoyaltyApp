@@ -30,26 +30,21 @@ import org.example.project.utils.isValidEmail
 
 @Composable
 fun ForgotPasswordScreenRoute(
-    onSendResetLink: (String, String) -> Unit,
+    onSendResetLink: (ForgotPasswordResponse) -> Unit,
     onBack: () -> Unit
 ) {
     val viewModel = rememberAuthViewModel()
     val forgotPasswordState by viewModel.forgotPasswordState.collectAsState()
 
+
     ForgotPasswordScreen(
         forgotPasswordState = forgotPasswordState,
-        onSendResetLink = { response ->
-            // Handle successful response - navigate to next screen or show success message
-            // The response contains uid, token, and reset_link for demo purposes
-            onSendResetLink("", "") // You can extract email from the previous state if needed
+        onSendResetLink = { response,email ->
+            response.email= email
+            onSendResetLink(response)
         },
         onSendResetLinkClicked = { email ->
-          //  viewModel.forgotPassword(email)
-            onSendResetLink(
-                email,
-                ""
-            )
-
+            viewModel.forgotPassword(email)
         },
         onBack = onBack
     )
@@ -58,7 +53,7 @@ fun ForgotPasswordScreenRoute(
 @Composable
 private fun ForgotPasswordScreen(
     forgotPasswordState: Resource<ForgotPasswordResponse> = Resource.None,
-    onSendResetLink: (ForgotPasswordResponse) -> Unit,
+    onSendResetLink: (ForgotPasswordResponse,String) -> Unit,
     onSendResetLinkClicked: (String) -> Unit = { },
     onBack: () -> Unit,
     promptsViewModel: PromptsViewModel = remember { PromptsViewModel() }
@@ -157,7 +152,8 @@ private fun ForgotPasswordScreen(
         state = forgotPasswordState,
         promptsViewModel = promptsViewModel
     ) { forgotPasswordResponse ->
-        onSendResetLink(forgotPasswordResponse)
+       
+        onSendResetLink(forgotPasswordResponse,email)
     }
 }
 
@@ -166,7 +162,7 @@ private fun ForgotPasswordScreen(
 private fun ForgotPasswordScreenPreview() {
     MaterialTheme {
         ForgotPasswordScreen(
-            onSendResetLink = { },
+            onSendResetLink = {_,_ ->},
             onBack = {}
         )
     }

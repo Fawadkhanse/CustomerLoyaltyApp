@@ -6,15 +6,15 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UserDataResponse(
     @SerialName("id")
-    val id: String,
+    val id: String? = null,
     @SerialName("email")
-    val email: String,
+    val email: String? = null,
     @SerialName("name")
-    val name: String,
+    val name: String? = null,
     @SerialName("role")
-    val role: String,
+    val role: String? = null,
     @SerialName("phone")
-    val phone: String,
+    val phone: String? = null,
     @SerialName("profileImage")
-    val profileImage: String?
+    val profileImage: String? = null
 )

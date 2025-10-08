@@ -73,6 +73,8 @@ import org.example.project.presentation.ui.transaction.TransactionHistoryScreenR
     }
 
     composable(Screen.ChangePassword.route) {
-        ChangePasswordScreenRoute()
+        ChangePasswordScreenRoute(onBack = {
+            navController.popBackStack()
+        })
     }
 }

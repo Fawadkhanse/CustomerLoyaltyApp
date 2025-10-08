@@ -86,8 +86,8 @@ class ProfileViewModel(
         }
     }
 
-    fun changePassword(oldPassword: String, newPassword: String, confirmPassword: String) {
-        val request = ChangePasswordRequest(oldPassword, newPassword, confirmPassword)
+    fun changePassword(request: ChangePasswordRequest) {
+
         viewModelScope.launch {
             remoteRepository.makeApiRequest(
                 requestModel = request,

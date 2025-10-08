@@ -3,7 +3,7 @@ package org.example.project.data.api
 
 object ApiEndpoints {
     // Update this to your actual Django server URL
-    private const val BASE_URL = "http://10.0.2.2:8000" // For Android emulator
+    private const val BASE_URL = "https://http-127-0-0-1-8000-vst6.onrender.com" // For Android emulator
     // Auth endpoints - matching your Django URLs
     const val REGISTER = "$BASE_URL/api/user/register/"
     const val LOGIN = "$BASE_URL/api/user/login/"
@@ -17,14 +17,17 @@ object ApiEndpoints {
     const val TOKEN_REFRESH = "$BASE_URL/api/token/refresh/"
 
     // Home/Dashboard endpoints
-    const val CUSTOMER_HOME = "$BASE_URL/api/customer/home/"  // Add this
+
+    const val CUSTOMER_HOME = "$BASE_URL/api/merchants/customer/home/"  // Add this
     const val MERCHANT_DASHBOARD = "$BASE_URL/api/merchant/dashboard/"  // Add this
 
 
     // Merchant endpoints
     const val MERCHANTS = "$BASE_URL/api/merchants/merchants/"
     const val OUTLETS = "$BASE_URL/api/merchants/outlets/"
-    const val COUPONS = "$BASE_URL/api/merchants/coupons/"
+    const val COUPONS_DETAIL = "$BASE_URL/api/merchants/coupons/"
+
+
 
     const val PROMOTIONS = "$BASE_URL/api/merchants/promotions/"
 
@@ -37,7 +40,7 @@ object ApiEndpoints {
     // Helper functions
     fun merchantById(id: String) = "$MERCHANTS$id/"
     fun outletById(id: String) = "$OUTLETS$id/"
-    fun couponById(id: String) = "$COUPONS$id/"
+    fun couponById(id: String) = "$COUPONS_DETAIL$id/"
     fun transactionById(id: String) = "$TRANSACTIONS$id/"
     fun notificationById(id: String) = "$NOTIFICATIONS$id/"
 }

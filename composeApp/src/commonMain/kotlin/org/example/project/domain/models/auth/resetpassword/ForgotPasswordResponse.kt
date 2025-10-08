@@ -12,5 +12,6 @@ data class ForgotPasswordResponse(
     @SerialName("token")
     val token: String?,
     @SerialName("reset_link")
-    val resetLink: String?
+    val resetLink: String?,
+    var email: String?=""
 )

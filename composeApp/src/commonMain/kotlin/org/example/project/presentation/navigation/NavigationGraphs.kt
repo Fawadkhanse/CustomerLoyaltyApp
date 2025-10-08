@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import androidx.navigation.NavType
+import org.example.project.domain.models.auth.resetpassword.ForgotPasswordResponse
 import org.example.project.presentation.navigation.AuthNavigationUtils.navigateToMainAppAndClearAuth
 import org.example.project.presentation.ui.auth.*
 import org.example.project.presentation.ui.home.*
@@ -17,6 +18,8 @@ import org.example.project.presentation.ui.outlets.*
 import org.example.project.presentation.ui.transaction.*
 import org.example.project.presentation.notfication.*
 import org.example.project.presentation.ui.splash.AppSplashScreenRoute
+import org.example.project.utils.toJson
+import org.example.project.utils.toPojo
 
 /**
  * Authentication navigation graph
@@ -109,8 +112,11 @@ fun NavGraphBuilder.authenticationGraph(
                 updateTopBottomAppBar(true, "Forgot Password", false)
             }
             ForgotPasswordScreenRoute(
-                onSendResetLink = { email, userType ->
-                    navController.navigate(AuthRoutes.ResetPassword.route)
+                onSendResetLink = { response ->
+                    navController.navigateWithJson(
+                        baseRoute =AuthRoutes.ResetPassword.createRoute(), data =response
+
+                    )
                 },
                 onBack = {
                     navController.popBackStack()
@@ -118,22 +124,26 @@ fun NavGraphBuilder.authenticationGraph(
             )
         }
 
+
         // Reset Password
-        composable(AuthRoutes.ResetPassword.route) {
-            LaunchedEffect(Unit) {
-                updateTopBottomAppBar(true, "Reset Password", false)
-            }
+        composable(
+            route = AuthRoutes.ResetPassword.route,
+            arguments = listOf(navArgument("responseJson") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val responseJson = backStackEntry.arguments?.getString("responseJson")
+            val response = responseJson.decodeJson<ForgotPasswordResponse>()
+
             ResetPasswordScreenRoute(
+                response = response,
                 navigateToLogin = {
                     navController.navigate(AuthRoutes.Login.route) {
                         popUpTo(AuthRoutes.AuthFlow.route) { inclusive = true }
                     }
                 },
-                onBack = {
-                    navController.popBackStack()
-                }
+                onBack = { navController.popBackStack() }
             )
         }
+
     }
 }
 
@@ -337,7 +347,9 @@ fun NavGraphBuilder.settingsGraph(
         LaunchedEffect(Unit) {
             updateTopBottomAppBar(true, "Change Password", false)
         }
-        ChangePasswordScreenRoute()
+        ChangePasswordScreenRoute(onBack = {
+            navController.popBackStack()
+        })
     }
 
     // Notifications

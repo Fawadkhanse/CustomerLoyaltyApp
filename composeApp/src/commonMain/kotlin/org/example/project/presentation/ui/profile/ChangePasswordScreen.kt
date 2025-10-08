@@ -10,20 +10,36 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import org.example.project.domain.models.Resource
+import org.example.project.domain.models.auth.resetpassword.ChangePasswordRequest
+import org.example.project.domain.models.auth.resetpassword.ChangePasswordResponse
+import org.example.project.presentation.common.HandleApiState
 import org.example.project.presentation.components.LoyaltyPrimaryButton
 import org.example.project.presentation.components.LoyaltyTextField
 import org.example.project.presentation.components.ScreenContainer
 import org.example.project.presentation.common.PromptsViewModel
 import org.example.project.presentation.design.LoyaltyExtendedColors
+import org.example.project.presentation.ui.auth.rememberProfileViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun ChangePasswordScreenRoute() {
+fun ChangePasswordScreenRoute(
+    onBack: () -> Unit
+) {
+    val viewModel = rememberProfileViewModel()
+    val changeProfileState by viewModel.changePasswordState.collectAsState()
     ChangePasswordScreen(
         onSave = { oldPassword, newPassword, confirmPassword ->
-            // Handle password change logic
+            val request = ChangePasswordRequest(oldPassword, newPassword, confirmPassword)
+            viewModel.changePassword(request)
         },
-        onBack = {}
+        changeProfileState = changeProfileState,
+        onBack = {},
+        onUpdateSuccess = {
+
+            viewModel.clearChangePasswordState()
+            onBack()
+        }
     )
 }
 
@@ -31,7 +47,8 @@ fun ChangePasswordScreenRoute() {
 private fun ChangePasswordScreen(
     onSave: (String, String, String) -> Unit,
     onBack: () -> Unit,
-    modifier: Modifier = Modifier,
+    changeProfileState: Resource<ChangePasswordResponse>,
+    onUpdateSuccess: () -> Unit = {},
     promptsViewModel: PromptsViewModel = remember { PromptsViewModel() }
 ) {
     var oldPassword by remember { mutableStateOf("") }
@@ -86,7 +103,7 @@ private fun ChangePasswordScreen(
         currentPrompt = promptsViewModel.currentPrompt.collectAsState().value
     ) {
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
@@ -194,6 +211,21 @@ private fun ChangePasswordScreen(
             Spacer(modifier = Modifier.height(32.dp))
         }
     }
+
+    // Handle update response
+    HandleApiState(
+        state = changeProfileState,
+        promptsViewModel = promptsViewModel
+    ) { response ->
+        // Show success message
+        promptsViewModel.showSuccess(
+            message = response.message,
+            onButtonClick = {
+                onUpdateSuccess()
+            }
+        )
+    }
+
 }
 
 @Preview
@@ -202,7 +234,10 @@ private fun ChangePasswordScreenPreview() {
     MaterialTheme {
         ChangePasswordScreen(
             onSave = { _, _, _ -> },
-            onBack = {}
+            onBack = {},
+            changeProfileState = Resource.None,
+
+
         )
     }
 }

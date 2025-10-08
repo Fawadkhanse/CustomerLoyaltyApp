@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 import org.example.project.domain.models.Resource
 import org.example.project.utils.toPojo
+import org.example.project.utils.toPojoOrNull
 
 abstract class BaseViewModel : ViewModel() {
 
@@ -20,13 +21,14 @@ abstract class BaseViewModel : ViewModel() {
             return
         }
 
-        // ✅ existing flow handling remains unchanged
         this.map { resource ->
             when (resource) {
                 is Resource.Success -> {
                     try {
-                        val result = resource.data.toPojo<T>()
-                        Resource.Success(result)
+                        val result = resource.data.toPojoOrNull<T>()
+                        result?.let {
+                            Resource.Success(it)
+                        } ?: Resource.Error(Exception("Failed to parse response"))
                     } catch (e: Exception) {
                         Resource.Error(e)
                     }
@@ -36,6 +38,7 @@ abstract class BaseViewModel : ViewModel() {
                 Resource.None -> Resource.None
             }
         }.collect { mapped ->
+
             onEmit(mapped)
         }
     }

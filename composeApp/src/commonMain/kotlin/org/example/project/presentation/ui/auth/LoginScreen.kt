@@ -23,6 +23,7 @@ import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.example.project.presentation.ui.auth.viewmodel.AuthViewModel
 import org.example.project.presentation.ui.home.HomeViewModel
 import org.example.project.utils.dataholder.AuthData
+import org.example.project.utils.dataholder.TokenManager
 import org.example.project.utils.isValidEmail
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -39,18 +40,25 @@ fun LoginScreenRoute(
     LoginScreen(
         loginState = loginState,
         onLogin = { response ->
+            TokenManager.setAccessToken(response.token?.access)
             AuthData.setAuthData(response.user, response.token)
             response.user?.let {
                 onLogin(
-                    response.user.name,
-                    response.user.email,
-                    response.user.role
+                    response.user.name?:"",
+                    response.user.email?:"",
+                    response.user.role?:""
                 )
             }
 
         },
         onLoginButtonClicked = { email, password ->
           viewModel.login(email, password)
+        },
+        onMerchantLogin={
+            onLogin(
+                "name",  "name", "merchant"
+
+            )
         },
         onForgotPassword = onForgotPassword,
         onRegister = onRegister,

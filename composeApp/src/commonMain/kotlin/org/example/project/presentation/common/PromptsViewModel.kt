@@ -60,14 +60,17 @@ class PromptsViewModel : ViewModel() {
         title: String? = null,
         message: String? = null,
         buttonText: String = "Okay",
-        onButtonClick: () -> Unit = {}
+        onButtonClick: () -> Unit = {},
+        onDismiss: () -> Unit = {}
     ) {
         _currentPrompt.value = PromptTypeShow.Success(
             title = title,
             message = message,
             buttonText = buttonText,
             onButtonClick = onButtonClick,
-            onDismiss = { clearPrompt() }
+            onDismiss = { clearPrompt()
+                onDismiss()
+            }
         )
     }
 

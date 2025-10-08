@@ -60,8 +60,10 @@ object AuthRoutes {
         const val route = "forgot_password"
     }
 
+
     object ResetPassword {
-        const val route = "reset_password"
+        const val route = "reset_password/{responseJson}"
+        fun createRoute() = "reset_password"
     }
 }
 

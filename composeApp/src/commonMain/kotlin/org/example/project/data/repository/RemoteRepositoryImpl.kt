@@ -11,8 +11,10 @@ import kotlinx.serialization.json.jsonPrimitive
 import org.example.project.data.api.ApiClient
 import org.example.project.data.api.HttpMethod
 import org.example.project.domain.RemoteRepository
+import org.example.project.domain.models.ApiErrorResponse
 import org.example.project.domain.models.Resource
 import org.example.project.utils.toJson
+import org.example.project.utils.toPojoOrNull
 
 
 class RemoteRepositoryImpl(
@@ -40,7 +42,6 @@ class RemoteRepositoryImpl(
             }
 
             val body = response.bodyAsText()
-            println("Response Body: $body")
             if (isMock){
                 return@flow emit(Resource.Success(body))
             }
@@ -52,12 +53,16 @@ class RemoteRepositoryImpl(
                     emit(Resource.Error(Exception("Empty response body")))
                 }
             } else {
-                // Handle error response based on flag
-                if (returnErrorBody && body.isNotEmpty()) {
-                    // Return error body as success so ViewModel can handle it
-                    emit(Resource.Success(body))
+                val errorJson = body.ifEmpty { "{}" }
+                val apiError = errorJson.toPojoOrNull<ApiErrorResponse>()
+                val message = apiError?.firstErrorMessage()
+                    ?: "Request failed: ${response.status.value} ${response.status.description}"
+
+                // If returnErrorBody is true, we return Resource.Error but with raw JSON if needed
+                if (returnErrorBody) {
+                    emit(Resource.Error(Exception(message)))
                 } else {
-                    emit(Resource.Error(Exception("Request failed: ${response.status.description}")))
+                    emit(Resource.Error(Exception(message)))
                 }
             }
 
