@@ -29,7 +29,7 @@ import org.example.project.utils.QRCodeUtils.createQRCodeData
 import org.example.project.utils.dataholder.AuthData
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-@Composable
+
 @Composable
 fun QRCodeDisplayScreenRoute(
     onBack: () -> Unit
@@ -45,9 +45,7 @@ fun QRCodeDisplayScreenRoute(
     // Generate QR bytes using LaunchedEffect
     var qrCodeBytes by remember { mutableStateOf<ByteArray?>(null) }
 
-    LaunchedEffect(qrId) {
-        qrCodeBytes = QRBitmapGenerator.generateQRBitmap(qrCodeData)
-    }
+
 
     // Handle share
     val handleShare: () -> Unit = {
@@ -70,7 +68,7 @@ fun QRCodeDisplayScreenRoute(
             scope.launch {
                 files.firstOrNull()?.let { file ->
                     qrCodeBytes?.let { bytes ->
-                        bytes.writeToFile(context, file)
+                     //   bytes.writeToFile(context, file)
                         showMessage = "QR Code saved successfully!"
                     }
                 }
@@ -247,7 +245,7 @@ private fun QRCodeCard(
             // QR ID display (optional - for debugging)
             if (qrCodeData.isNotEmpty()) {
                 Text(
-                    text = qrCodeData.takeLast(8),
+                    text = AuthData.UserData?.uniqueQrId?:"",
                     style = MaterialTheme.typography.labelSmall,
                     color = Color.Gray,
                     modifier = Modifier.padding(top = 4.dp)
@@ -270,7 +268,3 @@ fun QRCodeDisplayScreenPreview() {
         )
     }
 }
-// Platform-specific expect/actual functions for sharing and saving
-// These will be implemented in androidMain and iosMain
-expect suspend fun shareQRCode(qrCodeBytes: ByteArray, fileName: String)
-expect suspend fun saveQRCodeToGallery(qrCodeBytes: ByteArray, fileName: String): Boolean
