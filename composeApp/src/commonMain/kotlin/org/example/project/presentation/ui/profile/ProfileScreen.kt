@@ -38,7 +38,9 @@ fun ProfileScreenRoute(
             onChangePassword()
         },
         onLogout = {
+            AuthData.clearAuthData()
             onLogout()
+
         },
     )
 }
