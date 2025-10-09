@@ -77,8 +77,9 @@ fun CustomerRegistrationScreenRoute(
                 phone = phone,
                 password = password,
                 password2 = confirmPassword,
-                role = "customer",
-                profileImage = "djlajlgdjaadjflajflajlfjaldfl",
+               // role = "customer",
+                role = "merchant",
+                profileImage = " N/A",
             )
             viewModel.register(request)
         },

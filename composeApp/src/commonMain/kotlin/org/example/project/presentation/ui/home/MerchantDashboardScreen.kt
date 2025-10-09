@@ -2,73 +2,76 @@ package org.example.project.presentation.ui.home
 
 import AppIcons
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import org.example.project.domain.models.Resource
+import org.example.project.domain.models.home.MerchantDashboardData
+import org.example.project.domain.models.home.MerchantDashboardResponse
+import org.example.project.presentation.common.HandleApiState
+import org.example.project.presentation.common.PromptsViewModel
+import org.example.project.presentation.common.constent.GlobalVar
+import org.example.project.presentation.components.ScreenContainer
 import org.example.project.presentation.components.StatsCard
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
+import org.example.project.presentation.ui.auth.rememberHomeViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun MerchantDashboardRoute(
-    // Pass ViewModel or state hoisting parameters here if needed
     onNavigateToAllTransactions: () -> Unit
 ) {
-    // Replace with actual data from ViewModel or state
+    val viewModel = rememberHomeViewModel()
+    val dashboardState by viewModel.merchantDashboardState.collectAsState()
+    val merchantInfo by viewModel.merchantInfo.collectAsState()
+    val todayStats by viewModel.todayStats.collectAsState()
+    val recentTransactions by viewModel.recentTransactions.collectAsState()
+
+    // Load merchant dashboard when screen opens
+    LaunchedEffect(Unit) {
+        viewModel.loadMerchantDashboard()
+    }
+
     MerchantDashboardScreen(
-        todaysScans = 120, // Example data
-        pointsAwarded = 850, // Example data
-        couponsRedeemed = 35, // Example data
-        activeOutlets = 5, // Example data
-        recentTransactions = listOf( // Example data
-            TransactionData("1", "Alice Smith", 100, "Main St Branch", "10:30 AM"),
-            TransactionData("2", "Bob Johnson", 50, "Downtown Outlet", "11:15 AM")
-        ),
+        dashboardState = dashboardState,
+        todaysScans = todayStats?.scansToday ?: 0,
+        pointsAwarded = todayStats?.pointsAwardedToday ?: 0,
+        couponsRedeemed = todayStats?.couponsRedeemedToday ?: 0,
+        activeOutlets = merchantInfo?.totalOutlets ?: 0,
+        recentTransactions = recentTransactions,
+        onDashboardSuccess = { response ->
+            viewModel.processMerchantDashboard(response)
+        },
         onViewAllTransactions = onNavigateToAllTransactions
     )
 }
 
 @Composable
 private fun MerchantDashboardScreen(
+    dashboardState: Resource<MerchantDashboardResponse>,
     todaysScans: Int,
     pointsAwarded: Int,
     couponsRedeemed: Int,
     activeOutlets: Int,
     recentTransactions: List<TransactionData>,
+    onDashboardSuccess: (MerchantDashboardResponse) -> Unit,
     onViewAllTransactions: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    promptsViewModel: PromptsViewModel = remember { PromptsViewModel() }
 ) {
+    ScreenContainer(currentPrompt = promptsViewModel.currentPrompt.collectAsState().value) {
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
-        contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         item {
@@ -111,14 +114,14 @@ private fun MerchantDashboardScreen(
                 StatsCard(
                     title = "Today's Scans",
                     value = todaysScans.toString(),
-                    icon = AppIcons.Info, // Replace with QR icon
+                    icon = AppIcons.QrScan,
                     modifier = Modifier.weight(1f)
                 )
 
                 StatsCard(
                     title = "Points Awarded",
                     value = pointsAwarded.toString(),
-                    icon = AppIcons.Info, // Replace with star icon
+                    icon = AppIcons.Points,
                     color = LoyaltyColors.ButteryYellow,
                     modifier = Modifier.weight(1f)
                 )
@@ -133,7 +136,7 @@ private fun MerchantDashboardScreen(
                 StatsCard(
                     title = "Coupons Redeemed",
                     value = couponsRedeemed.toString(),
-                    icon = AppIcons.Info, // Replace with coupon icon
+                    icon = AppIcons.Coupon,
                     color = LoyaltyColors.Success,
                     modifier = Modifier.weight(1f)
                 )
@@ -141,80 +144,12 @@ private fun MerchantDashboardScreen(
                 StatsCard(
                     title = "Active Outlets",
                     value = activeOutlets.toString(),
-                    icon = AppIcons.Info, // Replace with store icon
+                    icon = AppIcons.Store,
                     color = LoyaltyColors.Warning,
                     modifier = Modifier.weight(1f)
                 )
             }
         }
-//
-//        item {
-//            // Performance Chart Placeholder
-//            Card(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(200.dp),
-//                colors = CardDefaults.cardColors(
-//                    containerColor = LoyaltyExtendedColors.cardBackground()
-//                ),
-//                shape = RoundedCornerShape(16.dp)
-//            ) {
-//                Column(
-//                    modifier = Modifier
-//                        .fillMaxSize()
-//                        .padding(16.dp)
-//                ) {
-//                    Row(
-//                        modifier = Modifier.fillMaxWidth(),
-//                        horizontalArrangement = Arrangement.SpaceBetween,
-//                        verticalAlignment = Alignment.CenterVertically
-//                    ) {
-//                        Text(
-//                            text = "Performance",
-//                            style = MaterialTheme.typography.headlineSmall,
-//                            color = MaterialTheme.colorScheme.onSurface,
-//                            fontWeight = FontWeight.SemiBold
-//                        )
-//
-//                        Row {
-//                            listOf("Today", "Week", "Month").forEach { period ->
-//                                Surface(
-//                                    color = if (period == "Today") LoyaltyColors.OrangePink
-//                                    else Color.Transparent,
-//                                    shape = RoundedCornerShape(16.dp)
-//                                ) {
-//                                    Text(
-//                                        text = period,
-//                                        style = MaterialTheme.typography.labelMedium,
-//                                        color = if (period == "Today") Color.White
-//                                        else LoyaltyExtendedColors.secondaryText(),
-//                                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-//                                    )
-//                                }
-//                            }
-//                        }
-//                    }
-//
-//                    Spacer(modifier = Modifier.height(16.dp))
-//
-//                    // Simple chart placeholder
-//                    Box(
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .height(100.dp)
-//                            .clip(RoundedCornerShape(8.dp))
-//                            .background(LoyaltyColors.OrangePink.copy(alpha = 0.1f)),
-//                        contentAlignment = Alignment.Center
-//                    ) {
-//                        Text(
-//                            text = "Chart Visualization",
-//                            style = MaterialTheme.typography.bodyMedium,
-//                            color = LoyaltyExtendedColors.secondaryText()
-//                        )
-//                    }
-//                }
-//            }
-//        }
 
         item {
             // Recent Transactions
@@ -224,6 +159,16 @@ private fun MerchantDashboardScreen(
             )
         }
     }
+
+    // Handle API State
+    HandleApiState(
+        state = dashboardState,
+        promptsViewModel = promptsViewModel
+    ) { response ->
+        response.data?.let {
+            onDashboardSuccess(response)
+        }
+    }}
 }
 
 @Preview(showBackground = true)
@@ -231,6 +176,7 @@ private fun MerchantDashboardScreen(
 fun MerchantDashboardScreenPreview() {
     MaterialTheme {
         MerchantDashboardScreen(
+            dashboardState = Resource.None,
             todaysScans = 120,
             pointsAwarded = 850,
             couponsRedeemed = 35,
@@ -249,8 +195,10 @@ fun MerchantDashboardScreenPreview() {
                     points = 2297,
                     location = "malorum",
                     timestamp = "ea"
-
-                )),
-            onViewAllTransactions = {})
+                )
+            ),
+            onDashboardSuccess = {},
+            onViewAllTransactions = {}
+        )
     }
 }

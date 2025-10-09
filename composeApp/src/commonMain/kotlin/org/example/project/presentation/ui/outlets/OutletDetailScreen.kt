@@ -63,35 +63,6 @@ private fun OutletDetailScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        // Header
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = onBack) {
-                Icon(
-                    imageVector = AppIcons.ArrowBack,
-                    contentDescription = "Back"
-                )
-            }
-
-            Text(
-                text = outlet.name,
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
-            )
-
-            IconButton(onClick = { /* More options */ }) {
-                Icon(
-                    imageVector = AppIcons.Settings,
-                    contentDescription = "Edit"
-                )
-            }
-        }
 
         LazyColumn(
             contentPadding = PaddingValues(24.dp),
