@@ -2,6 +2,8 @@ package org.example.project.data.mockresponses
 
 import org.example.project.domain.models.home.CustomerHomeData
 import org.example.project.domain.models.home.CustomerHomeResponse
+import org.example.project.domain.models.home.MerchantDashboardData
+import org.example.project.domain.models.home.MerchantDashboardResponse
 
 val mockResponse = CustomerHomeResponse(
     success = true,
@@ -56,6 +58,127 @@ val mockResponse = CustomerHomeResponse(
                 description = "Coupon redeemed: Free Coffee",
                 points = 250,
                 date = "Nov 30, 2024"
+            )
+        )
+    )
+)
+
+
+
+val mockMerchantDashboardResponse = MerchantDashboardResponse(
+    success = true,
+    message = "Dashboard data retrieved successfully",
+    data = MerchantDashboardData(
+        merchantInfo = MerchantDashboardData.MerchantInfo(
+            id = "MERCH001",
+            businessName = "Coffee Corner Chain",
+            totalOutlets = 5,
+            totalCustomers = 2847,
+            memberSince = "2023-01-15"
+        ),
+        todayStats = MerchantDashboardData.TodayStats(
+            scansToday = 120,
+            pointsAwardedToday = 850,
+            couponsRedeemedToday = 35,
+            revenueImpact = "$2,450"
+        ),
+        recentTransactions = listOf(
+            MerchantDashboardData.DashboardTransaction(
+                id = "TXN001",
+                customerName = "Sarah Johnson",
+                customerId = "CUST1234",
+                pointsAwarded = 10,
+                transactionType = "scan",
+                outletName = "Downtown Branch",
+                outletId = "OUT001",
+                timestamp = "2024-12-08T14:30:00Z",
+                location = "Main Street, Downtown"
+            ),
+            MerchantDashboardData.DashboardTransaction(
+                id = "TXN002",
+                customerName = "Michael Chen",
+                customerId = "CUST5678",
+                pointsAwarded = 8,
+                transactionType = "scan",
+                outletName = "Mall Branch",
+                outletId = "OUT002",
+                timestamp = "2024-12-08T14:25:00Z",
+                location = "City Mall, Floor 2"
+            ),
+            MerchantDashboardData.DashboardTransaction(
+                id = "TXN003",
+                customerName = "Emily Rodriguez",
+                customerId = "CUST9012",
+                pointsAwarded = -50,
+                transactionType = "redeem",
+                outletName = "Airport Branch",
+                outletId = "OUT003",
+                timestamp = "2024-12-08T14:15:00Z",
+                location = "International Airport"
+            ),
+            MerchantDashboardData.DashboardTransaction(
+                id = "TXN004",
+                customerName = "David Kim",
+                customerId = "CUST3456",
+                pointsAwarded = 12,
+                transactionType = "scan",
+                outletName = "Downtown Branch",
+                outletId = "OUT001",
+                timestamp = "2024-12-08T14:10:00Z",
+                location = "Main Street, Downtown"
+            ),
+            MerchantDashboardData.DashboardTransaction(
+                id = "TXN005",
+                customerName = "Lisa Anderson",
+                customerId = "CUST7890",
+                pointsAwarded = 15,
+                transactionType = "scan",
+                outletName = "University Branch",
+                outletId = "OUT004",
+                timestamp = "2024-12-08T14:05:00Z",
+                location = "Campus Center"
+            )
+        ),
+        activeOutlets = listOf(
+            MerchantDashboardData.OutletSummary(
+                id = "OUT001",
+                name = "Downtown Branch",
+                location = "123 Main Street, Downtown",
+                isActive = true,
+                scansToday = 45,
+                totalCustomers = 890
+            ),
+            MerchantDashboardData.OutletSummary(
+                id = "OUT002",
+                name = "Mall Branch",
+                location = "City Mall, Floor 2",
+                isActive = true,
+                scansToday = 32,
+                totalCustomers = 645
+            ),
+            MerchantDashboardData.OutletSummary(
+                id = "OUT003",
+                name = "Airport Branch",
+                location = "International Airport",
+                isActive = true,
+                scansToday = 28,
+                totalCustomers = 512
+            ),
+            MerchantDashboardData.OutletSummary(
+                id = "OUT004",
+                name = "University Branch",
+                location = "Campus Center",
+                isActive = true,
+                scansToday = 15,
+                totalCustomers = 420
+            ),
+            MerchantDashboardData.OutletSummary(
+                id = "OUT005",
+                name = "Suburban Branch",
+                location = "West Side Plaza",
+                isActive = false,
+                scansToday = 0,
+                totalCustomers = 380
             )
         )
     )

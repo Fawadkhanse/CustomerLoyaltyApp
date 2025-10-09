@@ -4,6 +4,7 @@ import ProfileViewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import org.example.project.presentation.ui.auth.viewmodel.AuthViewModel
+import org.example.project.presentation.ui.coupons.CouponViewModel
 import org.example.project.presentation.ui.home.HomeViewModel
 
 import org.koin.core.component.KoinComponent
@@ -13,6 +14,9 @@ private class ViewModelProvider : KoinComponent {
     val authViewModel: AuthViewModel by inject()
     val viewModel: HomeViewModel by inject()
     val profileViewModel: ProfileViewModel by inject()
+    val couponViewModel: CouponViewModel by inject()
+
+
 }
 
 @Composable
@@ -36,4 +40,9 @@ actual fun rememberProfileViewModel(): ProfileViewModel {
     return provider.profileViewModel
 }
 
+@Composable
+actual fun rememberCouponViewModel(): CouponViewModel {
+    val provider = remember { ViewModelProvider() }
+    return provider.couponViewModel
+}
 

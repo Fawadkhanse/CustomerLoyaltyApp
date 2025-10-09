@@ -10,11 +10,13 @@ data class UserDataResponse(
     @SerialName("email")
     val email: String? = null,
     @SerialName("name")
-    val name: String? = null,
+    var name: String? = null,
     @SerialName("role")
     val role: String? = null,
     @SerialName("phone")
     val phone: String? = null,
-    @SerialName("profileImage")
-    val profileImage: String? = null
+    @SerialName("profile_Image")
+    var profileImage: String? = null,
+    @SerialName("unique_qr_id")
+    val uniqueQrId: String? = null
 )

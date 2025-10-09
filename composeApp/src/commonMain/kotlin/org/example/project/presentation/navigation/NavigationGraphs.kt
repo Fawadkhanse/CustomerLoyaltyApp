@@ -18,8 +18,6 @@ import org.example.project.presentation.ui.outlets.*
 import org.example.project.presentation.ui.transaction.*
 import org.example.project.presentation.notfication.*
 import org.example.project.presentation.ui.splash.AppSplashScreenRoute
-import org.example.project.utils.toJson
-import org.example.project.utils.toPojo
 
 /**
  * Authentication navigation graph
@@ -184,7 +182,9 @@ fun NavGraphBuilder.customerGraph(
         )
     }
 
-    // Customer Coupons
+    // Update in NavigationGraphs.kt - customerGraph function
+
+// Customer Coupons List
     composable(CustomerRoutes.Coupons.route) {
         LaunchedEffect(Unit) {
             updateTopBottomAppBar(false, "Coupons", true)
@@ -199,7 +199,7 @@ fun NavGraphBuilder.customerGraph(
         )
     }
 
-    // Coupon Detail
+// Coupon Detail
     composable(
         route = CouponRoutes.CouponDetail.route,
         arguments = listOf(navArgument(RouteParams.COUPON_ID) { type = NavType.StringType })
@@ -208,11 +208,14 @@ fun NavGraphBuilder.customerGraph(
             updateTopBottomAppBar(true, "Coupon Details", false)
         }
         val couponId = backStackEntry.arguments?.getString(RouteParams.COUPON_ID) ?: ""
-        CouponDetailScreenRout(
+
+        CouponDetailScreenRoute(
+            couponId = couponId,
             onBack = {
                 navController.popBackStack()
             },
             onRedeem = {
+                // Navigate back to coupons list after successful redemption
                 navController.popBackStack()
             }
         )

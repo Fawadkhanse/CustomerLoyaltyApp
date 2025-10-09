@@ -18,11 +18,6 @@ import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
-// 🎟️ Coupon Detail Screen
-
-
-// 📋 Coupons List Screen with Tabs
-
 @Composable
  fun AvailableCouponsContent(
     coupons: List<CouponData>,

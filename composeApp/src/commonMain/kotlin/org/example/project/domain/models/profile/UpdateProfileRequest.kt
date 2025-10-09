@@ -13,5 +13,7 @@ data class UpdateProfileRequest(
     @SerialName("email")
     val email: String,
     @SerialName("profile_image")
-    val profileImage: String = ""
+    val profileImage: String = "",
+    @SerialName("tc")
+    val tc: Boolean =true
 )

@@ -59,18 +59,12 @@ class ProfileViewModel(
         }
     }
 
-    fun updateProfile(name: String, phone: String, email: String, profileImage: String = "") {
-        val request = UpdateProfileRequest(
-            name = name,
-            phone = phone,
-            email = email,
-            profileImage = profileImage
-        )
+    fun updateProfile(request: UpdateProfileRequest) {
 
         viewModelScope.launch {
             remoteRepository.makeApiRequest(
                 requestModel = request,
-                endpoint = ApiEndpoints.PROFILE,
+                endpoint = ApiEndpoints.PROFILE_UPDATE,
                 httpMethod = HttpMethod.PUT
             ).collectAsResource<UpdateProfileResponse>(
                 onEmit = { result ->

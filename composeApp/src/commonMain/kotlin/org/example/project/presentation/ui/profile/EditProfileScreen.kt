@@ -26,6 +26,7 @@ import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
 import kotlinx.coroutines.launch
 import org.example.project.domain.models.Resource
 import org.example.project.domain.models.auth.login.UserDataResponse
+import org.example.project.domain.models.profile.UpdateProfileRequest
 import org.example.project.domain.models.profile.UpdateProfileResponse
 import org.example.project.presentation.common.HandleApiState
 import org.example.project.presentation.common.PromptsViewModel
@@ -50,8 +51,15 @@ fun EditProfileScreenRoute(
     EditProfileScreen(
         currentUser = AuthData.UserData,
         updateProfileState = updateProfileState,
-        onSave = { name, email, phone ->
-            viewModel.updateProfile(name, phone, email)
+        onSave = { name, email, phone ,image->
+            val request = UpdateProfileRequest(
+                name = name,
+                phone = phone,
+                email = email,
+                profileImage = image?: AuthData.UserData?.profileImage?:""
+            )
+
+            viewModel.updateProfile(request)
         },
         onUpdateSuccess = {
             viewModel.clearUpdateProfileState()
@@ -68,7 +76,7 @@ fun EditProfileScreenRoute(
 private fun EditProfileScreen(
     currentUser: UserDataResponse?,
     updateProfileState: Resource<UpdateProfileResponse>,
-    onSave: (String, String, String) -> Unit,
+    onSave: (String, String, String, String?) -> Unit,
     onUpdateSuccess: () -> Unit,
     onBack: () -> Unit,
     onChangeProfilePicture: () -> Unit,
@@ -224,7 +232,8 @@ private fun EditProfileScreen(
                         keyboardType = KeyboardType.Phone,
                         isError = phoneError != null,
                         errorMessage = phoneError,
-                        enabled = updateProfileState !is Resource.Loading
+                       // enabled = updateProfileState !is Resource.Loading
+                        enabled = false
                     )
 
                     LoyaltyTextField(
@@ -239,7 +248,7 @@ private fun EditProfileScreen(
                         keyboardType = KeyboardType.Email,
                         isError = emailError != null,
                         errorMessage = emailError,
-                        enabled = updateProfileState !is Resource.Loading
+                        enabled = false
                     )
                 }
             Spacer(modifier = Modifier.weight(1f))
@@ -249,7 +258,7 @@ private fun EditProfileScreen(
                     text = "Save Changes",
                     onClick = {
                         if (validateAll()) {
-                            onSave(nameState.trim(), emailState.trim(), phoneState.trim())
+                            onSave(nameState.trim(), emailState.trim(), phoneState.trim(),selectedImageBase64)
                         }
                     },
                     enabled = updateProfileState !is Resource.Loading &&
@@ -272,6 +281,9 @@ private fun EditProfileScreen(
         promptsViewModel.showSuccess(
             message = response.message,
             onButtonClick = {
+                AuthData.UserData?.profileImage=response.user?.profileImage
+                AuthData.UserData?.name=response.user?.name
+                AuthData.userName=response.user?.name?:""
                 onUpdateSuccess()
             }
         )
@@ -285,7 +297,7 @@ fun EditProfileScreenPreview() {
         EditProfileScreen(
             currentUser = null,
             updateProfileState = Resource.None,
-            onSave = { _, _, _ -> },
+            onSave = { _, _, _ ,_-> },
             onUpdateSuccess = {},
             onBack = {},
             onChangeProfilePicture = {}

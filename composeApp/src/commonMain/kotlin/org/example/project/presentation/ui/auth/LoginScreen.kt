@@ -21,6 +21,7 @@ import org.example.project.presentation.components.ScreenContainer
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.example.project.presentation.ui.auth.viewmodel.AuthViewModel
+import org.example.project.presentation.ui.coupons.CouponViewModel
 import org.example.project.presentation.ui.home.HomeViewModel
 import org.example.project.utils.dataholder.AuthData
 import org.example.project.utils.dataholder.TokenManager
@@ -265,3 +266,7 @@ expect fun rememberHomeViewModel(): HomeViewModel
 expect fun rememberProfileViewModel(): ProfileViewModel
 // commonMain
 expect fun ByteArray.encodeBase64(): String
+
+// Expect function to get ViewModel in common
+@Composable
+expect fun rememberCouponViewModel(): CouponViewModel

@@ -8,6 +8,7 @@ object ApiEndpoints {
     const val REGISTER = "$BASE_URL/api/user/register/"
     const val LOGIN = "$BASE_URL/api/user/login/"
     const val PROFILE = "$BASE_URL/api/user/profile/"
+    const val PROFILE_UPDATE = "$BASE_URL/api/user/profile/update/"
     const val FORGOT_PASSWORD = "$BASE_URL/api/user/forgot-password/"
     const val RESET_PASSWORD = "$BASE_URL/api/user/reset-password/"
     const val CHANGE_PASSWORD = "$BASE_URL/api/user/change-password/"
@@ -24,9 +25,13 @@ object ApiEndpoints {
 
     // Merchant endpoints
     const val MERCHANTS = "$BASE_URL/api/merchants/merchants/"
-    const val OUTLETS = "$BASE_URL/api/merchants/outlets/"
+    const val OUTLETS_DETAIL = "$BASE_URL/api/merchants/outlets/"
     const val COUPONS_DETAIL = "$BASE_URL/api/merchants/coupons/"
     const val REDEEM_COUPON = "$BASE_URL/api/merchants/redeem-coupon/"
+    const val   GET_ALL_COUPON = "$BASE_URL/api/merchants/coupons/"
+
+    const val   GET_ALL_Customer_COUPON = "$BASE_URL/api/merchants/customer/coupons/"
+    const val   GET_ALL_OUTLETS = "$BASE_URL/api/merchants/outlets/"
 
 
     const val PROMOTIONS = "$BASE_URL/api/merchants/promotions/"
@@ -39,7 +44,7 @@ object ApiEndpoints {
 
     // Helper functions
     fun merchantById(id: String) = "$MERCHANTS$id/"
-    fun outletById(id: String) = "$OUTLETS$id/"
+    fun outletById(id: String) = "$OUTLETS_DETAIL$id/"
     fun couponById(id: String) = "$COUPONS_DETAIL$id/"
     fun transactionById(id: String) = "$TRANSACTIONS$id/"
     fun notificationById(id: String) = "$NOTIFICATIONS$id/"

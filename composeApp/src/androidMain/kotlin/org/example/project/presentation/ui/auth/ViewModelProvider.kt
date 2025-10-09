@@ -3,6 +3,7 @@ package org.example.project.presentation.ui.auth
 import ProfileViewModel
 import androidx.compose.runtime.Composable
 import org.example.project.presentation.ui.auth.viewmodel.AuthViewModel
+import org.example.project.presentation.ui.coupons.CouponViewModel
 import org.example.project.presentation.ui.home.HomeViewModel
 import org.koin.compose.koinInject
 
@@ -15,3 +16,5 @@ actual fun rememberHomeViewModel(): HomeViewModel = koinInject ()
 
 @Composable
 actual fun rememberProfileViewModel(): ProfileViewModel = koinInject ()
+@Composable
+actual fun rememberCouponViewModel(): CouponViewModel = koinInject()

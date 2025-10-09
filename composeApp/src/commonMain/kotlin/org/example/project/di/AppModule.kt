@@ -11,6 +11,7 @@ import org.example.project.domain.usecase.CreateUserUseCase
 import org.example.project.domain.usecase.GetUsersUseCase
 import org.example.project.presentation.common.PromptsViewModel
 import org.example.project.presentation.ui.auth.viewmodel.AuthViewModel
+import org.example.project.presentation.ui.coupons.CouponViewModel
 import org.example.project.presentation.ui.home.HomeViewModel
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
@@ -37,6 +38,7 @@ val viewModelModule = module {
     factory<PromptsViewModel> { PromptsViewModel() }
     factory<HomeViewModel> { HomeViewModel(get()) }
     factory<ProfileViewModel> { ProfileViewModel(get()) }
+    factory<CouponViewModel> { CouponViewModel(get()) }
 }
 
 // Helper function to initialize Koin

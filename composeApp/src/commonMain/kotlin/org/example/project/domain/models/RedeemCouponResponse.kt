@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RedeemCouponResponse(
-    @SerialName("coupon_id")
-    val couponId: String
+    @SerialName("message")
+    val message: String?=null
 ) {
 }

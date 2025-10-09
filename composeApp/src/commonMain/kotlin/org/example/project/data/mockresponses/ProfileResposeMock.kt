@@ -12,7 +12,8 @@ val updateProfileResponse = UpdateProfileResponse(
         name = "Test User",
         phone = "+1234567890",
         profileImage = "https://example.com/profile/testuser.png",
-        role = "customer"
+        role = "customer",
+        tc = true,
     )
 )
 
