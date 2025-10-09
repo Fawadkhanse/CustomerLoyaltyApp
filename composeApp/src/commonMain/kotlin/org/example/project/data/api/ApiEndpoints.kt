@@ -20,7 +20,7 @@ object ApiEndpoints {
     // Home/Dashboard endpoints
 
     const val CUSTOMER_HOME = "$BASE_URL/api/merchants/customer/home/"  // Add this
-    const val MERCHANT_DASHBOARD = "$BASE_URL/api/merchant/dashboard/"  // Add this
+    const val MERCHANT_DASHBOARD = "$BASE_URL/api/merchants/merchant/dashboard/"  // Add this
 
 
     // Merchant endpoints
