@@ -1,10 +1,11 @@
+// composeApp/src/commonMain/kotlin/org/example/project/data/api/ApiEndpoints.kt
 package org.example.project.data.api
-
 
 object ApiEndpoints {
     // Update this to your actual Django server URL
-    private const val BASE_URL = "https://http-127-0-0-1-8000-vst6.onrender.com" // For Android emulator
-    // Auth endpoints - matching your Django URLs
+    private const val BASE_URL = "https://http-127-0-0-1-8000-vst6.onrender.com"
+
+    // Auth endpoints
     const val REGISTER = "$BASE_URL/api/user/register/"
     const val LOGIN = "$BASE_URL/api/user/login/"
     const val PROFILE = "$BASE_URL/api/user/profile/"
@@ -18,23 +19,23 @@ object ApiEndpoints {
     const val TOKEN_REFRESH = "$BASE_URL/api/token/refresh/"
 
     // Home/Dashboard endpoints
-
-    const val CUSTOMER_HOME = "$BASE_URL/api/merchants/customer/home/"  // Add this
-    const val MERCHANT_DASHBOARD = "$BASE_URL/api/merchants/merchant/dashboard/"  // Add this
-
+    const val CUSTOMER_HOME = "$BASE_URL/api/merchants/customer/home/"
+    const val MERCHANT_DASHBOARD = "$BASE_URL/api/merchants/merchant/dashboard/"
 
     // Merchant endpoints
     const val MERCHANTS = "$BASE_URL/api/merchants/merchants/"
     const val OUTLETS_DETAIL = "$BASE_URL/api/merchants/outlets/"
     const val COUPONS_DETAIL = "$BASE_URL/api/merchants/coupons/"
     const val REDEEM_COUPON = "$BASE_URL/api/merchants/redeem-coupon/"
-    const val   GET_ALL_COUPON = "$BASE_URL/api/merchants/coupons/"
-
-    const val   GET_ALL_Customer_COUPON = "$BASE_URL/api/merchants/customer/coupons/"
-    const val   GET_ALL_OUTLETS = "$BASE_URL/api/merchants/outlets/"
-
-
+    const val GET_ALL_COUPON = "$BASE_URL/api/merchants/coupons/"
+    const val GET_ALL_Customer_COUPON = "$BASE_URL/api/merchants/customer/coupons/"
+    const val GET_ALL_OUTLETS = "$BASE_URL/api/merchants/outlets/"
     const val PROMOTIONS = "$BASE_URL/api/merchants/promotions/"
+
+    // QR Code endpoints
+    const val SCAN_QR_CODE = "$BASE_URL/api/merchants/scan-qr/"
+    const val AWARD_POINTS = "$BASE_URL/api/merchants/award-points/"
+    const val CUSTOMER_QR_INFO = "$BASE_URL/api/merchants/customer-qr/"
 
     // Loyalty endpoints
     const val TRANSACTIONS = "$BASE_URL/api/loyalty/transactions/"
@@ -48,4 +49,5 @@ object ApiEndpoints {
     fun couponById(id: String) = "$COUPONS_DETAIL$id/"
     fun transactionById(id: String) = "$TRANSACTIONS$id/"
     fun notificationById(id: String) = "$NOTIFICATIONS$id/"
+    fun customerQRInfo(qrId: String) = "$CUSTOMER_QR_INFO$qrId/"
 }

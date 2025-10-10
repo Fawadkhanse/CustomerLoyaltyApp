@@ -23,6 +23,7 @@ import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.example.project.presentation.ui.auth.viewmodel.AuthViewModel
 import org.example.project.presentation.ui.coupons.CouponViewModel
 import org.example.project.presentation.ui.home.HomeViewModel
+import org.example.project.presentation.ui.transaction.TransactionViewModel
 import org.example.project.utils.dataholder.AuthData
 import org.example.project.utils.dataholder.TokenManager
 import org.example.project.utils.isValidEmail
@@ -270,3 +271,15 @@ expect fun ByteArray.encodeBase64(): String
 // Expect function to get ViewModel in common
 @Composable
 expect fun rememberCouponViewModel(): CouponViewModel
+@Composable
+expect fun rememberTransactionViewModel(): TransactionViewModel
+
+@Composable
+expect fun QRScannerCameraView(
+    onQRCodeScanned: (String) -> Unit,
+    modifier: Modifier = Modifier
+)
+
+// ViewModel expect function
+@Composable
+expect fun rememberQRScannerViewModel(): QRScannerViewModel

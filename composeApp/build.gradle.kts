@@ -34,6 +34,10 @@ kotlin {
             implementation(libs.koin.android)
             implementation(libs.koin.compose)
             implementation(libs.ktor.client.android)
+            implementation("com.google.mlkit:barcode-scanning:17.2.0")
+
+            // Permissions
+            implementation("com.google.accompanist:accompanist-permissions:0.32.0")
         }
         commonMain.dependencies {
             implementation(compose.runtime)

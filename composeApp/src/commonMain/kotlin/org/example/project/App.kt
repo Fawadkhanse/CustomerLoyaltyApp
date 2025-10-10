@@ -122,6 +122,5 @@ enum class BottomTabItem(
     SETTINGS("Settings", AppIcons.Settings, "settings")
 }
 
-// Updated Navigation - no prompts handled here
 
 

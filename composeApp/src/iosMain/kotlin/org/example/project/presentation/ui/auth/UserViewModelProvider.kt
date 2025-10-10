@@ -6,6 +6,7 @@ import androidx.compose.runtime.remember
 import org.example.project.presentation.ui.auth.viewmodel.AuthViewModel
 import org.example.project.presentation.ui.coupons.CouponViewModel
 import org.example.project.presentation.ui.home.HomeViewModel
+import org.example.project.presentation.ui.transaction.TransactionViewModel
 
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -15,6 +16,7 @@ private class ViewModelProvider : KoinComponent {
     val viewModel: HomeViewModel by inject()
     val profileViewModel: ProfileViewModel by inject()
     val couponViewModel: CouponViewModel by inject()
+    val transactionViewModel: TransactionViewModel by inject()
 
 
 }
@@ -46,3 +48,8 @@ actual fun rememberCouponViewModel(): CouponViewModel {
     return provider.couponViewModel
 }
 
+@Composable
+actual fun rememberTransactionViewModel(): TransactionViewModel {
+    val provider = remember { ViewModelProvider() }
+    return provider.transactionViewModel
+}
