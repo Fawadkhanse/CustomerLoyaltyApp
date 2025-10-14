@@ -21,6 +21,8 @@ import org.example.project.presentation.common.PromptsViewModel
 import org.example.project.presentation.components.ScreenContainer
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
+import org.example.project.presentation.ui.auth.QRScannerCameraView
+import org.example.project.presentation.ui.auth.rememberQRScannerViewModel
 import org.example.project.utils.QRCodeUtils
 
 @Composable
@@ -89,38 +91,38 @@ fun QRScannerScreen(
                     .fillMaxSize()
                     .background(Color.Black.copy(alpha = 0.3f))
             ) {
-                // Top Bar
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    IconButton(
-                        onClick = onBack,
-                        modifier = Modifier
-                            .background(Color.Black.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
-                    ) {
-                        Icon(
-                            imageVector = AppIcons.ArrowBack,
-                            contentDescription = "Back",
-                            tint = Color.White
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    Text(
-                        text = "Scan QR Code",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    Spacer(modifier = Modifier.width(48.dp))
-                }
+//                // Top Bar
+//                Row(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(16.dp),
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//                    IconButton(
+//                        onClick = onBack,
+//                        modifier = Modifier
+//                            .background(Color.Black.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
+//                    ) {
+//                        Icon(
+//                            imageVector = AppIcons.ArrowBack,
+//                            contentDescription = "Back",
+//                            tint = Color.White
+//                        )
+//                    }
+//
+//                    Spacer(modifier = Modifier.weight(1f))
+//
+//                    Text(
+//                        text = "Scan QR Code",
+//                        style = MaterialTheme.typography.titleLarge,
+//                        color = Color.White,
+//                        fontWeight = FontWeight.Bold
+//                    )
+//
+//                    Spacer(modifier = Modifier.weight(1f))
+//
+//                    Spacer(modifier = Modifier.width(48.dp))
+//                }
 
                 Spacer(modifier = Modifier.weight(1f))
 

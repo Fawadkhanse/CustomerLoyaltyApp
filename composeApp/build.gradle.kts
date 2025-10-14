@@ -34,9 +34,15 @@ kotlin {
             implementation(libs.koin.android)
             implementation(libs.koin.compose)
             implementation(libs.ktor.client.android)
+            // Camera X (for Android)
+            implementation("androidx.camera:camera-camera2:1.3.1")
+            implementation("androidx.camera:camera-lifecycle:1.3.1")
+            implementation("androidx.camera:camera-view:1.3.1")
+
+            // ML Kit Barcode Scanning
             implementation("com.google.mlkit:barcode-scanning:17.2.0")
 
-            // Permissions
+            // Accompanist Permissions
             implementation("com.google.accompanist:accompanist-permissions:0.32.0")
         }
         commonMain.dependencies {

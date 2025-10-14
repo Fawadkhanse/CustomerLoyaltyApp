@@ -13,6 +13,7 @@ import org.example.project.presentation.common.PromptsViewModel
 import org.example.project.presentation.ui.auth.viewmodel.AuthViewModel
 import org.example.project.presentation.ui.coupons.CouponViewModel
 import org.example.project.presentation.ui.home.HomeViewModel
+import org.example.project.presentation.ui.qr.QRScannerViewModel
 import org.example.project.presentation.ui.transaction.TransactionViewModel
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
@@ -41,6 +42,7 @@ val viewModelModule = module {
     factory<ProfileViewModel> { ProfileViewModel(get()) }
     factory<CouponViewModel> { CouponViewModel(get()) }
     factory<TransactionViewModel> { TransactionViewModel(get()) }
+    factory<QRScannerViewModel> { QRScannerViewModel(get()) }
 }
 
 // Helper function to initialize Koin
