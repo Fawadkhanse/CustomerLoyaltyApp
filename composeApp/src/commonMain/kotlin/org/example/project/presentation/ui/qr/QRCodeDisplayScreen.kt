@@ -135,7 +135,7 @@ fun QRCodeDisplayScreen(
                 modifier = Modifier.padding(bottom = 40.dp)
             )
 
-            Spacer(modifier = Modifier.weight(0.3f))
+            Spacer(modifier = Modifier.height(24.dp))
 
             // QR Code Container
             QRCodeCard(
@@ -143,8 +143,8 @@ fun QRCodeDisplayScreen(
                 customerName = customerName
             )
 
-            Spacer(modifier = Modifier.weight(0.5f))
-
+//            Spacer(modifier = Modifier.weight(0.3f))
+            Spacer(modifier = Modifier.height(24.dp))
             // Info Text
             Text(
                 text = "Show this QR code to the merchant to collect points",
@@ -155,24 +155,24 @@ fun QRCodeDisplayScreen(
             )
 
             // Action Buttons
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                // Share QR Button
-                LoyaltyPrimaryButton(
-                    text = "Share QR Code",
-                    onClick = onShareQR,
-                    icon = AppIcons.Share
-                )
-
-                // Download QR Button
-                LoyaltySecondaryButton(
-                    text = "Download QR",
-                    onClick = onDownloadQR,
-                    icon = AppIcons.Download
-                )
-            }
+//            Column(
+//                modifier = Modifier.fillMaxWidth(),
+//                verticalArrangement = Arrangement.spacedBy(16.dp)
+//            ) {
+//                // Share QR Button
+//                LoyaltyPrimaryButton(
+//                    text = "Share QR Code",
+//                    onClick = onShareQR,
+//                    icon = AppIcons.Share
+//                )
+//
+//                // Download QR Button
+//                LoyaltySecondaryButton(
+//                    text = "Download QR",
+//                    onClick = onDownloadQR,
+//                    icon = AppIcons.Download
+//                )
+//            }
         }
     }
 }
@@ -261,7 +261,7 @@ fun QRCodeDisplayScreenPreview() {
     MaterialTheme {
         QRCodeDisplayScreen(
             customerName = "John Doe",
-            qrCodeData = "littleAppStation00ABC123XYZ",
+            qrCodeData = "littleAppStation0092454e70-fd45-4046-8cb0-a3e483628485",
             onShareQR = {},
             onDownloadQR = {},
             onBack = {}

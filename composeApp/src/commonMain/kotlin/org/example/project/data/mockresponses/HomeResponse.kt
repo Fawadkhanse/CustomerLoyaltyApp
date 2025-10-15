@@ -77,7 +77,6 @@ val mockMerchantDashboardResponse = MerchantDashboardResponse(
             memberSince = "2023-01-15"
         ),
         todayStats = MerchantDashboardData.TodayStats(
-            scansToday = 120,
             pointsAwardedToday = 850,
             couponsRedeemedToday = 35,
             revenueImpact = "$2,450"

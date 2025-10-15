@@ -33,7 +33,7 @@ object ApiEndpoints {
     const val PROMOTIONS = "$BASE_URL/api/merchants/promotions/"
 
     // QR Code endpoints
-    const val SCAN_QR_CODE = "$BASE_URL/api/merchants/scan-qr/"
+    const val SCAN_QR_CODE = "$BASE_URL/api/user/qr/scan/"
     const val AWARD_POINTS = "$BASE_URL/api/merchants/award-points/"
     const val CUSTOMER_QR_INFO = "$BASE_URL/api/merchants/customer-qr/"
 

@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import org.example.project.domain.models.QRScanResponse
 import org.example.project.domain.models.Resource
 import org.example.project.presentation.common.HandleApiState
 import org.example.project.presentation.common.PromptsViewModel
@@ -306,7 +307,3 @@ data class CustomerInfo(
     val qrId: String
 )
 
-data class QRScanResponse(
-    val success: Boolean,
-    val customer: CustomerInfo?
-)
