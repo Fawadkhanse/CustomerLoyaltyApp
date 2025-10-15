@@ -23,6 +23,7 @@ import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.example.project.presentation.ui.auth.viewmodel.AuthViewModel
 import org.example.project.presentation.ui.coupons.CouponViewModel
 import org.example.project.presentation.ui.home.HomeViewModel
+import org.example.project.presentation.ui.outlets.OutletLocation
 import org.example.project.presentation.ui.outlets.OutletViewModel
 import org.example.project.presentation.ui.qr.QRScannerViewModel
 import org.example.project.presentation.ui.transaction.TransactionViewModel
@@ -282,9 +283,20 @@ expect fun QRScannerCameraView(
     modifier: Modifier = Modifier
 )
 
+@Composable
+expect fun OutletMapView(
+    outlets: List<OutletLocation>,
+    selectedOutlet: OutletLocation?,
+    onOutletMarkerClick: (OutletLocation) -> Unit,
+    onMapClick: () -> Unit
+)
+
 // ViewModel expect function
 @Composable
 expect fun rememberQRScannerViewModel(): QRScannerViewModel
 
 @Composable
 expect fun rememberOutletViewModel(): OutletViewModel
+
+
+

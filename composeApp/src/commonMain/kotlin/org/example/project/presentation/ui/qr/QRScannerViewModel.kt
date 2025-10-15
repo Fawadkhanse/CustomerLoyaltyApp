@@ -10,7 +10,6 @@ import org.example.project.data.api.HttpMethod
 import org.example.project.domain.RemoteRepository
 import org.example.project.domain.models.AwardPointsRequest
 import org.example.project.domain.models.AwardPointsResponse
-import org.example.project.domain.models.CustomerQRInfoResponse
 import org.example.project.domain.models.QRScanRequest
 import org.example.project.domain.models.QRScanResponse
 import org.example.project.domain.models.Resource
