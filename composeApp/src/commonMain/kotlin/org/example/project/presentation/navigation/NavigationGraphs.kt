@@ -269,7 +269,7 @@ fun NavGraphBuilder.merchantGraph(
         )
     }
 
-    // Outlet Detail
+    //]]
     composable(
         route = OutletRoutes.OutletDetail.route,
         arguments = listOf(navArgument(RouteParams.OUTLET_ID) { type = NavType.StringType })
@@ -283,10 +283,27 @@ fun NavGraphBuilder.merchantGraph(
                 navController.popBackStack()
             },
             onEdit = {
-                // Handle edit
-            }
+                navController.navigate(OutletRoutes.EditOutlet.createRoute(outletId))
+            }, outletId = outletId
         )
     }
+
+    // Outlet Detail
+    composable(
+        route = OutletRoutes.EditOutlet.route,
+        arguments = listOf(navArgument(RouteParams.OUTLET_ID) { type = NavType.StringType })
+    ) { backStackEntry ->
+        LaunchedEffect(Unit) {
+            updateTopBottomAppBar(true, "Edite Outlet", false)
+        }
+        val outletId = backStackEntry.arguments?.getString(RouteParams.OUTLET_ID) ?: ""
+        EditOutletScreenRoute(
+            onBack = {
+                navController.popBackStack()
+            }, outletId = outletId
+        )
+    }
+
 
     // Add Outlet
     composable(MerchantRoutes.AddOutlet.route) {

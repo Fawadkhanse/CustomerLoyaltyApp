@@ -75,3 +75,4 @@ data class OutletResponse(
     @SerialName("updated_at")
     val updatedAt: String
 )
+// Request model for updating outlet

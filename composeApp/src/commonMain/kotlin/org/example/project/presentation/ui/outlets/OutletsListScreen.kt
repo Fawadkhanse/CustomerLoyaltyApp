@@ -85,13 +85,13 @@ private fun OutletsListScreen(
                     textAlign = TextAlign.Center
                 )
 
-                IconButton(onClick = onAddOutlet) {
-                    Icon(
-                        imageVector = AppIcons.Add,
-                        contentDescription = "Add Outlet",
-                        tint = LoyaltyColors.OrangePink
-                    )
-                }
+//                IconButton(onClick = onAddOutlet) {
+//                    Icon(
+//                        imageVector = AppIcons.Add,
+//                        contentDescription = "Add Outlet",
+//                        tint = LoyaltyColors.OrangePink
+//                    )
+//                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -99,14 +99,14 @@ private fun OutletsListScreen(
             // Content based on state
             when (outletsState) {
                 is Resource.Loading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(
-                            color = LoyaltyColors.OrangePink
-                        )
-                    }
+//                    Box(
+//                        modifier = Modifier.fillMaxSize(),
+//                        contentAlignment = Alignment.Center
+//                    ) {
+//                        CircularProgressIndicator(
+//                            color = LoyaltyColors.OrangePink
+//                        )
+//                    }
                 }
                 is Resource.Error -> {
                     Box(
