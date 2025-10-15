@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import org.example.project.presentation.ui.auth.viewmodel.AuthViewModel
 import org.example.project.presentation.ui.coupons.CouponViewModel
 import org.example.project.presentation.ui.home.HomeViewModel
+import org.example.project.presentation.ui.outlets.OutletViewModel
 import org.example.project.presentation.ui.qr.QRScannerViewModel
 import org.example.project.presentation.ui.transaction.TransactionViewModel
 import org.koin.compose.koinInject
@@ -29,6 +30,13 @@ actual fun rememberTransactionViewModel(): TransactionViewModel {
 actual fun rememberQRScannerViewModel(): QRScannerViewModel {
     return koinInject()
 }
+
+@Composable
+actual fun rememberOutletViewModel(): OutletViewModel {
+    return koinInject()
+}
+
+
 actual fun ByteArray.encodeBase64(): String {
     return android.util.Base64.encodeToString(this, android.util.Base64.NO_WRAP)
 }

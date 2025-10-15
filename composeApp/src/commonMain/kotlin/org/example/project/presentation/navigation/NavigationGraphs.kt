@@ -264,7 +264,7 @@ fun NavGraphBuilder.merchantGraph(
                 navController.navigate(MerchantRoutes.AddOutlet.route)
             },
             onOutletClick = { outlet ->
-                navController.navigate(OutletRoutes.OutletDetail.createRoute(outlet.id))
+                navController.navigate(OutletRoutes.OutletDetail.createRoute(outlet))
             }
         )
     }
