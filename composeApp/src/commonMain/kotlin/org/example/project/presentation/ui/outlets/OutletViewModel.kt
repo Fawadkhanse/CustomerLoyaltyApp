@@ -8,10 +8,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.example.project.data.api.ApiEndpoints
 import org.example.project.data.api.HttpMethod
+import org.example.project.domain.GetAllOutletsResponse
 import org.example.project.domain.RemoteRepository
 import org.example.project.domain.models.*
 import org.example.project.presentation.common.BaseViewModel
 import org.example.project.presentation.common.constent.GlobalVar
+import kotlin.math.*
 
 class OutletViewModel(
     private val remoteRepository: RemoteRepository
@@ -40,6 +42,25 @@ class OutletViewModel(
     // Current outlet being viewed/edited
     private val _currentOutlet = MutableStateFlow<OutletResponse?>(null)
     val currentOutlet: StateFlow<OutletResponse?> = _currentOutlet.asStateFlow()
+    // Search query
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+
+    // Map view toggle
+    private val _isMapView = MutableStateFlow(false)
+    val isMapView: StateFlow<Boolean> = _isMapView.asStateFlow()
+
+    // Selected outlet
+    private val _selectedOutlet = MutableStateFlow<OutletMapData?>(null)
+    val selectedOutlet: StateFlow<OutletMapData?> = _selectedOutlet.asStateFlow()
+
+    // User location
+    private val _userLocation = MutableStateFlow<LocationData?>(null)
+    val userLocation: StateFlow<LocationData?> = _userLocation.asStateFlow()
+
+    // Processed outlets for UI
+    private val _outlets = MutableStateFlow<List<OutletMapData>>(emptyList())
+    val outlets: StateFlow<List<OutletMapData>> = _outlets.asStateFlow()
 
     /**
      * Load all outlets
@@ -159,6 +180,107 @@ class OutletViewModel(
     }
 
     /**
+     * Calculate distance from user location
+     */
+
+    private fun calculateDistance(lat: Double, lng: Double): Double {
+        val userLat = _userLocation.value?.latitude ?: return 0.0
+        val userLng = _userLocation.value?.longitude ?: return 0.0
+
+        val earthRadius = 6371.0 // km
+
+        val dLat = (lat - userLat).toRadians()
+        val dLng = (lng - userLng).toRadians()
+
+        val a = sin(dLat / 2) * sin(dLat / 2) +
+                cos(userLat.toRadians()) * cos(lat.toRadians()) *
+                sin(dLng / 2) * sin(dLng / 2)
+
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+        return earthRadius * c
+    }
+
+    // Extension function for clarity
+    private fun Double.toRadians(): Double = this * PI / 180
+
+
+    /**
+     * Update user location
+     */
+    fun updateUserLocation(latitude: Double, longitude: Double) {
+        _userLocation.value = LocationData(latitude, longitude)
+        // Recalculate distances
+        val currentList = (_outletsListState.value as? Resource.Success)?.data
+        if (currentList != null) {
+            processOutlets(currentList)
+        }
+    }
+    private fun processOutlets(outletsList: List<OutletResponse>) {
+        _outlets.value = outletsList.mapNotNull { outlet ->
+            val lat = outlet.latitude?.toDoubleOrNull()
+            val lng = outlet.longitude?.toDoubleOrNull()
+
+            if (lat != null && lng != null) {
+                OutletMapData(
+                    id = outlet.id ?: "",
+                    name = outlet.name ?: "",
+                    address = "${outlet.address ?: ""}, ${outlet.city ?: ""}, ${outlet.state ?: ""}",
+                    city = outlet.city ?: "",
+                    phone = outlet.contactNumber ?: "",
+                    latitude = lat,
+                    longitude = lng,
+                    distance = calculateDistance(lat, lng)
+                )
+            } else null
+        }
+    }
+    /**
+     * Search outlets
+     */
+    fun searchOutlets(query: String) {
+        _searchQuery.value = query
+        val currentList = (_outletsListState.value as? Resource.Success)?.data ?: return
+
+        if (query.isBlank()) {
+            processOutlets(currentList)
+        } else {
+            val filtered = currentList.filter { outlet ->
+                outlet.name?.contains(query, ignoreCase = true) == true ||
+                        outlet.address?.contains(query, ignoreCase = true) == true ||
+                        outlet.city?.contains(query, ignoreCase = true) == true
+            }
+            processOutlets(filtered)
+        }
+    }
+
+    /**
+     * Toggle map view
+     */
+    fun toggleMapView() {
+        _isMapView.value = !_isMapView.value
+    }
+
+    /**
+     * Select outlet
+     */
+    fun selectOutlet(outlet: OutletMapData?) {
+        _selectedOutlet.value = outlet
+    }
+
+    /**
+     * Get nearest outlets
+     */
+    fun getNearestOutlets(count: Int = 5): List<OutletMapData> {
+        return _outlets.value.sortedBy { it.distance }.take(count)
+    }
+
+    /**
+     * Refresh outlets
+     */
+
+
+    /**
      * Clear states
      */
     fun clearCreateOutletState() {
@@ -240,4 +362,20 @@ private fun getMockOutlet(): OutletResponse = OutletResponse(
     contactNumber = "03001234567",
     createdAt = "2025-09-19T13:53:53.953848Z",
     updatedAt = "2025-09-19T13:53:53.953848Z"
+)
+// Data classes
+data class OutletMapData(
+    val id: String,
+    val name: String,
+    val address: String,
+    val city: String,
+    val phone: String,
+    val latitude: Double,
+    val longitude: Double,
+    val distance: Double = 0.0
+)
+
+data class LocationData(
+    val latitude: Double,
+    val longitude: Double
 )

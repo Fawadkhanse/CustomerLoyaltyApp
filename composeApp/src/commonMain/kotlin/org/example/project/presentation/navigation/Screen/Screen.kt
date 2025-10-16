@@ -16,7 +16,7 @@ sealed class Screen(val route: String) {
     object MyQR : Screen("my_qr")
     object Coupons : Screen("coupons")
     object Profile : Screen("profile")
-
+    object OutletsMaps : Screen("OutletsMaps")
     // Merchant Screens
     object Dashboard : Screen("merchant_dashboard")
     object ScanQR : Screen("scan_qr")

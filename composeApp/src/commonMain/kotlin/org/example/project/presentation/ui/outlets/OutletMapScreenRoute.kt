@@ -196,7 +196,7 @@ fun OpenOutletInExternalMap(
 
 @Preview(showBackground = true)
 @Composable
-private fun OpenOutletInExternalMapPreview() {
+private fun OutletMapScreenPreview() {
     val mockOutlets = listOf(
         GetAllOutletsResponse(id = "1", name = "Outlet 1", address = "123 Main St", latitude =" 1.2921", longitude = "103.8519",),
         GetAllOutletsResponse(id = "2", name = "Outlet 2", address = "456 Orchard Rd", latitude = "1.3048", longitude = "103.8318",),

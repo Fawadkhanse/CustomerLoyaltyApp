@@ -220,6 +220,17 @@ fun NavGraphBuilder.customerGraph(
             }
         )
     }
+
+    composable(CustomerRoutes.OutletsMap.route) {
+        LaunchedEffect(Unit) {
+            updateTopBottomAppBar(false, "Find Outlets", true)
+        }
+        OutletMapScreenRoute(
+            onBack = {
+                navController.popBackStack()
+            }
+        )
+    }
 }
 
 /**

@@ -24,11 +24,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import customerloyaltyapp.composeapp.generated.resources.Res
-import customerloyaltyapp.composeapp.generated.resources.onbarding
 import kotlinx.coroutines.launch
 import org.example.project.presentation.components.LoyaltyPrimaryButton
 import org.example.project.presentation.design.LoyaltyColors
@@ -40,7 +40,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 data class OnboardingPage(
     val title: String,
     val description: String,
-    val image: Painter
+    val image: ImageVector
 )
 
 @Composable
@@ -52,17 +52,18 @@ fun OnboardingScreenRoute(
         OnboardingPage(
             title = "Earn Points",
             description = "Earn points with every purchase and climb the loyalty ladder.",
-            image = painterResource(Res.drawable.onbarding)
+           // image = painterResource(Res.drawable.onbarding)
+            image = AppIcons.Points
         ),
         OnboardingPage(
             title = "Unlock Rewards",
             description = "Redeem your points for amazing rewards and exclusive offers.",
-            image = painterResource(Res.drawable.onbarding)
+            image =AppIcons.Coupon
         ),
         OnboardingPage(
             title = "Get Started",
             description = "Join our loyalty program and start enjoying the benefits today.",
-            image = painterResource(Res.drawable.onbarding)
+            image =AppIcons.Points
         )
     )
 
@@ -167,12 +168,19 @@ private fun OnboardingPageContent(
                     RoundedCornerShape(100.dp)
                 ),
             contentAlignment = Alignment.Center
-        ) {
+        ) {// Assuming 'page.image' is an ImageVector and 'page.title' is a descriptive string.
+
             Image(
-                painter = page.image,
+                // Suggestion 1 & 2: Use the correct, named argument 'imageVector'.
+                imageVector = page.image,
+
+                // Suggestion 3: Ensure this description is meaningful for accessibility.
+                // If the image is purely decorative, this should be null.
                 contentDescription = page.title,
+
                 modifier = Modifier.size(120.dp)
             )
+
         }
 
         Spacer(modifier = Modifier.height(40.dp))

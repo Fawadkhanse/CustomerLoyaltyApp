@@ -78,14 +78,16 @@ data class MerchantDashboardData(
         val customerName: String? = null,
         @SerialName("customer_id")
         val customerId: String? = null,
-        @SerialName("points_awarded")
-        val pointsAwarded: Int? = null,
+        @SerialName("points")
+        val points: Int? = null,
         @SerialName("transaction_type")
-        val transactionType: String? = null, // "scan", "redeem"
+        val transactionType: String? = null, // "earn"
         @SerialName("outlet_name")
         val outletName: String? = null,
         @SerialName("outlet_id")
         val outletId: String? = null,
+        @SerialName("coupon_title")
+        val couponTitle: String? = null,
         @SerialName("timestamp")
         val timestamp: String? = null,
         @SerialName("location")
@@ -146,7 +148,7 @@ data class MerchantDashboardData(
         @SerialName("total_points_awarded")
         val totalPointsAwarded: Int? = null,
         @SerialName("average_points_per_transaction")
-        val averagePointsPerTransaction: Int? = null, // Can be Double too
+        val averagePointsPerTransaction: Double? = null, // Can be Double too
         @SerialName("total_transactions")
         val totalTransactions: Int? = null
     )

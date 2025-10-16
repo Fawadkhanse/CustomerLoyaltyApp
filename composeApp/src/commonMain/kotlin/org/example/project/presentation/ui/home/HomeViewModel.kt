@@ -126,7 +126,7 @@ class HomeViewModel(
                 TransactionData(
                     id = transaction.id ?: "",
                     customerName = transaction.customerName ?: "Unknown Customer",
-                    points = transaction.pointsAwarded ?: 0,
+                    points = transaction.points ?: 0,
                     location = transaction.outletName ?: transaction.location ?: "Unknown Location",
                     timestamp = formatTimestamp(transaction.timestamp ?: "")
                 )

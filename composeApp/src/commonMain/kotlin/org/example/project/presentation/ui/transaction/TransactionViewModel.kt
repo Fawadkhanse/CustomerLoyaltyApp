@@ -169,13 +169,13 @@ class TransactionViewModel(
     private fun processTransactions(transactionsList: List<TransactionResponse>) {
         _transactions.value = transactionsList.map { transaction ->
             TransactionHistoryData(
-                id = transaction.id,
+                id = transaction.id?:"0",
                 customerName = "User ${transaction.user.take(8)}", // You may need to fetch user details
-                points = transaction.points,
-                dateTime = formatDateTime(transaction.createdAt),
-                type = if (transaction.points > 0) "awarded" else "redeemed",
+                points = transaction.points?:0,
+                dateTime = formatDateTime(transaction.createdAt?:""),
+                type = if (transaction.points!! > 0) "awarded" else "redeemed",
                 description = if (transaction.coupon != null) "Coupon redeemed" else "Points awarded",
-                outletName = "Outlet ${transaction.outlet.take(8)}" // You may need to fetch outlet details
+                outletName = "Outlet ${transaction.outlet?.take(8)}" // You may need to fetch outlet details
             )
         }
     }
@@ -198,7 +198,7 @@ class TransactionViewModel(
     fun filterByDateRange(startDate: String, endDate: String) {
         val currentList = (_transactionsListState.value as? Resource.Success)?.data ?: return
         val filtered = currentList.filter { transaction ->
-            transaction.createdAt >= startDate && transaction.createdAt <= endDate
+            transaction.createdAt !!>= startDate && transaction.createdAt <= endDate
         }
         processTransactions(filtered)
     }
@@ -218,9 +218,9 @@ class TransactionViewModel(
     fun searchTransactions(query: String) {
         val currentList = (_transactionsListState.value as? Resource.Success)?.data ?: return
         val filtered = currentList.filter { transaction ->
-            transaction.id.contains(query, ignoreCase = true) ||
+            transaction.id?.contains(query, ignoreCase = true) == true ||
                     transaction.user.contains(query, ignoreCase = true) ||
-                    transaction.outlet.contains(query, ignoreCase = true)
+                    transaction.outlet?.contains(query, ignoreCase = true) == true
         }
         processTransactions(filtered)
     }

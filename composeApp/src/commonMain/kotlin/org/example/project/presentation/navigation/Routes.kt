@@ -80,6 +80,9 @@ object CustomerRoutes {
     object Coupons {
         const val route = "coupons"
     }
+    object OutletsMap {
+        const val route = "OutletsMaps"
+    }
 
     object CouponDetail {
         const val route = "coupon_detail/{couponId}"

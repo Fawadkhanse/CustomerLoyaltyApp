@@ -12,7 +12,7 @@ data class CreateTransactionRequest(
     @SerialName("merchant")
     val merchant: String,
     @SerialName("outlet")
-    val outlet: String,
+    val outlet: String?,
     @SerialName("coupon")
     val coupon: String? = null,
     @SerialName("points")
@@ -23,19 +23,19 @@ data class CreateTransactionRequest(
 @Serializable
 data class TransactionResponse(
     @SerialName("id")
-    val id: String,
+    val id: String?,
     @SerialName("user")
     val user: String,
     @SerialName("merchant")
     val merchant: String,
     @SerialName("outlet")
-    val outlet: String,
+    val outlet: String?,
     @SerialName("coupon")
     val coupon: String? = null,
     @SerialName("points")
-    val points: Int,
+    val points: Int?,
     @SerialName("created_at")
-    val createdAt: String
+    val createdAt: String?
 )
 
 // Update transaction request
@@ -46,7 +46,7 @@ data class UpdateTransactionRequest(
     @SerialName("merchant")
     val merchant: String,
     @SerialName("outlet")
-    val outlet: String,
+    val outlet: String?,
     @SerialName("coupon")
     val coupon: String? = null,
     @SerialName("points")
