@@ -1,16 +1,15 @@
 package org.example.project.presentation.ui.auth
 
-
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
@@ -18,6 +17,7 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
+import kotlinx.coroutines.delay
 import org.example.project.presentation.ui.outlets.OutletLocation
 
 @Composable
@@ -27,31 +27,28 @@ actual fun OutletMapView(
     onOutletMarkerClick: (OutletLocation) -> Unit,
     onMapClick: () -> Unit,
 ) {
-    val context = LocalContext.current
+    val cameraPositionState = rememberCameraPositionState()
 
-    // Calculate center and bounds from outlets
-    val centerPosition = remember(outlets) {
+    // Show all markers by default
+    LaunchedEffect(outlets) {
         if (outlets.isNotEmpty()) {
-            val avgLat = outlets.map { it.latitude }.average()
-            val avgLng = outlets.map { it.longitude }.average()
-            LatLng(avgLat, avgLng)
-        } else {
-            LatLng(33.6844, 73.0479) // Default: Rawalpindi
+            val boundsBuilder = LatLngBounds.builder()
+            outlets.forEach { outlet ->
+                boundsBuilder.include(LatLng(outlet.latitude, outlet.longitude))
+            }
+            val bounds = boundsBuilder.build()
+            // Small delay ensures map is ready before moving camera
+            delay(300)
+            cameraPositionState.animate(CameraUpdateFactory.newLatLngBounds(bounds, 100))
         }
     }
 
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(centerPosition, 12f)
-    }
-
-    // Update camera when selected outlet changes
+    // When user selects a marker from bottom sheet → move camera there
     LaunchedEffect(selectedOutlet) {
         selectedOutlet?.let {
+            val target = LatLng(it.latitude, it.longitude)
             cameraPositionState.animate(
-                CameraUpdateFactory.newLatLngZoom(
-                    LatLng(it.latitude, it.longitude),
-                    15f
-                )
+                CameraUpdateFactory.newLatLngZoom(target, 15f)
             )
         }
     }
@@ -70,7 +67,6 @@ actual fun OutletMapView(
         ),
         onMapClick = { onMapClick() }
     ) {
-        // Add markers for each outlet
         outlets.forEach { outlet ->
             val position = LatLng(outlet.latitude, outlet.longitude)
             val isSelected = selectedOutlet?.id == outlet.id
@@ -84,17 +80,11 @@ actual fun OutletMapView(
                     true
                 },
                 icon = if (isSelected) {
-                    BitmapDescriptorFactory.defaultMarker(
-                        BitmapDescriptorFactory.HUE_ORANGE
-                    )
+                    BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)
                 } else {
-                    BitmapDescriptorFactory.defaultMarker(
-                        BitmapDescriptorFactory.HUE_YELLOW
-                    )
+                    BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)
                 }
             )
         }
     }
 }
-
-

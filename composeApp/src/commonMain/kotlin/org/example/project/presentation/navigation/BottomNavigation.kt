@@ -31,7 +31,7 @@ enum class MerchantBottomNavItems(
     HOME("Home", AppIcons.Home, Screen.Dashboard), // Replace with home icon
     SCAN_QR("Scan QR", AppIcons.QrScan, Screen.ScanQR), // Replace with scan icon
     OUTLETS("Outlets", AppIcons.Info, Screen.Outlets), // Replace with store icon
-    TRANSACTIONS("Transactions", AppIcons.Info, Screen.Transactions), // Replace with transaction icon
+    //TRANSACTIONS("Transactions", AppIcons.Info, Screen.Transactions), // Replace with transaction icon
     PROFILE("Profile", AppIcons.Person, Screen.Profile)
 }
 

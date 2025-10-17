@@ -200,17 +200,17 @@ private fun LoginScreen(
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // Merchant Login Link
-            TextButton(
-                onClick = onMerchantLogin,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-                Text(
-                    text = "I'm a Merchant",
-                    color = LoyaltyColors.OrangePink,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
+//            // Merchant Login Link
+//            TextButton(
+//                onClick = onMerchantLogin,
+//                modifier = Modifier.align(Alignment.CenterHorizontally)
+//            ) {
+//                Text(
+//                    text = "I'm a Merchant",
+//                    color = LoyaltyColors.OrangePink,
+//                    style = MaterialTheme.typography.bodyMedium
+//                )
+//            }
 
             Spacer(modifier = Modifier.weight(1f))
 
