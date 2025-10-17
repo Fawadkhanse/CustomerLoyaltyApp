@@ -33,7 +33,6 @@ fun OutletsScreenRoute(
 
     if (isMapView) {
         OutletMapScreenRoute(
-            outlets = outlets,
             onBack = { isMapView = false },
         )
     } else {

@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,43 +32,52 @@ import androidx.compose.ui.unit.dp
 import org.example.project.domain.models.OutletResponse
 import org.example.project.domain.models.Resource
 import org.example.project.domain.models.profile.GetProfileResponse
+import org.example.project.presentation.common.HandleApiState
 import org.example.project.presentation.common.PromptsViewModel
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.example.project.presentation.ui.auth.OutletMapView
+import org.example.project.presentation.ui.auth.rememberOutletViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun OutletMapScreenRoute(
     onBack: () -> Unit,
-    // Pass outlets from ViewModel or parent
-    outletsState: Resource<List<GetProfileResponse>>? = null,
-    outlets: List<OutletResponse> = emptyList()
 ) {
+    val viewModel= rememberOutletViewModel()
+    val outletsState by viewModel.outletsListState.collectAsState()
+    //val outlets by viewModel.outlets.collectAsState()
+
+
+    LaunchedEffect(Unit) {
+        viewModel.loadOutlets()
+    }
+
     OutletMapScreen(
-        outletsState = outletsState ?: Resource.Success(outlets),
-        outlets = outlets,
-        onBack = onBack
+        outletsState = outletsState,
+        onBack = {
+            viewModel.clearCreateOutletState()
+            onBack()
+        }
     )
 }
 
 @Composable
 private fun OutletMapScreen(
-    outletsState: Resource<*>,
-    outlets: List<OutletResponse>,
+    outletsState: Resource<List<OutletResponse>> = Resource.None,
     onBack: () -> Unit,
-    modifier: Modifier = Modifier,
     promptsViewModel: PromptsViewModel = remember { PromptsViewModel() }
 ) {
+    var outlets: List<OutletResponse>? by remember { mutableStateOf(null) }
     var showBottomSheet by remember { mutableStateOf(true) }
     var selectedOutlet by remember { mutableStateOf<OutletLocation?>(null) }
 
     // Convert API outlets to OutletLocation
     val outletLocations = remember(outlets) {
-        outlets.mapNotNull { it.toOutletLocation() }
+        outlets?.mapNotNull { it.toOutletLocation() } ?: emptyList()
     }
 
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize()) {
         // Map View
         OutletMapView(
             outlets = outletLocations,
@@ -145,28 +155,13 @@ private fun OutletMapScreen(
             )
         }
     }
-
-    // Handle loading/error states
-    when (outletsState) {
-        is Resource.Loading -> {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(color = LoyaltyColors.OrangePink)
-            }
-        }
-        is Resource.Error -> {
-            LaunchedEffect(outletsState) {
-                promptsViewModel.showError(
-                    message = outletsState.exception.message ?: "Failed to load outlets"
-                )
-            }
-        }
-        else -> {}
+    HandleApiState(
+        state = outletsState,
+        promptsViewModel = promptsViewModel
+    ) { response ->
+       outlets = response
     }
+
 }
 
 // Alternative: Simpler version that just opens in external map app
@@ -239,7 +234,6 @@ private fun OutletMapScreenPreview() {
     )
     OutletMapScreen(
         outletsState = Resource.Success(mockOutlets),
-        outlets = mockOutlets,
         onBack = {},
         promptsViewModel = PromptsViewModel()
     )
