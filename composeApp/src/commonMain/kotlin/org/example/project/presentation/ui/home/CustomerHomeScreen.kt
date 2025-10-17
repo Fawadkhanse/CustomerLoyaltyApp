@@ -27,6 +27,7 @@ fun CustomerHomeScreenRoute(
     onNavigateToProfile: () -> Unit,
     onNavigateToCouponDetails: (String) -> Unit,
     onNavigateToAllCoupons: () -> Unit,
+    onNavigateToAllActivity: () -> Unit
 ) {
     val viewModel = rememberHomeViewModel()
     val homeState by viewModel.homeState.collectAsState()
@@ -45,6 +46,7 @@ fun CustomerHomeScreenRoute(
         onProfileClick = onNavigateToProfile,
         onCouponClick = { coupon -> onNavigateToCouponDetails(coupon.id) }, // Assuming CouponData has an id
         onViewAllCoupons = onNavigateToAllCoupons,
+        onViewAllActivity = onNavigateToAllActivity,
         userName = AuthData.userName,
         userPoints = userPoints,
         tier = tier,
@@ -72,6 +74,7 @@ fun CustomerHomeScreenRoute(
     onProfileClick: () -> Unit,
     onCouponClick: (CouponData) -> Unit,
     onViewAllCoupons: () -> Unit,
+    onViewAllActivity: () -> Unit = {},
     onHomeResponseSuccess: (CustomerHomeResponse) -> Unit = {}
 ) {
      val currentPrompt by promptsViewModel.currentPrompt.collectAsState()
@@ -124,7 +127,10 @@ fun CustomerHomeScreenRoute(
                     // Recent Activity
                     if (recentActivity.isNotEmpty()) {
                         RecentActivitySection(
-                            activities = recentActivity
+                            activities = recentActivity,
+                            onViewAll = {
+                                onViewAllActivity()
+                            }
                         )
                     }
                 }

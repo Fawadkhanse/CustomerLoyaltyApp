@@ -2,6 +2,7 @@ package org.example.project.presentation.ui.auth
 
 
 import ProfileViewModel
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -11,6 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import littleappam.composeapp.generated.resources.Res
+import littleappam.composeapp.generated.resources.logo_name
+import littleappam.composeapp.generated.resources.main_logo
 import org.example.project.domain.models.Resource
 import org.example.project.domain.models.auth.login.UserLoginResponse
 import org.example.project.presentation.common.HandleApiState
@@ -30,6 +35,7 @@ import org.example.project.presentation.ui.transaction.TransactionViewModel
 import org.example.project.utils.dataholder.AuthData
 import org.example.project.utils.dataholder.TokenManager
 import org.example.project.utils.isValidEmail
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -120,9 +126,19 @@ private fun LoginScreen(
         Column(
             verticalArrangement = Arrangement.Center
         ) {
+            Spacer(Modifier.height(10.dp))
+            Row (modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    painter = painterResource(resource = Res.drawable.logo_name),
+                    contentDescription = "Logo",
+                    modifier = Modifier.height(150.dp).width(230.dp)
+                )
+            }
 
-            Spacer(Modifier.height(20.dp))
-            Spacer(Modifier.weight(1f))
+
+            Spacer(Modifier.height(10.dp))
 
             // Title - Centered and Bold
             Row(
@@ -132,9 +148,10 @@ private fun LoginScreen(
                 Text(
                     text = "Log In",
                     style = MaterialTheme.typography.headlineLarge,
+                    fontSize = 30.sp,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 40.dp)
+                    modifier = Modifier.padding(bottom = 20.dp)
                 )
             }
 

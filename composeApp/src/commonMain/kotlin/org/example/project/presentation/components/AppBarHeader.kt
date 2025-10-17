@@ -4,6 +4,7 @@ package org.example.project.presentation.components
 import AppIcons
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -19,8 +20,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import littleappam.composeapp.generated.resources.Res
+import littleappam.composeapp.generated.resources.logo
+import littleappam.composeapp.generated.resources.logo_name
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
@@ -52,6 +57,7 @@ fun AppBarHeader(
         ) + fadeOut(animationSpec = tween(300))
     ) {
         TopAppBar(
+
             title = {
                 Text(
                     text = title,
@@ -68,8 +74,9 @@ fun AppBarHeader(
                     IconButton(
                         onClick = backNavigationClick,
                         modifier = Modifier
-                            .size(40.dp)
+                            .size(30.dp)
                             .clip(CircleShape)
+                          //  .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f))
                     ) {
                         Icon(
                             imageVector = AppIcons.ArrowBack,
@@ -82,12 +89,20 @@ fun AppBarHeader(
             },
             actions = {
                 // Notification icon if needed
-                if (showNotifications) {
-                    NotificationIcon(
-                        count = notificationCount,
-                        onClick = onNotificationClick
-                    )
-                }
+
+
+                Image(
+                    painter = painterResource(resource = Res.drawable.logo),
+                    contentDescription = "Logo",
+                    modifier =  Modifier.size(30.dp).padding(end = 8.dp)
+                )
+
+//                if (showNotifications) {
+//                    NotificationIcon(
+//                        count = notificationCount,
+//                        onClick = onNotificationClick
+//                    )
+//                }
 
                 // Custom actions
                 actions()
@@ -437,34 +452,61 @@ fun HeaderActionButton(
     }
 }
 
-// Preview Composables
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "AppBarHeader Default")
 @Composable
 private fun AppBarHeaderPreview() {
+    AppBarHeader(
+        title = "Default Header",
+        visible = true,
+        backNavigationClick = {}
+    )
+}
+
+@Preview(showBackground = true, name = "AppBarHeader with Notifications")
+@Composable
+private fun AppBarHeaderWithNotificationsPreview() {
+    AppBarHeader(
+        title = "Notifications",
+        visible = true,
+        backNavigationClick = {},
+        showNotifications = true,
+        notificationCount = 3
+    )
+}
+
+@Preview(showBackground = true, name = "LoyaltyGradientHeader")
+@Composable
+private fun LoyaltyGradientHeaderPreview() {
+    LoyaltyGradientHeader(
+        title = "Gradient Header",
+        subtitle = "With a subtitle",
+        visible = true,
+        backNavigationClick = {}
+    )
+}
+
+@Preview(showBackground = true, name = "AuthHeader")
+@Composable
+private fun AuthHeaderPreview() {
+    AuthHeader(
+        title = "Sign In",
+        onBackClick = {}
+    )
+}
+
+@Preview(showBackground = true, name = "DashboardHeader")
+@Composable
+private fun DashboardHeaderPreview() {
     Column {
-        AppBarHeader(
-            title = "Loyalty App",
-            visible = true,
-            backNavigationClick = {},
-            showNotifications = true,
-            notificationCount = 5
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        LoyaltyGradientHeader(
-            title = "My Profile",
-            subtitle = "Manage your account",
-            visible = true,
-            backNavigationClick = {}
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
         DashboardHeader(
             userName = "John Doe",
-            greeting = "Good morning",
             notificationCount = 3
         )
     }
+}
+
+@Preview(showBackground = true, name = "HeaderActionButton")
+@Composable
+private fun HeaderActionButtonPreview() {
+    HeaderActionButton(icon = AppIcons.Notifications, contentDescription = "Action", onClick = {})
 }

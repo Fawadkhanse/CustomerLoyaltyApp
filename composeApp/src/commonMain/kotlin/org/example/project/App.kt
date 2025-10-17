@@ -112,15 +112,6 @@ internal fun MyAppInternal(
         }
     }
 }
-enum class BottomTabItem(
-    val title: String,
-    val icon: androidx.compose.ui.graphics.vector.ImageVector,
-    val route: String
-) {
-    HOME("Home", AppIcons.Info, "home"),
-    USERS("Users", AppIcons.Person, "users"),
-    SETTINGS("Settings", AppIcons.Settings, "settings")
-}
 
 
 

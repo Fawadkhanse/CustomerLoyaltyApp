@@ -166,6 +166,9 @@ fun NavGraphBuilder.customerGraph(
             },
             onNavigateToAllCoupons = {
                 navController.navigate(CustomerRoutes.Coupons.route)
+            },
+            onNavigateToAllActivity = {
+                navController.navigate(CustomerRoutes.Transactions.route)
             }
         )
     }
@@ -230,6 +233,13 @@ fun NavGraphBuilder.customerGraph(
                 navController.popBackStack()
             }
         )
+    }
+    // Transactions
+    composable(CustomerRoutes.Transactions.route) {
+        LaunchedEffect(Unit) {
+            updateTopBottomAppBar(true, "Transactions", false)
+        }
+        TransactionHistoryScreenRoute()
     }
 }
 
@@ -328,7 +338,7 @@ fun NavGraphBuilder.merchantGraph(
     // Transactions
     composable(MerchantRoutes.Transactions.route) {
         LaunchedEffect(Unit) {
-            updateTopBottomAppBar(false, "Transactions", true)
+            updateTopBottomAppBar(true, "Transactions", false)
         }
         TransactionHistoryScreenRoute()
     }
@@ -502,51 +512,7 @@ fun NavGraphBuilder.qrFlowGraph(
     }
 }
 
-/**
- * Transaction Flow navigation graph
- */
-fun NavGraphBuilder.transactionFlowGraph(
-    navController: NavHostController,
-    updateTopBottomAppBar: (Boolean, String, Boolean) -> Unit
-) {
-    navigation(
-        startDestination = TransactionRoutes.TransactionHistory.route,
-        route = TransactionRoutes.TransactionFlow.route
-    ) {
-        // Transaction History
-        composable(TransactionRoutes.TransactionHistory.route) {
-            LaunchedEffect(Unit) {
-                updateTopBottomAppBar(true, "Transaction History", false)
-            }
-            TransactionHistoryScreenRoute()
-        }
 
-        // Transaction Detail
-        composable(
-            route = TransactionRoutes.TransactionDetail.route,
-            arguments = listOf(navArgument(RouteParams.TRANSACTION_ID) { type = NavType.StringType })
-        ) { backStackEntry ->
-            LaunchedEffect(Unit) {
-                updateTopBottomAppBar(true, "Transaction Details", false)
-            }
-            val transactionId = backStackEntry.arguments?.getString(RouteParams.TRANSACTION_ID) ?: ""
-
-            // TransactionDetailScreenRoute would go here
-            // TransactionDetailScreenRoute(
-            //     transactionId = transactionId,
-            //     onBack = { navController.popBackStack() }
-            // )
-        }
-
-        // Transaction Receipt
-        composable(TransactionRoutes.TransactionReceipt.route) {
-            LaunchedEffect(Unit) {
-                updateTopBottomAppBar(true, "Receipt", false)
-            }
-            // TransactionReceiptScreenRoute would go here
-        }
-    }
-}
 
 /**
  * Extension functions for easier graph usage
@@ -561,5 +527,4 @@ fun NavGraphBuilder.addAllGraphs(
     settingsGraph(navController, updateTopBottomAppBar)
     commonScreensGraph(navController, updateTopBottomAppBar)
     qrFlowGraph(navController, updateTopBottomAppBar)
-    transactionFlowGraph(navController, updateTopBottomAppBar)
 }

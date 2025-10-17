@@ -1,4 +1,4 @@
-rootProject.name = "CustomerLoyaltyApp"
+rootProject.name = "LittleAppam"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {

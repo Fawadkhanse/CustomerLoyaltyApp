@@ -350,16 +350,32 @@ private fun HomeCouponCard(
 @Composable
 fun RecentActivitySection(
     activities: List<ActivityData>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onViewAll: () -> Unit
 ) {
     Column(modifier = modifier) {
-        Text(
-            text = "Recent Activity",
-            style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(bottom = 12.dp)
-        )
+
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Recent Activity",
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(bottom = 12.dp)
+            )
+            TextButton(onClick = onViewAll) {
+                Text(
+                    text = "View All",
+                    color = LoyaltyColors.OrangePink,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+        }
 
         Column(
             verticalArrangement = Arrangement.spacedBy(12.dp)
