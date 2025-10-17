@@ -70,9 +70,6 @@ kotlin {
             implementation("io.coil-kt.coil3:coil-compose:3.3.0")
             implementation("io.coil-kt.coil3:coil-network-ktor2:3.3.0")
             implementation(libs.qrose)
-            implementation("com.google.maps.android:maps-compose:2.11.4")
-            implementation("com.google.android.gms:play-services-maps:18.2.0")
-            implementation("com.google.android.gms:play-services-location:21.0.1")
             implementation(libs.calf.file.picker)
         }
         iosMain.dependencies {

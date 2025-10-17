@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.example.project.data.api.ApiEndpoints
 import org.example.project.data.api.HttpMethod
-import org.example.project.domain.GetAllOutletsResponse
 import org.example.project.domain.RemoteRepository
 import org.example.project.domain.models.*
 import org.example.project.presentation.common.BaseViewModel

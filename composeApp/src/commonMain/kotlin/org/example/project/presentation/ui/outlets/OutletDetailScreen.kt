@@ -11,7 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import org.example.project.domain.GetAllOutletsResponse
 import org.example.project.domain.models.OutletResponse
 import org.example.project.domain.models.Resource
 import org.example.project.presentation.common.HandleApiState

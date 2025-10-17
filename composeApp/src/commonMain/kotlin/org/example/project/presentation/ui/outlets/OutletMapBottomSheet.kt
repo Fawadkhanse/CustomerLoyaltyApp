@@ -17,7 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import org.example.project.domain.GetAllOutletsResponse
+import org.example.project.domain.models.OutletResponse
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
 
@@ -253,7 +253,7 @@ private fun OutletMapItem(
 }
 
 // Extension function to convert API response to OutletLocation
-fun GetAllOutletsResponse.toOutletLocation(): OutletLocation? {
+fun OutletResponse.toOutletLocation(): OutletLocation? {
     return try {
         OutletLocation(
             id = id ?: return null,

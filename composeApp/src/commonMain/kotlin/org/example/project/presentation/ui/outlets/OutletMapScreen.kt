@@ -28,8 +28,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.example.project.domain.GetAllOutletsResponse
+import org.example.project.domain.models.OutletResponse
 import org.example.project.domain.models.Resource
+import org.example.project.domain.models.profile.GetProfileResponse
 import org.example.project.presentation.common.PromptsViewModel
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
@@ -40,8 +41,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun OutletMapScreenRoute(
     onBack: () -> Unit,
     // Pass outlets from ViewModel or parent
-    outletsState: Resource<List<GetAllOutletsResponse>>? = null,
-    outlets: List<GetAllOutletsResponse> = emptyList()
+    outletsState: Resource<List<GetProfileResponse>>? = null,
+    outlets: List<OutletResponse> = emptyList()
 ) {
     OutletMapScreen(
         outletsState = outletsState ?: Resource.Success(outlets),
@@ -53,7 +54,7 @@ fun OutletMapScreenRoute(
 @Composable
 private fun OutletMapScreen(
     outletsState: Resource<*>,
-    outlets: List<GetAllOutletsResponse>,
+    outlets: List<OutletResponse>,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
     promptsViewModel: PromptsViewModel = remember { PromptsViewModel() }
@@ -198,9 +199,43 @@ fun OpenOutletInExternalMap(
 @Composable
 private fun OutletMapScreenPreview() {
     val mockOutlets = listOf(
-        GetAllOutletsResponse(id = "1", name = "Outlet 1", address = "123 Main St", latitude =" 1.2921", longitude = "103.8519",),
-        GetAllOutletsResponse(id = "2", name = "Outlet 2", address = "456 Orchard Rd", latitude = "1.3048", longitude = "103.8318",),
-        GetAllOutletsResponse(id = "3", name = "Outlet 3", address = "789 Marina Bay", latitude = "1.2824", longitude = "103.8596",)
+        OutletResponse(id = "1", name = "Outlet 1", address = "123 Main St", latitude =" 1.2921", longitude = "103.8519",
+            merchant = "",
+            city = "",
+            state = "",
+            country = "",
+            contactNumber = "",
+            createdAt = "",
+            updatedAt = ""
+        ),
+        OutletResponse(
+            id = "2",
+            name = "Outlet 2",
+            address = "456 Orchard Rd",
+            latitude = "1.3048",
+            longitude = "103.8318",
+            merchant = TODO(),
+            city = TODO(),
+            state = TODO(),
+            country = TODO(),
+            contactNumber = TODO(),
+            createdAt = TODO(),
+            updatedAt = TODO(),
+        ),
+        OutletResponse(
+            id = "3",
+            name = "Outlet 3",
+            address = "789 Marina Bay",
+            latitude = "1.2824",
+            longitude = "103.8596",
+            merchant = TODO(),
+            city = TODO(),
+            state = TODO(),
+            country = TODO(),
+            contactNumber = TODO(),
+            createdAt = TODO(),
+            updatedAt = TODO(),
+        )
     )
     OutletMapScreen(
         outletsState = Resource.Success(mockOutlets),
