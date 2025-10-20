@@ -11,9 +11,13 @@ import org.example.project.presentation.components.AppBarHeader
 
 import org.example.project.presentation.components.MyAppBackground
 import org.example.project.presentation.design.LoyaltyTheme
+import org.example.project.presentation.navigation.CustomerRoutes
 import org.example.project.presentation.navigation.LoyaltyBottomNavigationBar
+import org.example.project.presentation.navigation.MerchantRoutes
 import org.example.project.presentation.navigation.MyAppNavHost
 import org.example.project.presentation.navigation.UserType
+import org.example.project.presentation.navigation.navigateToBottomBarDestination
+import org.example.project.presentation.navigation.navigateToHomeAndClearStack
 import org.example.project.utils.dataholder.AuthData
 
 @Composable
@@ -43,11 +47,15 @@ internal fun MyAppInternal(
     var isTopBarVisible by rememberSaveable { mutableStateOf(false) }
     var isBottomTabVisible by rememberSaveable { mutableStateOf(false) }
 
-    val userType by remember {
-        derivedStateOf {
-            if (AuthData.isMerchant()) UserType.MERCHANT else UserType.CUSTOMER
-        }
+    var userType by remember {
+        mutableStateOf(if (AuthData.isMerchant()) UserType.MERCHANT else UserType.CUSTOMER)
     }
+
+    LaunchedEffect(appState.currentDestination.collectAsState().value, AuthData.userRole) {
+        userType = if (AuthData.isMerchant()) UserType.MERCHANT else UserType.CUSTOMER
+        println("UserType updated to: $userType, Role: ${AuthData.userRole}")
+    }
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         contentColor = MaterialTheme.colorScheme.onBackground,
@@ -56,14 +64,29 @@ internal fun MyAppInternal(
                 LoyaltyBottomNavigationBar(
                     selectedTab = appState.currentDestination.collectAsState().value?.route ?: "",
                     onTabSelected = { route ->
-                        println("Bottom Nav Click: $route")  // Debug log
-                        println("Current destination: ${appState.currentDestination.value?.route}")  // Debug log
-
-                        // Navigate safely
                         try {
+                            val currentRoute = appState.currentDestination.value?.route
+
+                            // Don't navigate if already on the same route
+                            if (currentRoute == route) {
+                                println("Already on route: $route")
+                                return@LoyaltyBottomNavigationBar
+                            }
+
+                            val homeRoute = if (userType == UserType.MERCHANT) {
+                                MerchantRoutes.Dashboard.route
+                            } else {
+                                CustomerRoutes.Home.route
+                            }
+
+                            println("Navigating from $currentRoute to $route")
+                            println("Home route is: $homeRoute")
+
                             appState.navController.navigate(route) {
-                                // Pop up to the start destination to avoid building up a stack
-                                popUpTo(appState.navController.graph.findStartDestination().route?:"") {
+                                // Always pop up to the home route
+                                popUpTo(homeRoute) {
+                                    // If we're navigating TO home, clear everything above it
+                                    inclusive = false
                                     saveState = true
                                 }
                                 launchSingleTop = true
@@ -71,6 +94,7 @@ internal fun MyAppInternal(
                             }
                         } catch (e: Exception) {
                             println("Navigation error: ${e.message}")
+                            e.printStackTrace()
                         }
 
                     },

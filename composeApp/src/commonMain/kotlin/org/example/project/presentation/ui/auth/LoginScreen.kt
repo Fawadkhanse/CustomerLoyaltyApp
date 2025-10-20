@@ -53,6 +53,7 @@ fun LoginScreenRoute(
         onLogin = { response ->
             TokenManager.setAccessToken(response.token?.access)
             AuthData.setAuthData(response.user, response.token)
+            viewModel.clearAllStates()
             response.user?.let {
                 onLogin(
                     response.user.name?:"",

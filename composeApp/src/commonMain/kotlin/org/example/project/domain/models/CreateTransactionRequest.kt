@@ -26,6 +26,10 @@ data class TransactionResponse(
     val id: String?,
     @SerialName("user")
     val user: String,
+    @SerialName("user_name")
+    val userName: String,
+    @SerialName("merchant_name")
+    val merchantName: String,
     @SerialName("merchant")
     val merchant: String,
     @SerialName("outlet")

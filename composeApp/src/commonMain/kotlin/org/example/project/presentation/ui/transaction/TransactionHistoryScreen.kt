@@ -71,21 +71,21 @@ private fun TransactionHistoryScreen(
                 .background(MaterialTheme.colorScheme.background)
         ) {
             // Header
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Transactions History",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center
-                )
-
-
-            }
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth(),
+//                verticalAlignment = Alignment.CenterVertically
+//            ) {
+//                Text(
+//                    text = "Transactions History",
+//                    style = MaterialTheme.typography.headlineMedium,
+//                    color = MaterialTheme.colorScheme.onBackground,
+//                    modifier = Modifier.weight(1f),
+//                    textAlign = TextAlign.Center
+//                )
+//
+//
+//            }
 
             // Filter Row
             Row(
@@ -120,29 +120,29 @@ private fun TransactionHistoryScreen(
                 )
 
                 // Outlet Filter
-                FilterChip(
-                    onClick = onOutletFilter,
-                    label = {
-                        Text(
-                            text = selectedOutlet ?: "Outlet",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = AppIcons.Store,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    },
-                    selected = selectedOutlet != null,
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = LoyaltyColors.OrangePink.copy(alpha = 0.1f),
-                        selectedLabelColor = LoyaltyColors.OrangePink,
-                        selectedLeadingIconColor = LoyaltyColors.OrangePink
-                    ),
-                    modifier = Modifier.weight(1f)
-                )
+//                FilterChip(
+//                    onClick = onOutletFilter,
+//                    label = {
+//                        Text(
+//                            text = selectedOutlet ?: "Outlet",
+//                            style = MaterialTheme.typography.bodyMedium
+//                        )
+//                    },
+//                    leadingIcon = {
+//                        Icon(
+//                            imageVector = AppIcons.Store,
+//                            contentDescription = null,
+//                            modifier = Modifier.size(18.dp)
+//                        )
+//                    },
+//                    selected = selectedOutlet != null,
+//                    colors = FilterChipDefaults.filterChipColors(
+//                        selectedContainerColor = LoyaltyColors.OrangePink.copy(alpha = 0.1f),
+//                        selectedLabelColor = LoyaltyColors.OrangePink,
+//                        selectedLeadingIconColor = LoyaltyColors.OrangePink
+//                    ),
+//                    modifier = Modifier.weight(1f)
+//                )
             }
 
             // Content based on state

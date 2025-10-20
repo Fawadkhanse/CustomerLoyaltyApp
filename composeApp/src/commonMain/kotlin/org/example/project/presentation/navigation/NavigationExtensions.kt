@@ -3,6 +3,7 @@ package org.example.project.presentation.navigation
 
 
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import org.example.project.presentation.navigation.Screen.Screen
@@ -15,6 +16,30 @@ fun NavController.safeNavigate(route: String, navOptions: NavOptions? = null) {
         navigate(route, navOptions)
     } catch (e: IllegalArgumentException) {
         // Handle navigation error - could navigate to error screen or log
+    }
+}
+
+fun NavController.navigateToBottomBarDestination(route: String) {
+    navigate(route) {
+        // Pop up to the start destination of the graph to avoid building up a large stack
+        popUpTo(graph.findStartDestination().route?:"") {
+            saveState = true
+        }
+        // Avoid multiple copies of the same destination
+        launchSingleTop = true
+        // Restore state when reselecting a previously selected item
+        restoreState = true
+    }
+}
+
+fun NavController.navigateToHomeAndClearStack(homeRoute: String) {
+    navigate(homeRoute) {
+        popUpTo(homeRoute) {
+            inclusive = true
+            saveState = true
+        }
+        launchSingleTop = true
+        restoreState = true
     }
 }
 

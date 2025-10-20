@@ -140,7 +140,7 @@ private fun OutletsListScreen(
                         EmptyOutletsView(onAddOutlet = onAddOutlet)
                     } else {
                         LazyColumn(
-                            contentPadding = PaddingValues(vertical = 8.dp),
+                            contentPadding = PaddingValues(vertical = 12.dp),
                             verticalArrangement = Arrangement.spacedBy(1.dp)
                         ) {
                             items(outlets) { outlet ->
@@ -223,7 +223,7 @@ private fun OutletItem(
 ) {
     Surface(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxWidth().padding(vertical = 5.dp)
             .clickable { onClick() },
         color = MaterialTheme.colorScheme.surface
     ) {
@@ -312,7 +312,20 @@ private fun OutletsListScreenPreview() {
             contactNumber = "03001234567",
             createdAt = "2025-09-19T13:53:53.953848Z",
             updatedAt = "2025-09-19T13:53:53.953848Z"
-        )
+        ), OutletResponse(
+            id = "1",
+            merchant = "merchant1",
+            name = "Downtown Store",
+            address = "123 Main St",
+            city = "Islamabad",
+            state = "ICT",
+            country = "PK",
+            latitude = "33.6844",
+            longitude = "73.0479",
+            contactNumber = "03001234567",
+            createdAt = "2025-09-19T13:53:53.953848Z",
+            updatedAt = "2025-09-19T13:53:53.953848Z"
+        ),
     )
 
     OutletsListScreen(

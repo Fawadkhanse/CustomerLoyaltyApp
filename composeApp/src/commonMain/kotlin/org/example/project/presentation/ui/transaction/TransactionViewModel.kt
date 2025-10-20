@@ -170,7 +170,7 @@ class TransactionViewModel(
         _transactions.value = transactionsList.map { transaction ->
             TransactionHistoryData(
                 id = transaction.id?:"0",
-                customerName = "User ${transaction.user.take(8)}", // You may need to fetch user details
+                customerName = "${transaction.userName.take(8)}", // You may need to fetch user details
                 points = transaction.points?:0,
                 dateTime = formatDateTime(transaction.createdAt?:""),
                 type = if (transaction.points!! > 0) "awarded" else "redeemed",

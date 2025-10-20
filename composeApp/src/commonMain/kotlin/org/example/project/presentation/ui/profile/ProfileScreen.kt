@@ -18,6 +18,7 @@ import org.example.project.presentation.components.ScreenContainer
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.ui.auth.rememberProfileViewModel
 import org.example.project.utils.dataholder.AuthData
+import org.example.project.utils.dataholder.TokenManager
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -39,6 +40,7 @@ fun ProfileScreenRoute(
         },
         onLogout = {
             AuthData.clearAuthData()
+            TokenManager.setAccessToken(null) // Add this line
             onLogout()
 
         },

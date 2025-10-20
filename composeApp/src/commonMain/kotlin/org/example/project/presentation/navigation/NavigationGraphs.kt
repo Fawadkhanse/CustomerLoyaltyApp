@@ -37,7 +37,7 @@ fun NavGraphBuilder.authenticationGraph(
             }
             AppSplashScreenRoute(
                 onNavigateToLogin = {
-                    navController.navigate(AuthRoutes.Onboarding.route) {
+                    navController.navigate(AuthRoutes.Login.route) {
                         popUpTo(AuthRoutes.Welcome.route) { inclusive = true }
                     }
                 }
@@ -364,8 +364,9 @@ fun NavGraphBuilder.settingsGraph(
                 navController.navigate(SettingsRoutes.ChangePassword.route)
             },
             onLogout = {
-                navController.navigate(AuthRoutes.AuthFlow.route) {
-                    popUpTo(navController.graph.startDestinationRoute ?: "") { inclusive = true }
+                navController.navigate(AuthRoutes.Login.route) {
+                    popUpTo(0) { inclusive = true } // Clear entire back stack
+                    launchSingleTop = true
                 }
             }
         )
