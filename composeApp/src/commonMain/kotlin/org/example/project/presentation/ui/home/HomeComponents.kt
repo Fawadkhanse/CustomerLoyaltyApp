@@ -439,7 +439,7 @@ private fun ActivityItem(
         }
 
         Text(
-            text = "${if (activity.type == "earned") "+" else "-"}${activity.points} pts",
+            text = "${if (activity.type == "earned") "+" else ""}${activity.points} pts",
             style = MaterialTheme.typography.titleSmall,
             color = when (activity.type) {
                 "earned" -> LoyaltyColors.Success

@@ -1,10 +1,28 @@
 package org.example.project.presentation.ui.transaction
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import AppIcons
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -13,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 // 📊 Transaction History Screen
 
@@ -48,7 +67,7 @@ fun TransactionHistoryItem(
                 )
 
                 Text(
-                    text = "${if (transaction.type == "awarded") "+" else "-"} ${transaction.points} pts",
+                    text = "${if (transaction.type == "awarded") "+" else ""} ${transaction.points} pts",
                     style = MaterialTheme.typography.titleMedium,
                     color = when (transaction.type) {
                         "awarded" -> LoyaltyColors.Success
@@ -81,6 +100,38 @@ fun TransactionHistoryItem(
             }
         }
     }
+}
+
+@Preview(showBackground = true, name = "Awarded Transaction")
+@Composable
+private fun TransactionHistoryItemAwardedPreview() {
+    TransactionHistoryItem(
+        transaction = TransactionHistoryData(
+            id = "1",
+            customerName = "John Doe",
+            points = 100,
+            dateTime = "24 Jun 2024, 10:30 AM",
+            type = "awarded",
+            description = "Points Awarded"
+        ),
+        modifier = Modifier.padding(16.dp)
+    )
+}
+
+@Preview(showBackground = true, name = "Redeemed Transaction")
+@Composable
+private fun TransactionHistoryItemRedeemedPreview() {
+    TransactionHistoryItem(
+        transaction = TransactionHistoryData(
+            id = "2",
+            customerName = "Jane Smith",
+            points = -50,
+            dateTime = "23 Jun 2024, 02:15 PM",
+            type = "redeemed",
+            description = "Voucher Redeemed"
+        ),
+        modifier = Modifier.padding(16.dp)
+    )
 }
 
 
