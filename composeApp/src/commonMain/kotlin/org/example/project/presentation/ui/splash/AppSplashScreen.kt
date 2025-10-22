@@ -28,6 +28,8 @@ import littleappam.composeapp.generated.resources.Res
 import littleappam.composeapp.generated.resources.logo
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
+import org.example.project.presentation.ui.auth.rememberAuthViewModel
+import org.example.project.utils.dataholder.AuthData
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -37,6 +39,7 @@ fun AppSplashScreenRoute(
 ) {
     var isLoading by remember { mutableStateOf(true) }
     var progress by remember { mutableFloatStateOf(0f) }
+    var viewModel = rememberAuthViewModel()
 
     // Animate progress
     val animatedProgress by animateFloatAsState(
@@ -59,7 +62,14 @@ fun AppSplashScreenRoute(
         // Small delay before navigation
         delay(200)
         isLoading = false
-        onNavigateToLogin()
+        if (viewModel.isLoggedInPreferences()) {
+            val getAuthResponse = viewModel.getAuthResponsePreferences()
+            getAuthResponse?.let {
+                AuthData.setAuthData(it.user,getAuthResponse.token)
+            }?:run {
+                onNavigateToLogin
+            }
+        } else onNavigateToLogin()
     }
 
     AppLoadingScreen(

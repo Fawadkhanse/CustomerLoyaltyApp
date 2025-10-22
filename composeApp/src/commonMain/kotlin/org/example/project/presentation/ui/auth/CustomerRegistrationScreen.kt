@@ -60,6 +60,7 @@ fun CustomerRegistrationScreenRoute(
         onRegister = { response ->
             TokenManager.setAccessToken(response.token?.access)
             AuthData.setAuthData(response.user,response.token)
+
             viewModel.clearAllStates()
             if (response.user != null && response.token != null) {
                 onRegister(
