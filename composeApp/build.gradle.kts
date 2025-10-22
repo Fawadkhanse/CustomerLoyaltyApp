@@ -71,10 +71,8 @@ kotlin {
             implementation("io.coil-kt.coil3:coil-network-ktor2:3.3.0")
             implementation(libs.qrose)
             implementation(libs.calf.file.picker)
-            implementation("com.russhwolf:multiplatform-settings:1.3.0")
-
-            // Optional — adds coroutine support (recommended)
-            implementation("com.russhwolf:multiplatform-settings-coroutines:1.3.0")
+            implementation(libs.multiplatform.settings)
+            implementation(libs.multiplatform.settings.serialization)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

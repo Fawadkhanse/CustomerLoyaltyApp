@@ -20,6 +20,7 @@ ktor = "2.3.11"
 coil = "3.3.0" # Latest version
 qrose = "1.0.1"
 calf = "0.5.5"
+multiplatformSettings = "1.1.1"
 
 
 
@@ -51,6 +52,8 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 coil-network-ktor = { module = "io.coil-kt:coil-network-ktor3", version.ref = "coil" }
 qrose = { module = "io.github.alexzhirkevich:qrose", version.ref = "qrose" }
 calf-file-picker = { module = "com.mohamedrejeb.calf:calf-file-picker", version.ref = "calf" }
+multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatformSettings" }
+multiplatform-settings-serialization = { module = "com.russhwolf:multiplatform-settings-serialization", version.ref = "multiplatformSettings" }
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
