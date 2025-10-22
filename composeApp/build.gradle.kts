@@ -71,6 +71,9 @@ kotlin {
             implementation("io.coil-kt.coil3:coil-network-ktor2:3.3.0")
             implementation(libs.qrose)
             implementation(libs.calf.file.picker)
+            // DataStore library
+            implementation("androidx.datastore:datastore:1.1.7")
+            implementation("androidx.datastore:datastore-preferences:1.1.7")
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

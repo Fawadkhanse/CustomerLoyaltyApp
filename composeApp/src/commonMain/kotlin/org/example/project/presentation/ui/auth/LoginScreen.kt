@@ -13,6 +13,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import littleappam.composeapp.generated.resources.Res
 import littleappam.composeapp.generated.resources.logo_name
 import littleappam.composeapp.generated.resources.main_logo
@@ -316,5 +318,5 @@ expect fun rememberQRScannerViewModel(): QRScannerViewModel
 @Composable
 expect fun rememberOutletViewModel(): OutletViewModel
 
-
+expect fun createDataStore(): DataStore<Preferences>
 
