@@ -67,6 +67,7 @@ fun LoginScreenRoute(
             }
 
         },
+
         onLoginButtonClicked = { email, password ->
           viewModel.login(email, password)
         },
