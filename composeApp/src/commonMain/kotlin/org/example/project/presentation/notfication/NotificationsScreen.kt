@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.example.project.presentation.components.NotificationData
 import org.example.project.presentation.design.LoyaltyExtendedColors
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun NotificationsScreenRoute(
@@ -36,7 +37,7 @@ fun NotificationsScreenRoute(
     NotificationsScreen(notifications = listOf(), onBack = {}, onNotificationClick = {})
 }
 @Composable
-fun NotificationsScreen(
+private fun NotificationsScreen(
     notifications: List<NotificationData>,
     onBack: () -> Unit,
     onNotificationClick: (NotificationData) -> Unit,
@@ -112,3 +113,14 @@ fun NotificationsScreen(
         }
     }
 }
+
+@Preview
+@Composable
+private fun NotificationsScreenPreview() {
+    val notifications = listOf(
+        NotificationData(id = "1", title = "Points Added", description = "You earned 50 points!", type = "points", timestamp = "5m ago", isRead = false),
+        NotificationData(id = "2", title = "New Reward Available", description = "Redeem your free coffee now.", type = "reward", timestamp = "1h ago", isRead = true)
+    )
+    NotificationsScreen(notifications = notifications, onBack = {}, onNotificationClick = {})
+}
+

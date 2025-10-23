@@ -45,6 +45,10 @@ kotlin {
 
             // Accompanist Permissions
             implementation("com.google.accompanist:accompanist-permissions:0.32.0")
+
+            implementation("com.google.maps.android:maps-compose:4.3.0")
+            implementation("com.google.android.gms:play-services-maps:18.2.0")
+            implementation("com.google.android.gms:play-services-location:21.1.0")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -67,12 +71,10 @@ kotlin {
             implementation("io.coil-kt.coil3:coil-compose:3.3.0")
             implementation("io.coil-kt.coil3:coil-network-ktor2:3.3.0")
             implementation(libs.qrose)
-
-// For FilePicker
             implementation(libs.calf.file.picker)
-           // implementation("network.chaintech:qr-kit:3.1.3")
-            //implementation(libs.coil.compose)
-          //  implementation(libs.coil.network.ktor)
+            // DataStore library
+            implementation("androidx.datastore:datastore:1.1.7")
+            implementation("androidx.datastore:datastore-preferences:1.1.7")
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

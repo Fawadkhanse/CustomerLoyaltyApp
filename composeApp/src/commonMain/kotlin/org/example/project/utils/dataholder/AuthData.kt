@@ -21,7 +21,7 @@ object AuthData {
         tokens = null
         UserData = null
         userId = ""
-        userRole = "" //
+        userRole = ""
     }
     fun isMerchant(): Boolean = userRole.equals("merchant", ignoreCase = true)
     fun isCustomer(): Boolean = userRole.equals("customer", ignoreCase = true)

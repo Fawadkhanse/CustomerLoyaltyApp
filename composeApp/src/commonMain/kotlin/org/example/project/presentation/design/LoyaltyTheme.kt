@@ -13,8 +13,8 @@ import androidx.compose.ui.unit.sp
 // 🎨 Color Palette
 object LoyaltyColors {
     // Primary Colors
-    val OrangePink = Color(0xFFD38188)
-    val ButteryYellow = Color(0xFFFFCC66)
+    val OrangePink = Color(0xFFA5803D)
+    val ButteryYellow = Color(0xFFDCBF91)
 
     // Light Theme Colors
     val BackgroundLight = Color(0xFFFFFFFF)

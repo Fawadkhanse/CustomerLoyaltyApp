@@ -60,6 +60,7 @@ fun CustomerRegistrationScreenRoute(
         onRegister = { response ->
             TokenManager.setAccessToken(response.token?.access)
             AuthData.setAuthData(response.user,response.token)
+
             viewModel.clearAllStates()
             if (response.user != null && response.token != null) {
                 onRegister(
@@ -77,9 +78,9 @@ fun CustomerRegistrationScreenRoute(
                 phone = phone,
                 password = password,
                 password2 = confirmPassword,
-               // role = "customer",
-                role = "merchant",
-                profileImage = " N/A",
+                role = "customer",
+               // role = "merchant",
+                profileImage = "N/A",
             )
             viewModel.register(request)
         },

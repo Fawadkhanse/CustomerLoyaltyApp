@@ -80,7 +80,13 @@ object CustomerRoutes {
     object Coupons {
         const val route = "coupons"
     }
+    object OutletsMap {
+        const val route = "OutletsMaps"
+    }
 
+    object Transactions {
+        const val route = "transactions"
+    }
     object CouponDetail {
         const val route = "coupon_detail/{couponId}"
         fun createRoute(couponId: String) = "coupon_detail/$couponId"

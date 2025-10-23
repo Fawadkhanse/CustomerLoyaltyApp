@@ -37,7 +37,7 @@ fun NavGraphBuilder.authenticationGraph(
             }
             AppSplashScreenRoute(
                 onNavigateToLogin = {
-                    navController.navigate(AuthRoutes.Onboarding.route) {
+                    navController.navigate(AuthRoutes.Login.route) {
                         popUpTo(AuthRoutes.Welcome.route) { inclusive = true }
                     }
                 }
@@ -166,6 +166,9 @@ fun NavGraphBuilder.customerGraph(
             },
             onNavigateToAllCoupons = {
                 navController.navigate(CustomerRoutes.Coupons.route)
+            },
+            onNavigateToAllActivity = {
+                navController.navigate(CustomerRoutes.Transactions.route)
             }
         )
     }
@@ -220,6 +223,24 @@ fun NavGraphBuilder.customerGraph(
             }
         )
     }
+
+    composable(CustomerRoutes.OutletsMap.route) {
+        LaunchedEffect(Unit) {
+            updateTopBottomAppBar(false, "Find Outlets", true)
+        }
+        OutletMapScreenRoute(
+            onBack = {
+                navController.popBackStack()
+            }
+        )
+    }
+    // Transactions
+    composable(CustomerRoutes.Transactions.route) {
+        LaunchedEffect(Unit) {
+            updateTopBottomAppBar(true, "Transactions", false)
+        }
+        TransactionHistoryScreenRoute()
+    }
 }
 
 /**
@@ -264,12 +285,12 @@ fun NavGraphBuilder.merchantGraph(
                 navController.navigate(MerchantRoutes.AddOutlet.route)
             },
             onOutletClick = { outlet ->
-                navController.navigate(OutletRoutes.OutletDetail.createRoute(outlet.id))
+                navController.navigate(OutletRoutes.OutletDetail.createRoute(outlet))
             }
         )
     }
 
-    // Outlet Detail
+    //]]
     composable(
         route = OutletRoutes.OutletDetail.route,
         arguments = listOf(navArgument(RouteParams.OUTLET_ID) { type = NavType.StringType })
@@ -283,10 +304,27 @@ fun NavGraphBuilder.merchantGraph(
                 navController.popBackStack()
             },
             onEdit = {
-                // Handle edit
-            }
+                navController.navigate(OutletRoutes.EditOutlet.createRoute(outletId))
+            }, outletId = outletId
         )
     }
+
+    // Outlet Detail
+    composable(
+        route = OutletRoutes.EditOutlet.route,
+        arguments = listOf(navArgument(RouteParams.OUTLET_ID) { type = NavType.StringType })
+    ) { backStackEntry ->
+        LaunchedEffect(Unit) {
+            updateTopBottomAppBar(true, "Edite Outlet", false)
+        }
+        val outletId = backStackEntry.arguments?.getString(RouteParams.OUTLET_ID) ?: ""
+        EditOutletScreenRoute(
+            onBack = {
+                navController.popBackStack()
+            }, outletId = outletId
+        )
+    }
+
 
     // Add Outlet
     composable(MerchantRoutes.AddOutlet.route) {
@@ -300,7 +338,7 @@ fun NavGraphBuilder.merchantGraph(
     // Transactions
     composable(MerchantRoutes.Transactions.route) {
         LaunchedEffect(Unit) {
-            updateTopBottomAppBar(false, "Transactions", true)
+            updateTopBottomAppBar(true, "Transactions", false)
         }
         TransactionHistoryScreenRoute()
     }
@@ -326,8 +364,9 @@ fun NavGraphBuilder.settingsGraph(
                 navController.navigate(SettingsRoutes.ChangePassword.route)
             },
             onLogout = {
-                navController.navigate(AuthRoutes.AuthFlow.route) {
-                    popUpTo(navController.graph.startDestinationRoute ?: "") { inclusive = true }
+                navController.navigate(AuthRoutes.Login.route) {
+                    popUpTo(0) { inclusive = true } // Clear entire back stack
+                    launchSingleTop = true
                 }
             }
         )
@@ -474,51 +513,7 @@ fun NavGraphBuilder.qrFlowGraph(
     }
 }
 
-/**
- * Transaction Flow navigation graph
- */
-fun NavGraphBuilder.transactionFlowGraph(
-    navController: NavHostController,
-    updateTopBottomAppBar: (Boolean, String, Boolean) -> Unit
-) {
-    navigation(
-        startDestination = TransactionRoutes.TransactionHistory.route,
-        route = TransactionRoutes.TransactionFlow.route
-    ) {
-        // Transaction History
-        composable(TransactionRoutes.TransactionHistory.route) {
-            LaunchedEffect(Unit) {
-                updateTopBottomAppBar(true, "Transaction History", false)
-            }
-            TransactionHistoryScreenRoute()
-        }
 
-        // Transaction Detail
-        composable(
-            route = TransactionRoutes.TransactionDetail.route,
-            arguments = listOf(navArgument(RouteParams.TRANSACTION_ID) { type = NavType.StringType })
-        ) { backStackEntry ->
-            LaunchedEffect(Unit) {
-                updateTopBottomAppBar(true, "Transaction Details", false)
-            }
-            val transactionId = backStackEntry.arguments?.getString(RouteParams.TRANSACTION_ID) ?: ""
-
-            // TransactionDetailScreenRoute would go here
-            // TransactionDetailScreenRoute(
-            //     transactionId = transactionId,
-            //     onBack = { navController.popBackStack() }
-            // )
-        }
-
-        // Transaction Receipt
-        composable(TransactionRoutes.TransactionReceipt.route) {
-            LaunchedEffect(Unit) {
-                updateTopBottomAppBar(true, "Receipt", false)
-            }
-            // TransactionReceiptScreenRoute would go here
-        }
-    }
-}
 
 /**
  * Extension functions for easier graph usage
@@ -533,5 +528,4 @@ fun NavGraphBuilder.addAllGraphs(
     settingsGraph(navController, updateTopBottomAppBar)
     commonScreensGraph(navController, updateTopBottomAppBar)
     qrFlowGraph(navController, updateTopBottomAppBar)
-    transactionFlowGraph(navController, updateTopBottomAppBar)
 }

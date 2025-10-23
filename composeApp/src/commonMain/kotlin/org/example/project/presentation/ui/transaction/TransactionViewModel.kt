@@ -10,7 +10,6 @@ import org.example.project.data.api.HttpMethod
 import org.example.project.data.mockresponses.getMockTransaction
 import org.example.project.data.mockresponses.getMockTransactionsList
 import org.example.project.domain.RemoteRepository
-import org.example.project.domain.models.CreateTransactionRequest
 import org.example.project.domain.models.Resource
 import org.example.project.domain.models.TransactionResponse
 import org.example.project.presentation.common.BaseViewModel
@@ -87,57 +86,8 @@ class TransactionViewModel(
         }
     }
 
-    /**
-     * Create new transaction
-     */
-    fun createTransaction(request: CreateTransactionRequest, useMock: Boolean = GlobalVar.isMock) {
-        viewModelScope.launch {
-            remoteRepository.makeApiRequest(
-                requestModel = request,
-                endpoint = ApiEndpoints.TRANSACTIONS,
-                httpMethod = HttpMethod.POST,
-                isMock = useMock
-            ).collectAsResource<TransactionResponse>(
-                onEmit = { result ->
-                    _createTransactionState.value = result
-                    if (result is Resource.Success) {
-                        // Reload transactions after successful creation
-                        loadTransactions(useMock)
-                    }
-                },
-                useMock = useMock,
-                mockResponse = getMockTransaction()
-            )
-        }
-    }
 
-    /**
-     * Update existing transaction
-     */
-    fun updateTransaction(
-        transactionId: String,
-        request: CreateTransactionRequest,
-        useMock: Boolean = GlobalVar.isMock
-    ) {
-        viewModelScope.launch {
-            remoteRepository.makeApiRequest(
-                requestModel = request,
-                endpoint = ApiEndpoints.transactionById(transactionId),
-                httpMethod = HttpMethod.PUT,
-                isMock = useMock
-            ).collectAsResource<TransactionResponse>(
-                onEmit = { result ->
-                    _updateTransactionState.value = result
-                    if (result is Resource.Success) {
-                        // Reload transactions after successful update
-                        loadTransactions(useMock)
-                    }
-                },
-                useMock = useMock,
-                mockResponse = getMockTransaction()
-            )
-        }
-    }
+
 
     /**
      * Delete transaction
@@ -169,13 +119,13 @@ class TransactionViewModel(
     private fun processTransactions(transactionsList: List<TransactionResponse>) {
         _transactions.value = transactionsList.map { transaction ->
             TransactionHistoryData(
-                id = transaction.id,
-                customerName = "User ${transaction.user.take(8)}", // You may need to fetch user details
-                points = transaction.points,
-                dateTime = formatDateTime(transaction.createdAt),
-                type = if (transaction.points > 0) "awarded" else "redeemed",
-                description = if (transaction.coupon != null) "Coupon redeemed" else "Points awarded",
-                outletName = "Outlet ${transaction.outlet.take(8)}" // You may need to fetch outlet details
+                id = transaction.id?:"0",
+                customerName = "${transaction.userName}", // You may need to fetch user details
+                points = transaction.points?:0,
+                dateTime = formatDateTime(transaction.createdAt?:""),
+                type = if (transaction.points!! > 0) "awarded" else "redeemed",
+                description = transaction.userActivityType?:"Unknown",
+                outletName = "Outlet ${transaction.merchantName?.take(8)}" // You may need to fetch outlet details
             )
         }
     }
@@ -198,7 +148,7 @@ class TransactionViewModel(
     fun filterByDateRange(startDate: String, endDate: String) {
         val currentList = (_transactionsListState.value as? Resource.Success)?.data ?: return
         val filtered = currentList.filter { transaction ->
-            transaction.createdAt >= startDate && transaction.createdAt <= endDate
+            transaction.createdAt !!>= startDate && transaction.createdAt <= endDate
         }
         processTransactions(filtered)
     }
@@ -218,9 +168,9 @@ class TransactionViewModel(
     fun searchTransactions(query: String) {
         val currentList = (_transactionsListState.value as? Resource.Success)?.data ?: return
         val filtered = currentList.filter { transaction ->
-            transaction.id.contains(query, ignoreCase = true) ||
+            transaction.id?.contains(query, ignoreCase = true) == true ||
                     transaction.user.contains(query, ignoreCase = true) ||
-                    transaction.outlet.contains(query, ignoreCase = true)
+                    transaction.outlet?.contains(query, ignoreCase = true) == true
         }
         processTransactions(filtered)
     }

@@ -557,6 +557,41 @@ val Person: ImageVector by lazy {
         }
     }.build()
 }
+    val Outlet: ImageVector by lazy {
+        ImageVector.Builder(
+            name = "Outlet",
+            defaultWidth = 24.0.dp,
+            defaultHeight = 24.0.dp,
+            viewportWidth = 24.0f,
+            viewportHeight = 24.0f
+        ).apply {
+            path(
+                fill = SolidColor(Color(0xFF000000)),
+                stroke = null,
+                strokeLineWidth = 0.0f,
+                strokeLineCap = Butt,
+                strokeLineJoin = Miter,
+                strokeLineMiter = 4.0f,
+                pathFillType = NonZero
+            ) {
+                // Outer pin shape (like a location marker)
+                moveTo(12.0f, 2.0f)
+                curveToRelative(-3.3f, 0.0f, -6.0f, 2.7f, -6.0f, 6.0f)
+                curveToRelative(0.0f, 4.5f, 6.0f, 12.0f, 6.0f, 12.0f)
+                reflectiveCurveToRelative(6.0f, -7.5f, 6.0f, -12.0f)
+                curveToRelative(0.0f, -3.3f, -2.7f, -6.0f, -6.0f, -6.0f)
+                close()
+
+                // Inner circle (outlet center)
+                moveTo(12.0f, 9.0f)
+                curveToRelative(-1.1f, 0.0f, -2.0f, -0.9f, -2.0f, -2.0f)
+                reflectiveCurveToRelative(0.9f, -2.0f, 2.0f, -2.0f)
+                reflectiveCurveToRelative(2.0f, 0.9f, 2.0f, 2.0f)
+                reflectiveCurveToRelative(-0.9f, 2.0f, -2.0f, 2.0f)
+                close()
+            }
+        }.build()
+    }
 
 val Settings: ImageVector by lazy {
     ImageVector.Builder(

@@ -12,15 +12,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import org.example.project.domain.models.QRScanResponse
 import org.example.project.domain.models.Resource
 import org.example.project.presentation.common.HandleApiState
 import org.example.project.presentation.common.PromptsViewModel
 import org.example.project.presentation.components.ScreenContainer
 import org.example.project.presentation.design.LoyaltyColors
-import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.example.project.presentation.ui.auth.QRScannerCameraView
 import org.example.project.presentation.ui.auth.rememberQRScannerViewModel
 import org.example.project.utils.QRCodeUtils
@@ -52,7 +51,10 @@ fun QRScannerScreenRoute(
         onDismissCustomerSheet = {
             viewModel.clearCustomerInfo()
         },
-        onBack = onBack
+        onBack ={
+            viewModel.resetScanState()
+            onBack()
+        }
     )
 }
 
@@ -72,9 +74,10 @@ fun QRScannerScreen(
     LaunchedEffect(customerInfo) {
         showCustomerSheet = customerInfo != null
     }
+   val currentPrompt = promptsViewModel.currentPrompt.collectAsState().value
 
     ScreenContainer(
-        currentPrompt = promptsViewModel.currentPrompt.collectAsState().value,
+        currentPrompt = currentPrompt,
         horizontalPadding = 0.dp,
         verticalPadding = 0.dp
     ) {
@@ -91,38 +94,7 @@ fun QRScannerScreen(
                     .fillMaxSize()
                     .background(Color.Black.copy(alpha = 0.3f))
             ) {
-//                // Top Bar
-//                Row(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(16.dp),
-//                    verticalAlignment = Alignment.CenterVertically
-//                ) {
-//                    IconButton(
-//                        onClick = onBack,
-//                        modifier = Modifier
-//                            .background(Color.Black.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
-//                    ) {
-//                        Icon(
-//                            imageVector = AppIcons.ArrowBack,
-//                            contentDescription = "Back",
-//                            tint = Color.White
-//                        )
-//                    }
-//
-//                    Spacer(modifier = Modifier.weight(1f))
-//
-//                    Text(
-//                        text = "Scan QR Code",
-//                        style = MaterialTheme.typography.titleLarge,
-//                        color = Color.White,
-//                        fontWeight = FontWeight.Bold
-//                    )
-//
-//                    Spacer(modifier = Modifier.weight(1f))
-//
-//                    Spacer(modifier = Modifier.width(48.dp))
-//                }
+
 
                 Spacer(modifier = Modifier.weight(1f))
 
@@ -207,6 +179,9 @@ fun QRScannerScreen(
         state = scanState,
         promptsViewModel = promptsViewModel
     ) { response ->
+        promptsViewModel.showSuccess(title = response.message) {
+            onBack()
+        }
         // Success handled by customerInfo state
     }
 }
@@ -306,7 +281,3 @@ data class CustomerInfo(
     val qrId: String
 )
 
-data class QRScanResponse(
-    val success: Boolean,
-    val customer: CustomerInfo?
-)

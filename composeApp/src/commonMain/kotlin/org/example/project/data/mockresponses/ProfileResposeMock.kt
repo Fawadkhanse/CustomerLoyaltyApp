@@ -42,7 +42,13 @@ val changePasswordResponse= ChangePasswordResponse(message = "usu")
             outlet = "ebd8c449-f9b6-4766-aac2-faf7445ab1b2",
             coupon = "fe7007fc-116f-4189-9767-e02a8d8435a8",
             points = 50,
-            createdAt = "2025-09-20T10:49:59.810557Z"
+            createdAt = "2025-09-20T10:49:59.810557Z",
+            userName = "Fran Harrell",
+            merchantName = "Ashlee Mercer",
+            userEmail = "edwardo.schroeder@example.com",
+            userActivityType = "disputationi",
+            
+            
         ),
         TransactionResponse(
             id = "12345678-1234-1234-1234-123456789012",
@@ -51,7 +57,11 @@ val changePasswordResponse= ChangePasswordResponse(message = "usu")
             outlet = "ebd8c449-f9b6-4766-aac2-faf7445ab1b2",
             coupon = null,
             points = 100,
-            createdAt = "2025-09-21T15:30:00.810557Z"
+            createdAt = "2025-09-21T15:30:00.810557Z", userName = "Lavonne Giles", merchantName = "Mollie Burgess",
+            userEmail = "magdalena.frost@example.com",
+            userActivityType = "bibendum"
+
+
         )
     )
 }
@@ -64,6 +74,9 @@ val changePasswordResponse= ChangePasswordResponse(message = "usu")
         outlet = "ebd8c449-f9b6-4766-aac2-faf7445ab1b2",
         coupon = "fe7007fc-116f-4189-9767-e02a8d8435a8",
         points = 50,
-        createdAt = "2025-09-20T10:49:59.810557Z"
+        createdAt = "2025-09-20T10:49:59.810557Z", userName = "Earle Bond", merchantName = "Jocelyn Baxter",
+        userEmail = "anderson.ochoa@example.com",
+        userActivityType = "ullamcorper"
+
     )
 }

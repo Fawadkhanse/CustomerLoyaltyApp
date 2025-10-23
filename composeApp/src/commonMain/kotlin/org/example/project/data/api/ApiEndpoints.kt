@@ -25,6 +25,7 @@ object ApiEndpoints {
     // Merchant endpoints
     const val MERCHANTS = "$BASE_URL/api/merchants/merchants/"
     const val OUTLETS_DETAIL = "$BASE_URL/api/merchants/outlets/"
+
     const val COUPONS_DETAIL = "$BASE_URL/api/merchants/coupons/"
     const val REDEEM_COUPON = "$BASE_URL/api/merchants/redeem-coupon/"
     const val GET_ALL_COUPON = "$BASE_URL/api/merchants/coupons/"
@@ -33,7 +34,8 @@ object ApiEndpoints {
     const val PROMOTIONS = "$BASE_URL/api/merchants/promotions/"
 
     // QR Code endpoints
-    const val SCAN_QR_CODE = "$BASE_URL/api/merchants/scan-qr/"
+  //  const val SCAN_QR_CODE = "$BASE_URL/api/user/qr/scan/"
+    const val SCAN_QR_CODE = "$BASE_URL/api/merchants/merchant/scan-qr/"
     const val AWARD_POINTS = "$BASE_URL/api/merchants/award-points/"
     const val CUSTOMER_QR_INFO = "$BASE_URL/api/merchants/customer-qr/"
 

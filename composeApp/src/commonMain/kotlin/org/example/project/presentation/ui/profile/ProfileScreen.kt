@@ -8,16 +8,23 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import org.example.project.presentation.common.PromptsViewModel
 import org.example.project.presentation.components.ScreenContainer
 import org.example.project.presentation.design.LoyaltyColors
+import org.example.project.presentation.ui.auth.createDataStore
 import org.example.project.presentation.ui.auth.rememberProfileViewModel
 import org.example.project.utils.dataholder.AuthData
+import org.example.project.utils.dataholder.TokenManager
+import org.example.project.utils.dataholder.storage.DataStorePreferences
+import org.example.project.utils.dataholder.storage.PreferencesKey
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -26,6 +33,8 @@ fun ProfileScreenRoute(
     onChangePassword: () -> Unit,
     onLogout: () -> Unit
 ) {
+    val lifecycleScope = rememberCoroutineScope()
+     val preferences = DataStorePreferences(createDataStore())
     ProfileScreen(
         name = AuthData.userName,
         email = AuthData.UserData?.email ?: "",
@@ -38,7 +47,11 @@ fun ProfileScreenRoute(
             onChangePassword()
         },
         onLogout = {
+             lifecycleScope.launch{
+                preferences.remove(PreferencesKey.AUTH_RESPONSE)
+            }   
             AuthData.clearAuthData()
+            TokenManager.setAccessToken(null) // Add this line
             onLogout()
 
         },

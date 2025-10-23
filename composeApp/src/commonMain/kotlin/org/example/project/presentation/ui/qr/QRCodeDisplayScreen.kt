@@ -1,12 +1,26 @@
 // composeApp/src/commonMain/kotlin/org/example/project/presentation/ui/qr/QRCodeDisplayScreen.kt
 package org.example.project.presentation.ui.qr
 
-import AppIcons
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,8 +32,6 @@ import io.github.alexzhirkevich.qrose.options.*
 import io.github.alexzhirkevich.qrose.rememberQrCodePainter
 import kotlinx.coroutines.launch
 import org.example.project.presentation.common.PromptsViewModel
-import org.example.project.presentation.components.LoyaltyPrimaryButton
-import org.example.project.presentation.components.LoyaltySecondaryButton
 import org.example.project.presentation.components.ScreenContainer
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
@@ -153,7 +165,7 @@ fun QRCodeDisplayScreen(
                 modifier = Modifier.padding(bottom = 40.dp)
             )
 
-            Spacer(modifier = Modifier.weight(0.3f))
+            Spacer(modifier = Modifier.height(24.dp))
 
             // QR Code Container
             QRCodeCard(
@@ -162,8 +174,8 @@ fun QRCodeDisplayScreen(
                 onBitmapGenerated = onQRCodeGenerated
             )
 
-            Spacer(modifier = Modifier.weight(0.5f))
-
+//            Spacer(modifier = Modifier.weight(0.3f))
+            Spacer(modifier = Modifier.height(24.dp))
             // Info Text
             Text(
                 text = "Show this QR code to the merchant to collect points",
@@ -172,29 +184,6 @@ fun QRCodeDisplayScreen(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(bottom = 24.dp)
             )
-
-            // Action Buttons
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                // Share QR Button
-                LoyaltyPrimaryButton(
-                    text = if (isSharing) "Sharing..." else "Share QR Code",
-                    onClick = onShareQR,
-                    icon = AppIcons.Share,
-                    enabled = !isSharing && !isSaving,
-                    isLoading = isSharing
-                )
-
-                // Download QR Button
-                LoyaltySecondaryButton(
-                    text = if (isSaving) "Saving..." else "Download QR",
-                    onClick = onDownloadQR,
-                    icon = AppIcons.Download,
-                    enabled = !isSharing && !isSaving
-                )
-            }
         }
     }
 }
@@ -296,7 +285,8 @@ fun QRCodeDisplayScreenPreview() {
     MaterialTheme {
         QRCodeDisplayScreen(
             customerName = "John Doe",
-            qrCodeData = "littleAppStation00ABC123XYZ",
+            //802a0ae5-b3e1-4fd4-a26d-cae9999b20a7
+            qrCodeData = "littleAppStation00user:988c2d5b-0942-4f71-90c2-3c85985cf2b0",
             onShareQR = {},
             onDownloadQR = {},
             onBack = {}

@@ -10,7 +10,8 @@ import org.example.project.data.api.HttpMethod
 import org.example.project.domain.RemoteRepository
 import org.example.project.domain.models.AwardPointsRequest
 import org.example.project.domain.models.AwardPointsResponse
-import org.example.project.domain.models.CustomerQRInfoResponse
+import org.example.project.domain.models.QRScanRequest
+import org.example.project.domain.models.QRScanResponse
 import org.example.project.domain.models.Resource
 import org.example.project.presentation.common.BaseViewModel
 import org.example.project.presentation.common.constent.GlobalVar
@@ -40,28 +41,21 @@ class QRScannerViewModel(
         isProcessing = true
         hasScanned = true
         _scanState.value = Resource.Loading
+        val request = QRScanRequest(qrId)
 
         viewModelScope.launch {
             try {
                 remoteRepository.makeApiRequest(
-                    requestModel = null,
-                    endpoint = ApiEndpoints.customerQRInfo(qrId),
-                    httpMethod = HttpMethod.GET,
+                    requestModel = request,
+                    endpoint = ApiEndpoints.SCAN_QR_CODE,
+                    httpMethod = HttpMethod.POST,
                     isMock = GlobalVar.isMock
-                ).collectAsResource<CustomerQRInfoResponse>(
+                ).collectAsResource<QRScanResponse>(
                     onEmit = { result ->
                         when (result) {
                             is Resource.Success -> {
-                                val customer = CustomerInfo(
-                                    id = result.data.id ?: "",
-                                    name = result.data.name ?: "",
-                                    points = result.data.points ?: 0,
-                                    qrId = qrId
-                                )
-                                _customerInfo.value = customer
-                                _scanState.value = Resource.Success(
-                                    QRScanResponse(success = true, customer = customer)
-                                )
+
+                                _scanState.value = result
                             }
                             is Resource.Error -> {
                                 _scanState.value = result
@@ -75,13 +69,14 @@ class QRScannerViewModel(
                         isProcessing = false
                     },
                     useMock = GlobalVar.isMock,
-                    mockResponse = CustomerQRInfoResponse(
-                        id = qrId,
-                        name = "John Doe",
-                        points = 1250,
-                        email = "john@example.com"
+                    mockResponse = QRScanResponse(
+                        message = "QR code scanned successfully",
+                        points_awarded = 10,
+                        total_points = 100
+
+                        )
                     )
-                )
+
             } catch (e: Exception) {
                 _scanState.value = Resource.Error(e)
                 hasScanned = false

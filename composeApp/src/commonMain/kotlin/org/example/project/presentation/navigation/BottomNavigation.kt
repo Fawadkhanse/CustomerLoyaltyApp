@@ -17,7 +17,9 @@ enum class CustomerBottomNavItems(
     HOME("Home", AppIcons.Home, Screen.Home), // Replace AppIcons.Info with your home icon
     MY_QR("My QR", AppIcons.QrCode, Screen.MyQR), // Replace with QR icon
     COUPONS("Coupons", AppIcons.Coupon, Screen.Coupons), // Replace with coupon icon
-    PROFILE("Profile", AppIcons.Person, Screen.Profile)
+    OUTLETS("Outlets", AppIcons.Outlet, Screen.OutletsMaps),
+    //PROFILE("Profile", AppIcons.Person, Screen.Profile),
+
 }
 
 // Bottom Navigation Items for Merchant
@@ -29,7 +31,7 @@ enum class MerchantBottomNavItems(
     HOME("Home", AppIcons.Home, Screen.Dashboard), // Replace with home icon
     SCAN_QR("Scan QR", AppIcons.QrScan, Screen.ScanQR), // Replace with scan icon
     OUTLETS("Outlets", AppIcons.Info, Screen.Outlets), // Replace with store icon
-    TRANSACTIONS("Transactions", AppIcons.Info, Screen.Transactions), // Replace with transaction icon
+    //TRANSACTIONS("Transactions", AppIcons.Info, Screen.Transactions), // Replace with transaction icon
     PROFILE("Profile", AppIcons.Person, Screen.Profile)
 }
 

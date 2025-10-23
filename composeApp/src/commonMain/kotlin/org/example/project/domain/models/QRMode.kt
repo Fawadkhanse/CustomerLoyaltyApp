@@ -1,24 +1,21 @@
 package org.example.project.domain.models
 
-// Data models
-data class CustomerInfo(
-    val id: String,
-    val name: String,
-    val points: Int,
-    val qrId: String
-)
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Serializer
 
+@Serializable
 data class QRScanResponse(
-    val success: Boolean,
-    val customer: CustomerInfo?
+    val message: String? = null,
+    val points_awarded: Int? = null,
+    val total_points: Int? = null,
 )
+@Serializable
+data class QRScanRequest(
+    val qr_code: String="",
+    val points: Int =20
+){}
 
-data class CustomerQRInfoResponse(
-    val id: String? = null,
-    val name: String? = null,
-    val points: Int? = null,
-    val email: String? = null
-)
 
 data class AwardPointsRequest(
     val customerId: String,

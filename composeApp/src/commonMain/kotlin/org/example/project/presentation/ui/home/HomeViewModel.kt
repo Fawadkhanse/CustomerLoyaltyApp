@@ -111,33 +111,58 @@ class HomeViewModel(
         }
     }
 
+    // Add these lines to the HomeViewModel.kt after line 100 (after loadMerchantDashboard function)
+
     fun processMerchantDashboard(response: MerchantDashboardResponse) {
         response.data?.let { data ->
+            // Set merchant info
             _merchantInfo.value = data.merchantInfo
+
+            // Set today's stats
             _todayStats.value = data.todayStats
 
-            // Convert recent transactions
+            // Convert recent transactions to TransactionData
             _recentTransactions.value = data.recentTransactions?.mapNotNull { transaction ->
                 TransactionData(
                     id = transaction.id ?: "",
-                    customerName = transaction.customerName ?: "",
-                    points = transaction.pointsAwarded ?: 0,
-                    location = transaction.location ?: "",
-                    timestamp = transaction.timestamp ?: ""
+                    customerName = transaction.customerName ?: "Unknown Customer",
+                    points = transaction.points ?: 0,
+                    location = transaction.outletName ?: transaction.location ?: "Unknown Location",
+                    timestamp = formatTimestamp(transaction.timestamp ?: "")
                 )
             } ?: emptyList()
 
-            // Convert outlet summaries
+            // Convert outlet summaries with proper null handling
             _activeOutlets.value = data.activeOutlets?.mapNotNull { outlet ->
                 OutletSummaryData(
-                    id = outlet.id ?: "",
-                    name = outlet.name ?: "",
-                    location = outlet.location ?: "",
+                    id = outlet.id ?: return@mapNotNull null,
+                    name = outlet.name ?: "Unknown Outlet",
+                    location = outlet.location ?: "Unknown Location",
                     isActive = outlet.isActive ?: false,
                     scansToday = outlet.scansToday ?: 0,
                     totalCustomers = outlet.totalCustomers ?: 0
                 )
             } ?: emptyList()
+        }
+    }
+
+    /**
+     * Format timestamp to relative time
+     */
+    private fun formatTimestamp(timestamp: String): String {
+        return try {
+            // Simple formatting - you can enhance this with proper date/time library
+            // For now, just return a cleaned version
+            when {
+                timestamp.contains("T") -> {
+                    val time = timestamp.substringAfter("T").substringBefore("Z")
+                    val parts = time.split(":")
+                    "${parts[0]}:${parts[1]}"
+                }
+                else -> timestamp
+            }
+        } catch (e: Exception) {
+            timestamp
         }
     }
 

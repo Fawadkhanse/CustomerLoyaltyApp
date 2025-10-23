@@ -2,6 +2,7 @@ package org.example.project.presentation.ui.auth
 
 
 import ProfileViewModel
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -12,6 +13,12 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import littleappam.composeapp.generated.resources.Res
+import littleappam.composeapp.generated.resources.logo_name
+import littleappam.composeapp.generated.resources.main_logo
 import org.example.project.domain.models.Resource
 import org.example.project.domain.models.auth.login.UserLoginResponse
 import org.example.project.presentation.common.HandleApiState
@@ -24,11 +31,14 @@ import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.example.project.presentation.ui.auth.viewmodel.AuthViewModel
 import org.example.project.presentation.ui.coupons.CouponViewModel
 import org.example.project.presentation.ui.home.HomeViewModel
+import org.example.project.presentation.ui.outlets.OutletLocation
+import org.example.project.presentation.ui.outlets.OutletViewModel
 import org.example.project.presentation.ui.qr.QRScannerViewModel
 import org.example.project.presentation.ui.transaction.TransactionViewModel
 import org.example.project.utils.dataholder.AuthData
 import org.example.project.utils.dataholder.TokenManager
 import org.example.project.utils.isValidEmail
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -46,6 +56,9 @@ fun LoginScreenRoute(
         onLogin = { response ->
             TokenManager.setAccessToken(response.token?.access)
             AuthData.setAuthData(response.user, response.token)
+            viewModel.setAuthResponsePreferences(response)
+
+            viewModel.clearAllStates()
             response.user?.let {
                 onLogin(
                     response.user.name?:"",
@@ -55,6 +68,7 @@ fun LoginScreenRoute(
             }
 
         },
+
         onLoginButtonClicked = { email, password ->
           viewModel.login(email, password)
         },
@@ -119,9 +133,19 @@ private fun LoginScreen(
         Column(
             verticalArrangement = Arrangement.Center
         ) {
+            Spacer(Modifier.height(10.dp))
+            Row (modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    painter = painterResource(resource = Res.drawable.logo_name),
+                    contentDescription = "Logo",
+                    modifier = Modifier.height(150.dp).width(230.dp)
+                )
+            }
 
-            Spacer(Modifier.height(20.dp))
-            Spacer(Modifier.weight(1f))
+
+            Spacer(Modifier.height(10.dp))
 
             // Title - Centered and Bold
             Row(
@@ -131,9 +155,10 @@ private fun LoginScreen(
                 Text(
                     text = "Log In",
                     style = MaterialTheme.typography.headlineLarge,
+                    fontSize = 30.sp,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 40.dp)
+                    modifier = Modifier.padding(bottom = 20.dp)
                 )
             }
 
@@ -199,17 +224,17 @@ private fun LoginScreen(
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // Merchant Login Link
-            TextButton(
-                onClick = onMerchantLogin,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-                Text(
-                    text = "I'm a Merchant",
-                    color = LoyaltyColors.OrangePink,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
+//            // Merchant Login Link
+//            TextButton(
+//                onClick = onMerchantLogin,
+//                modifier = Modifier.align(Alignment.CenterHorizontally)
+//            ) {
+//                Text(
+//                    text = "I'm a Merchant",
+//                    color = LoyaltyColors.OrangePink,
+//                    style = MaterialTheme.typography.bodyMedium
+//                )
+//            }
 
             Spacer(modifier = Modifier.weight(1f))
 
@@ -280,6 +305,14 @@ expect fun rememberTransactionViewModel(): TransactionViewModel
 expect fun QRScannerCameraView(
     onQRCodeScanned: (String) -> Unit,
     modifier: Modifier = Modifier
+)
+
+@Composable
+expect fun OutletMapView(
+    outlets: List<OutletLocation>,
+    selectedOutlet: OutletLocation?,
+    onOutletMarkerClick: (OutletLocation) -> Unit,
+    onMapClick: () -> Unit
 )
 
 // ViewModel expect function

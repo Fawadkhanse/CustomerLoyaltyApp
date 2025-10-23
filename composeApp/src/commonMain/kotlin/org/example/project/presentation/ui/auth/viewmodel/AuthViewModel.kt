@@ -26,6 +26,9 @@ import org.example.project.domain.models.auth.resetpassword.ResetPasswordRequest
 import org.example.project.domain.models.auth.resetpassword.ResetPasswordResponse
 import org.example.project.presentation.common.BaseViewModel
 import org.example.project.presentation.common.constent.GlobalVar
+import org.example.project.presentation.ui.auth.createDataStore
+import org.example.project.utils.dataholder.storage.DataStorePreferences
+import org.example.project.utils.dataholder.storage.PreferencesKey
 
 class AuthViewModel(
     private val remoteRepository: RemoteRepository
@@ -53,6 +56,7 @@ class AuthViewModel(
 
     private val _currentUser = MutableStateFlow<UserLoginResponse?>(null)
     val currentUser: StateFlow<UserLoginResponse?> = _currentUser.asStateFlow()
+    private val preferences = DataStorePreferences(createDataStore())
     // endregion
 
     // region API calls
@@ -76,6 +80,30 @@ class AuthViewModel(
             )
         }
     }
+    fun setAuthResponsePreferences (response: UserLoginResponse){
+        viewModelScope.launch {
+            preferences.putObject(PreferencesKey.AUTH_RESPONSE,response)
+            preferences.putBoolean(PreferencesKey.IS_LOGGED_IN,true)
+            print("setAuthResponsePreferences ${getAuthResponsePreferences()}")
+            print("setAuthResponsePreferences ${isLoggedInPreferences()}")
+        }
+    }
+
+    fun getAuthResponsePreferences (): UserLoginResponse? {
+        var auth: UserLoginResponse? = null
+        viewModelScope.launch {
+            auth =    preferences.getObject<UserLoginResponse>(PreferencesKey.AUTH_RESPONSE)
+        }
+        return auth
+    }
+    fun isLoggedInPreferences(): Boolean {
+        var isLoggedIn = false
+        viewModelScope.launch {
+            isLoggedIn = preferences.getBoolean(PreferencesKey.IS_LOGGED_IN)
+        }
+        return isLoggedIn
+    }
+
 
     fun register(request: UserRegistrationRequest) {
         viewModelScope.launch {
