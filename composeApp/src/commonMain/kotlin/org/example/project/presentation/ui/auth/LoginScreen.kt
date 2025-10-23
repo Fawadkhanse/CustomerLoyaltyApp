@@ -9,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -318,8 +319,7 @@ expect fun OutletMapView(
 @Composable
 expect fun rememberQRScannerViewModel(): QRScannerViewModel
 
-@Composable
-expect fun rememberOutletViewModel(): OutletViewModel
-
-expect fun createDataStore(): DataStore<Preferences>
-
+// Platform-specific expect functions
+expect suspend fun generateQRCodeBitmap(qrData: String, customerName: String): ImageBitmap
+expect suspend fun shareQRCode(bitmap: ImageBitmap, customerName: String)
+expect suspend fun saveQRCode(bitmap: ImageBitmap, customerName: String): Boolean
