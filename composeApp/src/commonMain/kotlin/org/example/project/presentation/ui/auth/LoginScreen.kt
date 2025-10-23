@@ -306,6 +306,7 @@ expect fun QRScannerCameraView(
     modifier: Modifier = Modifier
 )
 
+
 @Composable
 expect fun OutletMapView(
     outlets: List<OutletLocation>,
