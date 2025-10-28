@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import kotlinx.coroutines.launch
 import littleappam.composeapp.generated.resources.Res
 import littleappam.composeapp.generated.resources.logo_name
 import littleappam.composeapp.generated.resources.main_logo
@@ -50,14 +51,17 @@ fun LoginScreenRoute(
 ) {
     val viewModel = rememberAuthViewModel()
     val loginState by viewModel.loginState.collectAsState()
-
+    val scope = rememberCoroutineScope() // ADD THIS LINE
 
     LoginScreen(
         loginState = loginState,
         onLogin = { response ->
             TokenManager.setAccessToken(response.token?.access)
             AuthData.setAuthData(response.user, response.token)
-            viewModel.setAuthResponsePreferences(response)
+            // FIXED: Launch coroutine to save preferences
+            scope.launch {
+                viewModel.setAuthResponsePreferences(response)
+            }
 
             viewModel.clearAllStates()
             response.user?.let {

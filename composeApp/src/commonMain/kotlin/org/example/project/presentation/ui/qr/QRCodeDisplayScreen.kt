@@ -1,34 +1,54 @@
-// composeApp/src/commonMain/kotlin/org/example/project/presentation/ui/qr/QRCodeDisplayScreen.kt
 package org.example.project.presentation.ui.qr
 
-import AppIcons
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import io.github.alexzhirkevich.qrose.options.*
+import com.mohamedrejeb.calf.core.LocalPlatformContext
+import com.mohamedrejeb.calf.picker.FilePickerFileType
+import com.mohamedrejeb.calf.picker.FilePickerSelectionMode
+import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
+import io.github.alexzhirkevich.qrose.options.QrBallShape
+import io.github.alexzhirkevich.qrose.options.QrBrush
+import io.github.alexzhirkevich.qrose.options.QrColors
+import io.github.alexzhirkevich.qrose.options.QrFrameShape
+import io.github.alexzhirkevich.qrose.options.QrPixelShape
+import io.github.alexzhirkevich.qrose.options.QrShapes
+import io.github.alexzhirkevich.qrose.options.circle
+import io.github.alexzhirkevich.qrose.options.roundCorners
+import io.github.alexzhirkevich.qrose.options.solid
 import io.github.alexzhirkevich.qrose.rememberQrCodePainter
 import kotlinx.coroutines.launch
 import org.example.project.presentation.common.PromptsViewModel
-import org.example.project.presentation.components.LoyaltyPrimaryButton
-import org.example.project.presentation.components.LoyaltySecondaryButton
 import org.example.project.presentation.components.ScreenContainer
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
-import org.example.project.presentation.ui.auth.generateQRCodeBitmap
-import org.example.project.presentation.ui.auth.saveQRCode
-import org.example.project.presentation.ui.auth.shareQRCode
 import org.example.project.utils.QRCodeUtils.createQRCodeData
 import org.example.project.utils.dataholder.AuthData
 import org.jetbrains.compose.ui.tooling.preview.Preview
+
 
 @Composable
 fun QRCodeDisplayScreenRoute(
@@ -37,77 +57,58 @@ fun QRCodeDisplayScreenRoute(
     val qrId = AuthData.UserData?.uniqueQrId ?: ""
     val customerName = AuthData.userName
     val qrCodeData = createQRCodeData(qrId)
-    val scope = rememberCoroutineScope()
-    val promptsViewModel = remember { PromptsViewModel() }
 
     var isSharing by remember { mutableStateOf(false) }
     var isSaving by remember { mutableStateOf(false) }
+    var showMessage by remember { mutableStateOf<String?>(null) }
 
-    // Generate QR code bitmap
-    var qrCodeBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
+    // Generate QR bytes using LaunchedEffect
+    var qrCodeBytes by remember { mutableStateOf<ByteArray?>(null) }
+
+
+
+    // Handle share
+    val handleShare: () -> Unit = {
+        showMessage = "Share functionality will be implemented for your platform"
+    }
+
+    // Handle download
+    val handleDownload: () -> Unit = {
+        showMessage = "Download functionality will be implemented for your platform"
+    }
+
+    val context = LocalPlatformContext.current
+    val scope = rememberCoroutineScope()
+
+    // File picker for saving
+    val filePicker = rememberFilePickerLauncher(
+        type = FilePickerFileType.Image,
+        selectionMode = FilePickerSelectionMode.Single,
+        onResult = { files ->
+            scope.launch {
+                files.firstOrNull()?.let { file ->
+                    qrCodeBytes?.let { bytes ->
+                        //   bytes.writeToFile(context, file)
+                        showMessage = "QR Code saved successfully!"
+                    }
+                }
+            }
+        }
+    )
 
     QRCodeDisplayScreen(
         customerName = customerName,
         qrCodeData = qrCodeData,
-        onShareQR = {
-            scope.launch {
-                isSharing = true
-                try {
-                    qrCodeBitmap?.let { bitmap ->
-                        shareQRCode(bitmap, customerName)
-                        promptsViewModel.showSuccess(
-                            message = "QR Code shared successfully!"
-                        )
-                    } ?: run {
-                        promptsViewModel.showError(
-                            message = "QR Code not ready. Please try again."
-                        )
-                    }
-                } catch (e: Exception) {
-                    promptsViewModel.showError(
-                        message = "Failed to share QR Code: ${e.message}"
-                    )
-                } finally {
-                    isSharing = false
-                }
-            }
-        },
+        onShareQR = handleShare,
         onDownloadQR = {
-            scope.launch {
-                isSaving = true
-                try {
-                    qrCodeBitmap?.let { bitmap ->
-                        val success = saveQRCode(bitmap, customerName)
-                        if (success) {
-                            promptsViewModel.showSuccess(
-                                message = "QR Code saved to gallery!"
-                            )
-                        } else {
-                            promptsViewModel.showError(
-                                message = "Failed to save QR Code"
-                            )
-                        }
-                    } ?: run {
-                        promptsViewModel.showError(
-                            message = "QR Code not ready. Please try again."
-                        )
-                    }
-                } catch (e: Exception) {
-                    promptsViewModel.showError(
-                        message = "Failed to save QR Code: ${e.message}"
-                    )
-                } finally {
-                    isSaving = false
-                }
-            }
+            isSaving = true
+            filePicker.launch()
         },
         onBack = onBack,
         isSharing = isSharing,
         isSaving = isSaving,
-        onQRCodeGenerated = { bitmap ->
-            qrCodeBitmap = bitmap
-        },
-        promptsViewModel = promptsViewModel
+        message = showMessage,
+        onDismissMessage = { showMessage = null }
     )
 }
 
@@ -120,7 +121,8 @@ fun QRCodeDisplayScreen(
     onBack: () -> Unit,
     isSharing: Boolean = false,
     isSaving: Boolean = false,
-    onQRCodeGenerated: (ImageBitmap) -> Unit = {},
+    message: String? = null,
+    onDismissMessage: () -> Unit = {},
     promptsViewModel: PromptsViewModel = remember { PromptsViewModel() }
 ) {
     val currentPrompt by promptsViewModel.currentPrompt.collectAsState()
@@ -153,17 +155,16 @@ fun QRCodeDisplayScreen(
                 modifier = Modifier.padding(bottom = 40.dp)
             )
 
-            Spacer(modifier = Modifier.weight(0.3f))
+            Spacer(modifier = Modifier.height(24.dp))
 
             // QR Code Container
             QRCodeCard(
                 qrCodeData = qrCodeData,
-                customerName = customerName,
-                onBitmapGenerated = onQRCodeGenerated
+                customerName = customerName
             )
 
-            Spacer(modifier = Modifier.weight(0.5f))
-
+//            Spacer(modifier = Modifier.weight(0.3f))
+            Spacer(modifier = Modifier.height(24.dp))
             // Info Text
             Text(
                 text = "Show this QR code to the merchant to collect points",
@@ -172,29 +173,6 @@ fun QRCodeDisplayScreen(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(bottom = 24.dp)
             )
-
-            // Action Buttons
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                // Share QR Button
-                LoyaltyPrimaryButton(
-                    text = if (isSharing) "Sharing..." else "Share QR Code",
-                    onClick = onShareQR,
-                    icon = AppIcons.Share,
-                    enabled = !isSharing && !isSaving,
-                    isLoading = isSharing
-                )
-
-                // Download QR Button
-                LoyaltySecondaryButton(
-                    text = if (isSaving) "Saving..." else "Download QR",
-                    onClick = onDownloadQR,
-                    icon = AppIcons.Download,
-                    enabled = !isSharing && !isSaving
-                )
-            }
         }
     }
 }
@@ -203,7 +181,6 @@ fun QRCodeDisplayScreen(
 private fun QRCodeCard(
     qrCodeData: String,
     customerName: String,
-    onBitmapGenerated: (ImageBitmap) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     // Generate QR Code using qrose library
@@ -220,16 +197,6 @@ private fun QRCodeCard(
             frame = QrBrush.solid(LoyaltyColors.OrangePink)
         )
     )
-
-    // Generate bitmap from painter
-    LaunchedEffect(qrCodePainter) {
-        try {
-            val bitmap = generateQRCodeBitmap(qrCodeData, customerName)
-            onBitmapGenerated(bitmap)
-        } catch (e: Exception) {
-            println("Error generating QR bitmap: ${e.message}")
-        }
-    }
 
     Card(
         modifier = modifier
@@ -275,10 +242,10 @@ private fun QRCodeCard(
                 modifier = Modifier.padding(top = 4.dp)
             )
 
-            // QR ID display
+            // QR ID display (optional - for debugging)
             if (qrCodeData.isNotEmpty()) {
                 Text(
-                    text = AuthData.UserData?.uniqueQrId ?: "",
+                    text = AuthData.UserData?.uniqueQrId?:"",
                     style = MaterialTheme.typography.labelSmall,
                     color = Color.Gray,
                     modifier = Modifier.padding(top = 4.dp)
@@ -288,15 +255,14 @@ private fun QRCodeCard(
     }
 }
 
-
-
 @Preview(showBackground = true)
 @Composable
 fun QRCodeDisplayScreenPreview() {
     MaterialTheme {
         QRCodeDisplayScreen(
             customerName = "John Doe",
-            qrCodeData = "littleAppStation00ABC123XYZ",
+            //802a0ae5-b3e1-4fd4-a26d-cae9999b20a7
+            qrCodeData = "littleAppStation00user:988c2d5b-0942-4f71-90c2-3c85985cf2b0",
             onShareQR = {},
             onDownloadQR = {},
             onBack = {}

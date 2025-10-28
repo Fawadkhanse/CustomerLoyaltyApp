@@ -24,23 +24,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import littleappam.composeapp.generated.resources.Res
 import littleappam.composeapp.generated.resources.logo
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.example.project.presentation.ui.auth.rememberAuthViewModel
 import org.example.project.utils.dataholder.AuthData
+import org.example.project.utils.dataholder.TokenManager
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun AppSplashScreenRoute(
-    onNavigateToLogin: () -> Unit
+    onNavigateToLogin: () -> Unit,
+    onNavigateToHome: (String) -> Unit
 ) {
     var isLoading by remember { mutableStateOf(true) }
     var progress by remember { mutableFloatStateOf(0f) }
     var viewModel = rememberAuthViewModel()
-
+    val scope = rememberCoroutineScope() // ADD THIS
     // Animate progress
     val animatedProgress by animateFloatAsState(
         targetValue = progress,
@@ -62,14 +65,38 @@ fun AppSplashScreenRoute(
         // Small delay before navigation
         delay(200)
         isLoading = false
-        if (viewModel.isLoggedInPreferences()) {
-            val getAuthResponse = viewModel.getAuthResponsePreferences()
-            getAuthResponse?.let {
-                AuthData.setAuthData(it.user,getAuthResponse.token)
-            }?:run {
-                onNavigateToLogin
+        scope.launch {
+            try {
+                val isLoggedIn = viewModel.isLoggedInPreferences()
+                println("Splash: Is logged in = $isLoggedIn")
+
+                if (isLoggedIn) {
+                    val authResponse = viewModel.getAuthResponsePreferences()
+                    println("Splash: Got auth response = ${authResponse?.user?.name}")
+
+                    if (authResponse != null && authResponse.user != null && authResponse.token != null) {
+                        // Set auth data
+                        AuthData.setAuthData(authResponse.user, authResponse.token)
+                        TokenManager.setAccessToken(authResponse.token.access)
+
+                        // Navigate to home with user role
+                        val userRole = authResponse.user.role ?: "customer"
+                        onNavigateToHome(userRole)
+                        println("Splash: Navigating to home with role: $userRole")
+                    } else {
+                        println("Splash: Auth response incomplete, going to login")
+                        onNavigateToLogin()
+                    }
+                } else {
+                    println("Splash: Not logged in, going to login")
+                    onNavigateToLogin()
+                }
+            } catch (e: Exception) {
+                println("Splash: Error checking login status: ${e.message}")
+                e.printStackTrace()
+                onNavigateToLogin()
             }
-        } else onNavigateToLogin()
+        }
     }
 
     AppLoadingScreen(

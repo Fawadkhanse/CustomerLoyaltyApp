@@ -40,6 +40,13 @@ fun NavGraphBuilder.authenticationGraph(
                     navController.navigate(AuthRoutes.Login.route) {
                         popUpTo(AuthRoutes.Welcome.route) { inclusive = true }
                     }
+                },
+                onNavigateToHome = { userRole ->
+                    if (userRole.lowercase() == "customer") {
+                        navController.navigateToMainAppAndClearAuth(isCustomer = true)
+                    } else {
+                        navController.navigateToMainAppAndClearAuth(isCustomer = false)
+                    }
                 }
             )
         }

@@ -70,6 +70,8 @@ class AuthViewModel(
             ).collectAsResource<UserLoginResponse>(
                 onEmit = { result ->
                     _loginState.value = result
+
+
                     if (result is Resource.Success) {
                         _currentUser.value = result.data
                         _isLoggedIn.value = true
@@ -80,29 +82,44 @@ class AuthViewModel(
             )
         }
     }
-    fun setAuthResponsePreferences (response: UserLoginResponse){
-        viewModelScope.launch {
-            preferences.putObject(PreferencesKey.AUTH_RESPONSE,response)
-            preferences.putBoolean(PreferencesKey.IS_LOGGED_IN,true)
-            print("setAuthResponsePreferences ${getAuthResponsePreferences()}")
-            print("setAuthResponsePreferences ${isLoggedInPreferences()}")
+    suspend fun setAuthResponsePreferences(response: UserLoginResponse) {
+        try {
+            preferences.putObject(PreferencesKey.AUTH_RESPONSE, response)
+            preferences.putBoolean(PreferencesKey.IS_LOGGED_IN, true)
+            println("Auth response saved successfully")
+            println("Saved user: ${response.user?.name}")
+        } catch (e: Exception) {
+            println("Error saving auth response: ${e.message}")
+            e.printStackTrace()
         }
     }
 
-    fun getAuthResponsePreferences (): UserLoginResponse? {
-        var auth: UserLoginResponse? = null
-        viewModelScope.launch {
-            auth =    preferences.getObject<UserLoginResponse>(PreferencesKey.AUTH_RESPONSE)
+    // FIXED: Make this a suspend function that properly returns the value
+    suspend fun getAuthResponsePreferences(): UserLoginResponse? {
+        return try {
+            val response = preferences.getObject<UserLoginResponse>(PreferencesKey.AUTH_RESPONSE)
+            println("Retrieved auth response: ${response?.user?.name}")
+            response
+        } catch (e: Exception) {
+            println("Error getting auth response: ${e.message}")
+            e.printStackTrace()
+            null
         }
-        return auth
     }
-    fun isLoggedInPreferences(): Boolean {
-        var isLoggedIn = false
-        viewModelScope.launch {
-            isLoggedIn = preferences.getBoolean(PreferencesKey.IS_LOGGED_IN)
+
+    // FIXED: Make this a suspend function that properly returns the value
+    suspend fun isLoggedInPreferences(): Boolean {
+        return try {
+            val isLoggedIn = preferences.getBoolean(PreferencesKey.IS_LOGGED_IN)
+            println("Is logged in: $isLoggedIn")
+            isLoggedIn
+        } catch (e: Exception) {
+            println("Error getting login status: ${e.message}")
+            e.printStackTrace()
+            false
         }
-        return isLoggedIn
     }
+
 
 
     fun register(request: UserRegistrationRequest) {
