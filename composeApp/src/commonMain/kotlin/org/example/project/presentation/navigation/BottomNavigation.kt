@@ -14,11 +14,14 @@ enum class CustomerBottomNavItems(
     val icon: androidx.compose.ui.graphics.vector.ImageVector,
     val screen: Screen
 ) {
-    HOME("Home", AppIcons.Home, Screen.Home), // Replace AppIcons.Info with your home icon
+    HOME("Home", AppIcons.Home, Screen.Home),
+    ORDER("Order", AppIcons.Home, Screen.Home),
     MY_QR("My QR", AppIcons.QrCode, Screen.MyQR), // Replace with QR icon
-    COUPONS("Coupons", AppIcons.Coupon, Screen.Coupons), // Replace with coupon icon
-    OUTLETS("Outlets", AppIcons.Outlet, Screen.OutletsMaps),
-    //PROFILE("Profile", AppIcons.Person, Screen.Profile),
+   // COUPONS("Coupons", AppIcons.Coupon, Screen.Coupons), // Replace with coupon icon
+    REWARDS("Reward", AppIcons.Coupon, Screen.Coupons), // Replace with coupon icon
+
+    // OUTLETS("Outlets", AppIcons.Outlet, Screen.OutletsMaps),
+    PROFILE("Profile", AppIcons.Person, Screen.Profile),
 
 }
 

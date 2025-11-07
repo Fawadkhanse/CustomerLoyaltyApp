@@ -66,6 +66,8 @@ kotlin {
             implementation(libs.ktor.client.logging)
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.kotlinx.serialization.json)
+
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
             implementation(compose.components.resources)
             implementation("io.coil-kt.coil3:coil:3.3.0")
             implementation("io.coil-kt.coil3:coil-compose:3.3.0")

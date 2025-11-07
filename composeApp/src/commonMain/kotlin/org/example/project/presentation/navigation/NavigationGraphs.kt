@@ -174,9 +174,13 @@ fun NavGraphBuilder.customerGraph(
             onNavigateToAllCoupons = {
                 navController.navigate(CustomerRoutes.Coupons.route)
             },
-            onNavigateToAllActivity = {
-                navController.navigate(CustomerRoutes.Transactions.route)
-            }
+//            onNavigateToAllActivity = {
+//                navController.navigate(CustomerRoutes.Transactions.route)
+//            },
+            onNavigateToGame = {},
+            onNavigateToReferral = {},
+            onNavigateToNews = {},
+            onNavigateToVouchers = {}
         )
     }
 
@@ -505,8 +509,9 @@ fun NavGraphBuilder.qrFlowGraph(
             LaunchedEffect(Unit) {
                 updateTopBottomAppBar(true, "My QR Code", false)
             }
-            QRCodeDisplayScreenRoute {
-                navController.popBackStack()
+            QRCodeDisplayScreenRoute (onBack = {  navController.popBackStack()}
+            ){
+
             }
         }
 

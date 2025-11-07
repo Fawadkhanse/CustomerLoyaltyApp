@@ -1,14 +1,21 @@
 package org.example.project.presentation.ui.qr
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -22,10 +29,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.mohamedrejeb.calf.core.LocalPlatformContext
 import com.mohamedrejeb.calf.picker.FilePickerFileType
 import com.mohamedrejeb.calf.picker.FilePickerSelectionMode
@@ -41,6 +51,7 @@ import io.github.alexzhirkevich.qrose.options.roundCorners
 import io.github.alexzhirkevich.qrose.options.solid
 import io.github.alexzhirkevich.qrose.rememberQrCodePainter
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import org.example.project.presentation.common.PromptsViewModel
 import org.example.project.presentation.components.ScreenContainer
 import org.example.project.presentation.design.LoyaltyColors
@@ -48,11 +59,16 @@ import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.example.project.utils.QRCodeUtils.createQRCodeData
 import org.example.project.utils.dataholder.AuthData
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import org.example.project.presentation.components.LoyaltyPrimaryButton
+import kotlin.time.ExperimentalTime
 
 
 @Composable
 fun QRCodeDisplayScreenRoute(
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onNavigateToHistory: () -> Unit = {}
 ) {
     val qrId = AuthData.UserData?.uniqueQrId ?: ""
     val customerName = AuthData.userName
@@ -64,8 +80,6 @@ fun QRCodeDisplayScreenRoute(
 
     // Generate QR bytes using LaunchedEffect
     var qrCodeBytes by remember { mutableStateOf<ByteArray?>(null) }
-
-
 
     // Handle share
     val handleShare: () -> Unit = {
@@ -105,6 +119,7 @@ fun QRCodeDisplayScreenRoute(
             filePicker.launch()
         },
         onBack = onBack,
+        onNavigateToHistory = onNavigateToHistory,
         isSharing = isSharing,
         isSaving = isSaving,
         message = showMessage,
@@ -119,6 +134,7 @@ fun QRCodeDisplayScreen(
     onShareQR: () -> Unit,
     onDownloadQR: () -> Unit,
     onBack: () -> Unit,
+    onNavigateToHistory: () -> Unit = {},
     isSharing: Boolean = false,
     isSaving: Boolean = false,
     message: String? = null,
@@ -126,6 +142,7 @@ fun QRCodeDisplayScreen(
     promptsViewModel: PromptsViewModel = remember { PromptsViewModel() }
 ) {
     val currentPrompt by promptsViewModel.currentPrompt.collectAsState()
+    val points =0
 
     ScreenContainer(
         currentPrompt = currentPrompt,
@@ -134,45 +151,181 @@ fun QRCodeDisplayScreen(
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween,
+
         ) {
-            // Title
-            Text(
-                text = "Your Loyalty QR Code",
-                style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 12.dp)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Title
+                Text(
+                    text = "Membership",
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 24.dp)
+                )
+
+                // Points Card
+                PointsCard(
+                    customerName = customerName,
+                    points = points
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // QR Code Container
+                QRCodeCard(
+                    qrCodeData = qrCodeData,
+                    qrId = AuthData.UserData?.uniqueQrId ?: ""
+                )
+            }
+
+            // My Rewards History Button
+            LoyaltyPrimaryButton(
+                text = "My Rewards History",
+                onClick = { }
             )
 
-            // Subtitle
-            Text(
-                text = "Scan this code at any partner store to earn and redeem points.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = LoyaltyExtendedColors.secondaryText(),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 40.dp)
+        }
+    }
+}
+
+@OptIn(ExperimentalTime::class)
+@Composable
+private fun PointsCard(
+    customerName: String,
+    points: Int,
+    modifier: Modifier = Modifier
+) {
+    val currentDateTime = remember {
+        val now = Clock.System.now()
+        val localDateTime = now.toLocalDateTime(TimeZone.currentSystemDefault())
+
+        // Format: dd/MM/yyyy, hh:mm:ss AM/PM
+        val day = localDateTime.dayOfMonth.toString().padStart(2, '0')
+        val month = localDateTime.monthNumber.toString().padStart(2, '0')
+        val year = localDateTime.year
+
+        val hour24 = localDateTime.hour
+        val hour12 = if (hour24 == 0) 12 else if (hour24 > 12) hour24 - 12 else hour24
+        val minute = localDateTime.minute.toString().padStart(2, '0')
+        val second = localDateTime.second.toString().padStart(2, '0')
+        val amPm = if (hour24 < 12) "AM" else "PM"
+
+        "$day/$month/$year, ${hour12.toString().padStart(2, '0')}:$minute:$second $amPm"
+    }
+
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(160.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.Transparent
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(RoundedCornerShape(16.dp))
+        ) {
+            // Background gradient
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(
+                                Color(0xFF2C2C2C),
+                                Color(0xFF1A1A1A)
+                            )
+                        )
+                    )
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            // Red ribbon decoration
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .size(80.dp)
+            ) {
+                // You can add a ribbon image here if you have one
+                // For now, using a simple red decoration
+                Box(
+                    modifier = Modifier
+                        .size(60.dp)
+                        .background(
+                            color = MaterialTheme .colorScheme.primary,
+                            shape = RoundedCornerShape(
+                                topStart = 16.dp,
+                                bottomEnd = 30.dp
+                            )
+                        )
+                )
+            }
 
-            // QR Code Container
-            QRCodeCard(
-                qrCodeData = qrCodeData,
-                customerName = customerName
-            )
+            // Content
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                // Customer name and points
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = customerName,
+                        style = MaterialTheme.typography.titleLarge,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
 
-//            Spacer(modifier = Modifier.weight(0.3f))
-            Spacer(modifier = Modifier.height(24.dp))
-            // Info Text
-            Text(
-                text = "Show this QR code to the merchant to collect points",
-                style = MaterialTheme.typography.bodyMedium,
-                color = LoyaltyExtendedColors.secondaryText(),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 24.dp)
-            )
+                    Row(
+                        verticalAlignment = Alignment.Bottom
+                    ) {
+                        Text(
+                            text = points.toString().replace(Regex("(\\d)(?=(\\d{3})+$)"), "$1,"),
+                            style = MaterialTheme.typography.displaySmall,
+                            fontSize = 36.sp,
+                            color = Color(0xFFFFA500), // Orange color for points
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "pts",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.White,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                    }
+                }
+
+                // Last refresh timestamp
+                Text(
+                    text = "Last Refresh on $currentDateTime",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.White.copy(alpha = 0.7f),
+                    fontSize = 12.sp
+                )
+            }
+
+            // Gift box decoration (optional - in the bottom right)
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp)
+            ) {
+                // You can add a gift icon here
+                // For now, placeholder
+            }
         }
     }
 }
@@ -180,7 +333,7 @@ fun QRCodeDisplayScreen(
 @Composable
 private fun QRCodeCard(
     qrCodeData: String,
-    customerName: String,
+    qrId: String,
     modifier: Modifier = Modifier
 ) {
     // Generate QR Code using qrose library
@@ -194,63 +347,77 @@ private fun QRCodeCard(
         colors = QrColors(
             dark = QrBrush.solid(Color.Black),
             light = QrBrush.solid(Color.White),
-            frame = QrBrush.solid(LoyaltyColors.OrangePink)
+            frame = QrBrush.solid(Color.Black)
         )
     )
 
     Card(
         modifier = modifier
-            .size(400.dp)
-            .padding(16.dp),
+            .fillMaxWidth()
+            .height(400.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-        shape = RoundedCornerShape(20.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        shape = RoundedCornerShape(16.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(20.dp),
+                .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             // QR Code
             Image(
                 painter = qrCodePainter,
-                contentDescription = "QR Code for $customerName",
+                contentDescription = "QR Code",
                 modifier = Modifier
-                    .size(200.dp)
-                    .padding(8.dp)
+                    .size(250.dp)
+                    .padding(16.dp)
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            // Customer Name
+            // Membership number label
             Text(
-                text = customerName,
-                style = MaterialTheme.typography.bodyLarge,
+                text = "Membership id.",
+                style = MaterialTheme.typography.bodyMedium,
                 color = Color.Black,
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center
+                fontWeight = FontWeight.Medium
             )
 
+            // QR ID/Membership number
             Text(
-                text = "LOYALTY CUSTOMER",
-                style = MaterialTheme.typography.labelSmall,
+                text = qrId,
+                style = MaterialTheme.typography.bodySmall,
                 color = Color.Gray,
+                fontSize = 10.sp,
                 modifier = Modifier.padding(top = 4.dp)
             )
 
-            // QR ID display (optional - for debugging)
-            if (qrCodeData.isNotEmpty()) {
-                Text(
-                    text = AuthData.UserData?.uniqueQrId?:"",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = Color.Gray,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            }
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Copy button could be added here
+//
+//            Button(
+//                onClick = { /* Copy to clipboard */ },
+//                colors = ButtonDefaults.buttonColors(
+//                    containerColor = Color.White,
+//                    contentColor = Color.Black
+//                ),
+//                modifier = Modifier
+//                    .fillMaxWidth(0.4f)
+//                    .height(36.dp),
+//                shape = RoundedCornerShape(8.dp)
+//            ) {
+//                Text(
+//                    text = "Copy",
+//                    style = MaterialTheme.typography.bodyMedium,
+//                    fontWeight = FontWeight.Medium
+//                )
+//            }
+
         }
     }
 }
@@ -260,12 +427,12 @@ private fun QRCodeCard(
 fun QRCodeDisplayScreenPreview() {
     MaterialTheme {
         QRCodeDisplayScreen(
-            customerName = "John Doe",
-            //802a0ae5-b3e1-4fd4-a26d-cae9999b20a7
+            customerName = "Prabu Dadayan",
             qrCodeData = "littleAppStation00user:988c2d5b-0942-4f71-90c2-3c85985cf2b0",
             onShareQR = {},
             onDownloadQR = {},
-            onBack = {}
+            onBack = {},
+            onNavigateToHistory = {}
         )
     }
 }
