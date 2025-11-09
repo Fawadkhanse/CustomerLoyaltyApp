@@ -15,5 +15,15 @@ data class UpdateProfileRequest(
     @SerialName("profile_image")
     val profileImage: String = "",
     @SerialName("tc")
-    val tc: Boolean =true
+    val tc: Boolean =true,
+    @SerialName("address")
+    val address: String,
+    @SerialName("postcode")
+    val postcode: String,
+    @SerialName("region")
+    val region: String,
+    @SerialName("state")
+    val state: String
+
+
 )

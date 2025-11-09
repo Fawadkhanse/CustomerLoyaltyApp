@@ -4,20 +4,28 @@ import AppIcons
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import org.example.project.domain.models.OutletResponse
 import org.example.project.domain.models.Resource
 import org.example.project.presentation.common.HandleApiState
 import org.example.project.presentation.common.PromptsViewModel
 import org.example.project.presentation.components.*
+import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.example.project.presentation.ui.auth.rememberOutletViewModel
+import org.example.project.utils.dataholder.AuthData
 
 // Route Composable - Connects to ViewModel and Navigation
 @Composable
@@ -32,12 +40,15 @@ fun OutletDetailScreenRoute(
 
     // Load outlet details when screen opens
     LaunchedEffect(outletId) {
-        viewModel.loadOutletById(outletId)
+        if (!AuthData.isMerchant()){
+            viewModel.loadOutletById(outletId)
+        }
+
     }
 
     OutletDetailScreen(
         outletState = outletState,
-        outlet = currentOutlet,
+        outlet = AuthData.outletDetails,
         onBack = onBack,
         onEdit = onEdit,
         onRefresh = {
@@ -56,63 +67,21 @@ private fun OutletDetailScreen(
     onRefresh: () -> Unit,
     promptsViewModel: PromptsViewModel = remember { PromptsViewModel() }
 ) {
+    var outletResponse by remember {mutableStateOf(outlet) }
     ScreenContainer(
-        currentPrompt = promptsViewModel.currentPrompt.collectAsState().value
+        currentPrompt = promptsViewModel.currentPrompt.collectAsState().value,
+        horizontalPadding = 0.dp,
+        verticalPadding = 0.dp
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-        ) {
-            // Header with back button
-//            Row(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(16.dp),
-//                verticalAlignment = Alignment.CenterVertically
-//            ) {
-//                IconButton(onClick = onBack) {
-//                    Icon(
-//                        imageVector = AppIcons.ArrowBack,
-//                        contentDescription = "Back"
-//                    )
-//                }
-//
-//                Text(
-//                    text = "Outlet Details",
-//                    style = MaterialTheme.typography.headlineMedium,
-//                    color = MaterialTheme.colorScheme.onBackground,
-//                    modifier = Modifier.weight(1f).padding(start = 8.dp)
-//                )
-//
-//                IconButton(onClick = onRefresh) {
-//                    Icon(
-//                        imageVector = AppIcons.Refresh,
-//                        contentDescription = "Refresh"
-//                    )
-//                }
-//            }
-
+        Box(modifier = Modifier.fillMaxSize()) {
             // Content based on state
-            when (outletState) {
-                is Resource.Loading -> {
-                  //  LoadingContent()
-                }
-                is Resource.Error -> {
-                    ErrorContent(
-                        error = outletState.exception,
-                        onRetry = onRefresh
-                    )
-                }
-                is Resource.Success, Resource.None -> {
-                    outlet?.let {
-                        OutletDetailContent(
-                            outlet = it,
-                            onEdit = { onEdit(outlet.id) }
-                        )
-                    } ?: EmptyContent()
-                }
-            }
+            outletResponse?.let {
+                OutletDetailContent(
+                    outlet = it,
+                    onBack = onBack,
+                    onEdit = { onEdit(it.id) }
+                )
+            } ?: EmptyContent()
         }
     }
 
@@ -121,7 +90,483 @@ private fun OutletDetailScreen(
         state = outletState,
         promptsViewModel = promptsViewModel
     ) { response ->
-        // Success handled by outlet state
+        outletResponse =response
+    }
+}
+
+// Content when outlet data is available
+@Composable
+private fun OutletDetailContent(
+    outlet: OutletResponse,
+    onBack: () -> Unit,
+    onEdit: () -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        item {
+            // Hero Image Section
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(280.dp)
+            ) {
+                // Store Image
+                if (outlet.imageUrl != null) {
+                    AsyncImage(
+                        model = outlet.imageUrl,
+                        contentDescription = outlet.name,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color(0xFFE0E0E0)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = AppIcons.Store,
+                            contentDescription = null,
+                            modifier = Modifier.size(80.dp),
+                            tint = Color(0xFFBDBDBD)
+                        )
+                    }
+                }
+                // State Badge at bottom
+                Surface(
+                    shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+                    color = Color.White,
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(start = 20.dp, bottom = 0.dp)
+                ) {
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = LoyaltyColors.Error,
+                        modifier = Modifier.padding(12.dp)
+                    ) {
+                        Text(
+                            text = outlet.state,
+                            color = Color.White,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
+                        )
+                    }
+                }
+            }
+        }
+
+        item {
+            // Store Name and Basic Info
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+                    .padding(20.dp)
+            ) {
+                Text(
+                    text = outlet.name,
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = LoyaltyColors.Error,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Address with Icon
+                InfoRow(
+                    icon = AppIcons.Location,
+                    text = "${outlet.address}, ${outlet.city}",
+                    iconTint = LoyaltyColors.Error
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Contact Number with Icon
+                if (outlet.contactNumber.isNotEmpty()) {
+                    InfoRow(
+                        icon = AppIcons.Phone,
+                        text = outlet.contactNumber,
+                        iconTint = LoyaltyColors.Error
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+
+                // Operating Hours with Icon
+                InfoRow(
+                    icon = AppIcons.Calendar,
+                    text = outlet.operatingHours ?: "9am - 10pm",
+                    iconTint = LoyaltyColors.Error
+                )
+            }
+
+            Divider(
+                color = Color(0xFFF0F0F0),
+                thickness = 8.dp
+            )
+        }
+
+        item {
+            // Action Buttons Section
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                // Get Direction Button
+                LoyaltyPrimaryButton(
+                    text = "Get Direction",
+                    onClick = { /* Open maps */ },
+                    icon = AppIcons.Store,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                // Call Button
+                OutlinedButton(
+                    onClick = { /* Make call */ },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = LoyaltyColors.OrangePink
+                    )
+                ) {
+                    Icon(
+                        imageVector = AppIcons.Phone,
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Call Store",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            }
+
+            Divider(
+                color = Color(0xFFF0F0F0),
+                thickness = 8.dp
+            )
+        }
+
+        item {
+            // Store Details Section
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+                    .padding(20.dp)
+            ) {
+                Text(
+                    text = "Store Details",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color(0xFF333333),
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                DetailItem(
+                    label = "City",
+                    value = outlet.city
+                )
+
+                DetailItem(
+                    label = "State",
+                    value = outlet.state
+                )
+
+                DetailItem(
+                    label = "Country",
+                    value = outlet.country
+                )
+
+                if (outlet.latitude.isNotEmpty() && outlet.longitude.isNotEmpty()) {
+                    DetailItem(
+                        label = "Coordinates",
+                        value = "${outlet.latitude}, ${outlet.longitude}"
+                    )
+                }
+
+                DetailItem(
+                    label = "Merchant ID",
+                    value = outlet.merchant
+                )
+            }
+
+            Divider(
+                color = Color(0xFFF0F0F0),
+                thickness = 8.dp
+            )
+        }
+
+        item {
+            // Map Preview Section (Optional)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+                    .padding(20.dp)
+            ) {
+                Text(
+                    text = "Location",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color(0xFF333333),
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                // Map Placeholder
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color(0xFFE0E0E0)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            imageVector = AppIcons.Map,
+                            contentDescription = null,
+                            modifier = Modifier.size(48.dp),
+                            tint = Color(0xFF999999)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Map Preview",
+                            color = Color(0xFF999999),
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text(
+                    text = "${outlet.address}, ${outlet.city}, ${outlet.state}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color(0xFF666666),
+                    lineHeight = 20.sp
+                )
+            }
+
+            Divider(
+                color = Color(0xFFF0F0F0),
+                thickness = 8.dp
+            )
+        }
+
+        item {
+            // Additional Information
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+                    .padding(20.dp)
+            ) {
+                Text(
+                    text = "Additional Information",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color(0xFF333333),
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                DetailItem(
+                    label = "Created At",
+                    value = formatDateTime(outlet.createdAt)
+                )
+
+                DetailItem(
+                    label = "Last Updated",
+                    value = formatDateTime(outlet.updatedAt),
+                    showDivider = false
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+    }
+}
+
+@Composable
+private fun InfoRow(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    text: String,
+    iconTint: Color = Color(0xFF666666)
+) {
+    Row(
+        verticalAlignment = Alignment.Top,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier.size(20.dp),
+            tint = iconTint
+        )
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyLarge,
+            color = Color(0xFF666666),
+            lineHeight = 22.sp
+        )
+    }
+}
+
+@Composable
+private fun DetailItem(
+    label: String,
+    value: String,
+    showDivider: Boolean = true
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color(0xFF999999),
+                modifier = Modifier.weight(1f)
+            )
+            Text(
+                text = value,
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color(0xFF333333),
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.weight(1.5f)
+            )
+        }
+
+        if (showDivider) {
+            Divider(
+                color = Color(0xFFF0F0F0),
+                thickness = 1.dp
+            )
+        }
+    }
+}
+
+// Loading State
+@Composable
+private fun LoadingContent() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            color = LoyaltyColors.OrangePink
+        )
+    }
+}
+
+// Error State
+@Composable
+private fun ErrorContent(
+    error: Throwable,
+    onRetry: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(32.dp)
+        ) {
+            Icon(
+                imageVector = AppIcons.Close,
+                contentDescription = null,
+                modifier = Modifier.size(64.dp),
+                tint = LoyaltyColors.Error
+            )
+
+            Text(
+                text = "Failed to load outlet details",
+                style = MaterialTheme.typography.titleMedium,
+                color = Color(0xFF333333),
+                fontWeight = FontWeight.Bold
+            )
+
+            Text(
+                text = error.message ?: "Unknown error",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color(0xFF666666),
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            LoyaltyPrimaryButton(
+                text = "Retry",
+                onClick = onRetry,
+                modifier = Modifier.widthIn(min = 120.dp)
+            )
+        }
+    }
+}
+
+// Empty State
+@Composable
+private fun EmptyContent() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(32.dp)
+        ) {
+            Icon(
+                imageVector = AppIcons.Store,
+                contentDescription = null,
+                modifier = Modifier.size(64.dp),
+                tint = Color(0xFF999999)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "Outlet not found",
+                style = MaterialTheme.typography.titleMedium,
+                color = Color(0xFF666666)
+            )
+        }
+    }
+}
+
+// Utility function to format datetime
+private fun formatDateTime(isoDateTime: String): String {
+    return try {
+        // Basic formatting - you can enhance this with proper date formatting
+        val date = isoDateTime.substringBefore("T")
+        val time = isoDateTime.substringAfter("T").substringBefore(".")
+        "$date at $time"
+    } catch (e: Exception) {
+        isoDateTime
     }
 }
 
@@ -130,15 +575,17 @@ private fun OutletDetailScreen(
 private fun OutletDetailScreenPreview() {
     val outlet = OutletResponse(
         id = "1",
-        name = "KFC",
-        address = "123 Main St",
-        city = "Anytown",
-        state = "CA",
-        country = "USA",
-        contactNumber = "123-456-7890",
+        name = "TMG Mart Kuantan Port",
+        address = "Lot 1, Bangunan Kebajikan, Kuantan Port, 25720 Kuantan",
+        city = "Kuantan",
+        state = "Pahang",
+        country = "Malaysia",
+        contactNumber = "+60 12-345 6789",
         merchant = "merchant-123",
-        latitude = "34.0522",
-        longitude = "-118.2437",
+        latitude = "3.9733",
+        longitude = "103.3609",
+        imageUrl = null,
+        operatingHours = "9am - 10pm",
         createdAt = "2023-10-27T10:00:00.000Z",
         updatedAt = "2023-10-27T11:30:00.000Z"
     )
@@ -152,343 +599,3 @@ private fun OutletDetailScreenPreview() {
         )
     }
 }
-
-@org.jetbrains.compose.ui.tooling.preview.Preview
-@Composable
-private fun OutletDetailScreenLoadingPreview() {
-    MaterialTheme {
-        OutletDetailScreen(
-            outletState = Resource.Loading,
-            outlet = null,
-            onBack = {},
-            onEdit = {},
-            onRefresh = {}
-        )
-    }
-}
-
-@org.jetbrains.compose.ui.tooling.preview.Preview
-@Composable
-private fun OutletDetailScreenErrorPreview() {
-    MaterialTheme {
-        ErrorContent(error = Exception("Failed to load data."), onRetry = {})
-    }
-}
-// Content when outlet data is available
-@Composable
-private fun OutletDetailContent(
-    outlet: OutletResponse,
-    onEdit: () -> Unit
-) {
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(24.dp)
-    ) {
-        item {
-            // Status Badge
-            if (outlet.id != null) {
-               // StatusBadge(isActive = true) // Determine from outlet data if available
-            }
-        }
-
-        item {
-            // Outlet Information Section
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = LoyaltyExtendedColors.cardBackground()
-                ),
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(20.dp)
-                ) {
-                    Text(
-                        text = "Outlet Information",
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.padding(bottom = 16.dp)
-                    )
-
-                    outlet.name?.let {
-                        OutletInfoItem(
-                            icon = AppIcons.Store,
-                            label = "Outlet Name",
-                            value = it
-                        )
-                    }
-
-                    outlet.address?.let {
-                        OutletInfoItem(
-                            icon = AppIcons.Location,
-                            label = "Address",
-                            value = it
-                        )
-                    }
-
-                    outlet.city?.let { city ->
-                        val location = buildString {
-                            append(city)
-                            outlet.state?.let { append(", $it") }
-                            outlet.country?.let { append(", $it") }
-                        }
-                        OutletInfoItem(
-                            icon = AppIcons.Map,
-                            label = "Location",
-                            value = location
-                        )
-                    }
-                }
-            }
-        }
-
-        item {
-            // Contact Information Section
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = LoyaltyExtendedColors.cardBackground()
-                ),
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(20.dp)
-                ) {
-                    Text(
-                        text = "Contact Information",
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.padding(bottom = 16.dp)
-                    )
-
-                    outlet.contactNumber?.let {
-                        OutletInfoItem(
-                            icon = AppIcons.Phone,
-                            label = "Phone Number",
-                            value = it
-                        )
-                    }
-
-                    outlet.merchant?.let {
-                        OutletInfoItem(
-                            icon = AppIcons.Store,
-                            label = "Merchant ID",
-                            value = it
-                        )
-                    }
-                }
-            }
-        }
-
-        item {
-            // Location Coordinates (if available)
-            if (outlet.latitude != null && outlet.longitude != null) {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = LoyaltyExtendedColors.cardBackground()
-                    ),
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    Column(
-                        modifier = Modifier.padding(20.dp)
-                    ) {
-                        Text(
-                            text = "Coordinates",
-                            style = MaterialTheme.typography.headlineSmall,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontWeight = FontWeight.SemiBold,
-                            modifier = Modifier.padding(bottom = 16.dp)
-                        )
-
-                        OutletInfoItem(
-                            icon = AppIcons.Location,
-                            label = "Latitude",
-                            value = outlet.latitude
-                        )
-
-                        OutletInfoItem(
-                            icon = AppIcons.Location,
-                            label = "Longitude",
-                            value = outlet.longitude
-                        )
-                    }
-                }
-            }
-        }
-
-        item {
-            // Timestamps
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = LoyaltyExtendedColors.cardBackground()
-                ),
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(20.dp)
-                ) {
-                    Text(
-                        text = "Additional Details",
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.padding(bottom = 16.dp)
-                    )
-
-                    outlet.createdAt?.let {
-                        OutletInfoItem(
-                            icon = AppIcons.Calendar,
-                            label = "Created At",
-                            value = formatDateTime(it)
-                        )
-                    }
-
-                    outlet.updatedAt?.let {
-                        OutletInfoItem(
-                            icon = AppIcons.Calendar,
-                            label = "Last Updated",
-                            value = formatDateTime(it)
-                        )
-                    }
-                }
-            }
-        }
-
-        item {
-            // Edit Outlet Button
-            LoyaltyPrimaryButton(
-                text = "Edit Outlet",
-                onClick = onEdit,
-                icon = AppIcons.Edit,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-    }
-}
-
-// Loading State
-@Composable
-private fun LoadingContent() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator()
-    }
-}
-
-// Error State
-@Composable
-private fun ErrorContent(
-    error: Throwable,
-    onRetry: () -> Unit
-) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Icon(
-                imageVector = AppIcons.Close,
-                contentDescription = null,
-                modifier = Modifier.size(64.dp),
-                tint = MaterialTheme.colorScheme.error
-            )
-
-            Text(
-                text = "Failed to load outlet details",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-
-            Text(
-                text = error.message ?: "Unknown error",
-                style = MaterialTheme.typography.bodyMedium,
-                color = LoyaltyExtendedColors.secondaryText()
-            )
-
-            LoyaltyPrimaryButton(
-                text = "Retry",
-                onClick = onRetry
-            )
-        }
-    }
-}
-
-// Empty State
-@Composable
-private fun EmptyContent() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Icon(
-                imageVector = AppIcons.Store,
-                contentDescription = null,
-                modifier = Modifier.size(64.dp),
-                tint = LoyaltyExtendedColors.secondaryText()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = "Outlet not found",
-                style = MaterialTheme.typography.titleMedium,
-                color = LoyaltyExtendedColors.secondaryText()
-            )
-        }
-    }
-}
-
-// Status Badge Component
-@Composable
-private fun StatusBadge(isActive: Boolean) {
-    Surface(
-        color = if (isActive)
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
-        else
-            MaterialTheme.colorScheme.error.copy(alpha = 0.1f),
-        shape = RoundedCornerShape(20.dp)
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(8.dp)
-                    .background(
-                        if (isActive) MaterialTheme.colorScheme.primary
-                        else MaterialTheme.colorScheme.error,
-                        shape = RoundedCornerShape(4.dp)
-                    )
-            )
-            Text(
-                text = if (isActive) "Active" else "Inactive",
-                style = MaterialTheme.typography.labelMedium,
-                color = if (isActive) MaterialTheme.colorScheme.primary
-                else MaterialTheme.colorScheme.error
-            )
-        }
-    }
-}
-
-// Utility function to format datetime
-private fun formatDateTime(isoDateTime: String): String {
-    return try {
-        isoDateTime.replace("T", " ").substringBefore(".")
-    } catch (e: Exception) {
-        isoDateTime
-    }
-}
-

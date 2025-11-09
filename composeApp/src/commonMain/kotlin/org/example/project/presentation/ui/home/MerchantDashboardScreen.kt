@@ -138,9 +138,9 @@ private fun MerchantDashboardScreen(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     StatsCard(
-                        title = "Scans",
+                        title = "Today",
                         value = todaysScans.toString(),
-                        subtitle = "Today",
+                        subtitle = "Scan",
                         icon = AppIcons.QrScan,
                         color = LoyaltyColors.OrangePink,
                         modifier = Modifier.weight(1f)
@@ -173,9 +173,9 @@ private fun MerchantDashboardScreen(
                     )
 
                     StatsCard(
-                        title = "Outlets",
+                        title = "Tody",
                         value = activeOutletsCount.toString(),
-                        subtitle = "Active",
+                        subtitle = "Order",
                         icon = AppIcons.Store,
                         color = LoyaltyColors.Warning,
                         modifier = Modifier.weight(1f)
@@ -184,27 +184,27 @@ private fun MerchantDashboardScreen(
             }
 
             // Active Outlets Section (if available)
-            if (activeOutlets.isNotEmpty()) {
-                item {
-                    Text(
-                        text = "Active Outlets",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.padding(top = 8.dp)
-                    )
-                }
-
-                item {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        activeOutlets.take(3).forEach { outlet ->
-                            OutletSummaryCard(outlet = outlet)
-                        }
-                    }
-                }
-            }
+//            if (activeOutlets.isNotEmpty()) {
+//                item {
+//                    Text(
+//                        text = "Active Outlets",
+//                        style = MaterialTheme.typography.titleLarge,
+//                        color = MaterialTheme.colorScheme.onBackground,
+//                        fontWeight = FontWeight.SemiBold,
+//                        modifier = Modifier.padding(top = 8.dp)
+//                    )
+//                }
+//
+//                item {
+//                    Column(
+//                        verticalArrangement = Arrangement.spacedBy(12.dp)
+//                    ) {
+//                        activeOutlets.take(3).forEach { outlet ->
+//                            OutletSummaryCard(outlet = outlet)
+//                        }
+//                    }
+//                }
+//            }
 
             // Recent Transactions
             item {

@@ -182,4 +182,105 @@ fun ProfileMenuItem(
 }
 
 
+// Alternative StateDropdownField Component
+// Add this to your EditProfileScreen.kt file
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun StateDropdownField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    isError: Boolean,
+    errorMessage: String?,
+    enabled: Boolean,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    val pakistanStates = listOf(
+        "Punjab",
+        "Sindh",
+        "Khyber Pakhtunkhwa",
+        "Balochistan",
+        "Gilgit-Baltistan",
+        "Azad Jammu and Kashmir",
+        "Islamabad Capital Territory"
+    )
+
+    Column(modifier = modifier) {
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = {
+                if (enabled) {
+                    expanded = !expanded
+                }
+            }
+        ) {
+            // Custom dropdown field that matches LoyaltyTextField style
+            OutlinedTextField(
+                value = value,
+                onValueChange = {},
+                label = { Text("State / Province") },
+                placeholder = { Text("Select state or province") },
+                leadingIcon = {
+                    Icon(
+                        imageVector = AppIcons.LocationOn,
+                        contentDescription = null,
+                        tint = if (isError) MaterialTheme.colorScheme.error
+                        else MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                },
+                readOnly = true,
+                enabled = enabled,
+                isError = isError,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = LoyaltyColors.OrangePink,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    errorBorderColor = MaterialTheme.colorScheme.error,
+                    disabledBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                    focusedLabelColor = LoyaltyColors.OrangePink,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                ),
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth()
+            )
+
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                pakistanStates.forEach { state ->
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = state,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        },
+                        onClick = {
+                            onValueChange(state)
+                            expanded = false
+                        },
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
+                    )
+                }
+            }
+        }
+
+        // Error message
+        if (isError && errorMessage != null) {
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+            )
+        }
+    }
+}

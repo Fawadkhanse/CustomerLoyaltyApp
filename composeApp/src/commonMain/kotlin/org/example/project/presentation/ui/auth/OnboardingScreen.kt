@@ -48,14 +48,19 @@ fun OnboardingScreenRoute(
         OnboardingPage(
             title = "Earn Points",
             description = "Earn points with every purchase and climb the loyalty ladder.",
-           // image = painterResource(Res.drawable.onbarding)
             image = AppIcons.Points
         ),
         OnboardingPage(
-            title = "Unlock Rewards",
+            title = "Online Order",
             description = "Redeem your points for amazing rewards and exclusive offers.",
             image =AppIcons.Coupon
         ),
+         OnboardingPage(
+            title = "Claim Reward",
+            description = "Redeem your points for amazing rewards and exclusive offers.",
+            image =AppIcons.Coupon
+        ),
+
         OnboardingPage(
             title = "Get Started",
             description = "Join our loyalty program and start enjoying the benefits today.",

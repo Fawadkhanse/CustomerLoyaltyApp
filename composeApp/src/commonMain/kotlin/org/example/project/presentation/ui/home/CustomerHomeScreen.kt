@@ -73,7 +73,7 @@ fun CustomerHomeScreenRoute(
     onNavigateToAllCoupons: () -> Unit,
     onNavigateToGame: () -> Unit = {},
     onNavigateToReferral: () -> Unit = {},
-    onNavigateToNews: () -> Unit = {},
+    onNavigateToOutlet: () -> Unit = {},
     onNavigateToVouchers: () -> Unit = {}
 ) {
     val viewModel = rememberHomeViewModel()
@@ -95,7 +95,7 @@ fun CustomerHomeScreenRoute(
         onViewAllCoupons = onNavigateToAllCoupons,
         onNavigateToGame = onNavigateToGame,
         onNavigateToReferral = onNavigateToReferral,
-        onNavigateToNews = onNavigateToNews,
+        onNavigateToNewOutle = onNavigateToOutlet,
         onNavigateToVouchers = onNavigateToVouchers,
         userName = AuthData.userName,
         userPoints = userPoints,
@@ -123,7 +123,7 @@ fun CustomerHomeScreen(
     onViewAllCoupons: () -> Unit,
     onNavigateToGame: () -> Unit = {},
     onNavigateToReferral: () -> Unit = {},
-    onNavigateToNews: () -> Unit = {},
+    onNavigateToNewOutle: () -> Unit = {},
     onNavigateToVouchers: () -> Unit = {},
     onHomeResponseSuccess: (CustomerHomeResponse) -> Unit = {}
 ) {
@@ -159,7 +159,7 @@ fun CustomerHomeScreen(
                 ModernQuickActions(
                     onGameClick = onNavigateToGame,
                     onReferralClick = onNavigateToReferral,
-                    onNewsClick = onNavigateToNews,
+                    onOutletClick = onNavigateToNewOutle,
                     onVouchersClick = onNavigateToVouchers,
                     modifier = Modifier.padding(top = 20.dp)
                 )
@@ -670,7 +670,7 @@ private fun ElegantPointsCard(
 private fun ModernQuickActions(
     onGameClick: () -> Unit,
     onReferralClick: () -> Unit,
-    onNewsClick: () -> Unit,
+    onOutletClick: () -> Unit,
     onVouchersClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -689,7 +689,7 @@ private fun ModernQuickActions(
         ) {
             ModernActionButton(
                 icon = AppIcons.Gift,
-                label = "Game",
+                label = "Order",
                 onClick = onGameClick,
                 modifier = Modifier.weight(1f)
             )
@@ -700,9 +700,9 @@ private fun ModernQuickActions(
                 modifier = Modifier.weight(1f)
             )
             ModernActionButton(
-                icon = AppIcons.News,
-                label = "News",
-                onClick = onNewsClick,
+                icon = AppIcons.Store2,
+                label = "Outlet",
+                onClick = onOutletClick,
                 modifier = Modifier.weight(1f)
             )
             ModernActionButton(

@@ -1,5 +1,9 @@
 package org.example.project.domain.models.auth.login
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -18,5 +22,9 @@ data class UserDataResponse(
     @SerialName("profile_Image")
     var profileImage: String? = null,
     @SerialName("unique_qr_id")
-    val uniqueQrId: String? = null
+    val uniqueQrId: String? = null,
+    val address: String?=null,
+    val postcode: String?=null,
+    val region: String?=null,
+    val state: String?=null,
 )

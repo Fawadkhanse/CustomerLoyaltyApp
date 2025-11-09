@@ -1,18 +1,25 @@
 package org.example.project.presentation.ui.coupons
 
+import AppIcons
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import org.example.project.domain.models.CouponDetails
 import org.example.project.domain.models.RedeemCouponResponse
 import org.example.project.domain.models.Resource
@@ -65,21 +72,19 @@ private fun CouponDetailScreen(
     onBack: () -> Unit,
     promptsViewModel: PromptsViewModel = remember { PromptsViewModel() }
 ) {
+
+    var coupon: CouponDetails by remember {
+    mutableStateOf(CouponDetails()) // or your default CouponDetails object
+}
     ScreenContainer(
-        currentPrompt = promptsViewModel.currentPrompt.collectAsState().value
+        currentPrompt = promptsViewModel.currentPrompt.collectAsState().value,
     ) {
-        // Handle coupon detail loading
-        HandleApiState(
-            state = couponDetailState,
-            promptsViewModel = promptsViewModel
-        ) { couponDetails ->
-            CouponDetailContent(
-                coupon = couponDetails,
-                redeemState = redeemState,
-                onRedeemClick = onRedeemClick,
-                onBack = onBack
-            )
-        }
+        CouponDetailContent(
+            coupon = coupon,
+            redeemState = redeemState,
+            onRedeemClick = onRedeemClick,
+            onBack = onBack
+        )
     }
 
     // Handle redeem response
@@ -96,6 +101,15 @@ private fun CouponDetailScreen(
             }
         )
     }
+
+    HandleApiState(
+        state = couponDetailState,
+        promptsViewModel = promptsViewModel
+    ) { Response ->
+       coupon = Response
+    }
+
+
 }
 
 @Composable
@@ -108,200 +122,402 @@ private fun CouponDetailContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(Color(0xFFF5F5F5))
+            .verticalScroll(rememberScrollState())
     ) {
-        // Header
-        Row(
+        // Large Voucher Card
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(20.dp)
         ) {
-            Text(
-                text = "Coupon Details",
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.width(48.dp))
-        }
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            // Coupon Icon
-            Box(
-                modifier = Modifier
-                    .size(80.dp)
-                    .clip(CircleShape)
-                    .background(LoyaltyColors.ButteryYellow),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = AppIcons.Coupon,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(40.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Coupon Title Card
             Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = LoyaltyExtendedColors.cardBackground()
-                ),
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Text(
-                    text = coupon.title ?: "Coupon",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Description Section
-            Text(
-                text = "Description",
-                style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 12.dp)
-            )
-
-            Text(
-                text = coupon.description ?: "No description available",
-                style = MaterialTheme.typography.bodyLarge,
-                color = LoyaltyExtendedColors.secondaryText(),
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // Points and Expiry Info
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                    .height(320.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White
+                ),
+                shape = RoundedCornerShape(24.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
-                // Points Required
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        imageVector = AppIcons.Points,
-                        contentDescription = null,
-                        tint = LoyaltyColors.OrangePink,
-                        modifier = Modifier.size(24.dp)
-                    )
+                Box(modifier = Modifier.fillMaxSize()) {
+                    // Gradient Background
+                    if (coupon.imageUrl != null) {
+                        AsyncImage(
+                            model = coupon.imageUrl,
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    brush = Brush.horizontalGradient(
+                                        colors = listOf(
+                                            Color(0xFFF5F5F5),
+                                            Color(0xFFE8F5E9),
+                                            Color(0xFFB2DFDB)
+                                        )
+                                    )
+                                )
+                        )
+                    }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    // Top Badge
+                    Surface(
+                        modifier = Modifier
+                            .padding(20.dp)
+                            .align(Alignment.TopStart),
+                        color = Color.Transparent
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Icon(
+                                imageVector = AppIcons.Gift,
+                                contentDescription = null,
+                                tint = LoyaltyColors.Error,
+                                modifier = Modifier.size(24.dp)
+                            )
+                            Text(
+                                text = "Rewards",
+                                color = LoyaltyColors.Error,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = "eVoucher",
+                                color = Color(0xFF333333),
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Normal
+                            )
+                        }
+                    }
 
-                    Text(
-                        text = "${coupon.pointsRequired ?: 0} Points",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        fontWeight = FontWeight.SemiBold
-                    )
+                    // Large Amount in Center
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .padding(horizontal = 20.dp)
+                    ) {
+                        Text(
+                            text = extractAmount(coupon.title ?: ""),
+                            fontSize = 96.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = getVoucherColor(coupon.title ?: ""),
+                            textAlign = TextAlign.Center
+                        )
+                    }
 
-                    Text(
-                        text = "Required",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = LoyaltyExtendedColors.secondaryText()
-                    )
+                    // Bottom Details
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .fillMaxWidth()
+                            .background(
+                                Color.White.copy(alpha = 0.95f),
+                                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+                            )
+                            .padding(20.dp)
+                    ) {
+                        Text(
+                            text = coupon.title ?: "Rewards eVoucher",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = Color(0xFF333333),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Points Display
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Surface(
+                                modifier = Modifier.size(28.dp),
+                                shape = CircleShape,
+                                color = Color(0xFFFFA500)
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Text(
+                                        text = "TMG",
+                                        color = Color.White,
+                                        fontSize = 9.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+
+                            Text(
+                                text = "${coupon.pointsRequired ?: 0}",
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFFFFA500)
+                            )
+
+                            Text(
+                                text = "pts",
+                                fontSize = 16.sp,
+                                color = Color(0xFF999999)
+                            )
+                        }
+                    }
                 }
+            }
 
-                // Expiry Date
+            // Back Button
+//            IconButton(
+//                onClick = onBack,
+//                modifier = Modifier
+//                    .padding(8.dp)
+//                    .size(40.dp)
+//                    .clip(CircleShape)
+//                    .background(Color.White)
+//                    .align(Alignment.TopStart)
+//            ) {
+//                Icon(
+//                    imageVector = AppIcons.ArrowBack,
+//                    contentDescription = "Back",
+//                    tint = Color(0xFF333333)
+//                )
+//            }
+        }
+
+        // Details Section
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+        ) {
+            // Description Card
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                shape = RoundedCornerShape(16.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
                 Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier.padding(20.dp)
                 ) {
-                    Icon(
-                        imageVector = AppIcons.Calendar,
-                        contentDescription = null,
-                        tint = LoyaltyColors.Warning,
-                        modifier = Modifier.size(24.dp)
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(
+                            imageVector = AppIcons.Info,
+                            contentDescription = null,
+                            tint = LoyaltyColors.OrangePink,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Text(
+                            text = "Description",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color(0xFF333333),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     Text(
-                        text = coupon.expiryDate ?: "No expiry",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        fontWeight = FontWeight.SemiBold
-                    )
-
-                    Text(
-                        text = "Expires",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = LoyaltyExtendedColors.secondaryText()
+                        text = coupon.description ?: "Redeem this voucher for a discount on your next purchase.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color(0xFF666666),
+                        lineHeight = 22.sp
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Status Badge (if applicable)
-            coupon.status?.let { status ->
-                Surface(
-                    color = when (status.lowercase()) {
-                        "active" -> LoyaltyColors.Success
-                        "expired" -> LoyaltyColors.Error
-                        else -> LoyaltyColors.Warning
-                    },
-                    shape = RoundedCornerShape(20.dp)
+            // Validity & Terms Card
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                shape = RoundedCornerShape(16.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Text(
-                        text = status.uppercase(),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = Color.White,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                    )
-                }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(
+                            imageVector = AppIcons.Calendar,
+                            contentDescription = null,
+                            tint = LoyaltyColors.OrangePink,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Text(
+                            text = "Validity",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color(0xFF333333),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    // Expiry Date
+                    DetailRow(
+                        label = "Valid Until",
+                        value = coupon.expiryDate ?: "No expiry date"
+                    )
+
+                    // Status
+                    coupon.status?.let { status ->
+                        DetailRow(
+                            label = "Status",
+                            value = status.uppercase(),
+                            valueColor = when (status.lowercase()) {
+                                "active" -> LoyaltyColors.Success
+                                "expired" -> LoyaltyColors.Error
+                                else -> Color(0xFFFF9800)
+                            }
+                        )
+                    }
+                }
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Terms & Conditions
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                shape = RoundedCornerShape(16.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(20.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(
+                            imageVector = AppIcons.Info,
+                            contentDescription = null,
+                            tint = LoyaltyColors.OrangePink,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Text(
+                            text = "Terms & Conditions",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color(0xFF333333),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        TermItem("Valid for single use only")
+                        TermItem("Cannot be combined with other offers")
+                        TermItem("Non-transferable and non-refundable")
+                        TermItem("Present this voucher at checkout")
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             // Redeem Button
             LoyaltyPrimaryButton(
-                text = "Redeem Now",
+                text = "Redeem Voucher",
                 onClick = onRedeemClick,
                 enabled = redeemState !is Resource.Loading &&
                         coupon.status?.lowercase() == "active",
                 isLoading = redeemState is Resource.Loading,
                 modifier = Modifier.fillMaxWidth()
             )
+
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
 
+@Composable
+private fun DetailRow(
+    label: String,
+    value: String,
+    valueColor: Color = Color(0xFF333333)
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color(0xFF999999)
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyMedium,
+            color = valueColor,
+            fontWeight = FontWeight.SemiBold
+        )
+    }
+}
+
+@Composable
+private fun TermItem(text: String) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.Top
+    ) {
+        Text(
+            text = "•",
+            color = Color(0xFF666666),
+            fontSize = 14.sp
+        )
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodySmall,
+            color = Color(0xFF666666),
+            fontSize = 13.sp,
+            lineHeight = 18.sp
+        )
+    }
+}
+
+// Helper functions
+private fun extractAmount(title: String): String {
+    val regex = "RM(\\d+)".toRegex()
+    val match = regex.find(title)
+    return match?.groupValues?.get(1) ?: "20"
+}
+
+private fun getVoucherColor(title: String): Color {
+    val amount = extractAmount(title).toIntOrNull() ?: 0
+    return when {
+        amount >= 20 -> Color(0xFF4CAF50) // Green
+        amount >= 6 -> Color(0xFF2196F3) // Blue
+        else -> Color(0xFFFFA500) // Orange
+    }
+}
 
 @Preview
 @Composable
 private fun CouponDetailScreenPreview() {
     val mockCoupon = CouponDetails(
         id = "1",
-        title = "20% Off Your Next Purchase",
-        description = "Enjoy a 20% discount on any single item in our store. This offer cannot be combined with other promotions.",
-        pointsRequired = 500,
+        title = "Rewards eVoucher RM20",
+        description = "Enjoy RM20 off on your next purchase at any TMG Mart outlet. This offer is valid for all products and cannot be combined with other promotions.",
+        pointsRequired = 10000,
         expiryDate = "Dec 31, 2024",
         status = "active",
-        merchant = "Test Merchant"
+        merchant = "TMG Mart",
+        imageUrl = null
     )
 
     CouponDetailContent(

@@ -52,8 +52,6 @@ data class UpdateOutletRequest(
 data class OutletResponse(
     @SerialName("id")
     val id: String,
-    @SerialName("merchant")
-    val merchant: String,
     @SerialName("name")
     val name: String,
     @SerialName("address")
@@ -65,14 +63,15 @@ data class OutletResponse(
     @SerialName("country")
     val country: String,
     @SerialName("latitude")
-    val latitude: String,
+    val latitude: Double,
     @SerialName("longitude")
-    val longitude: String,
+    val longitude: Double,
     @SerialName("contact_number")
     val contactNumber: String,
     @SerialName("created_at")
     val createdAt: String,
     @SerialName("updated_at")
-    val updatedAt: String
+    val updatedAt: String,
+    @SerialName ("outlet_image")
+    val outlet_image: String? = null,
 )
-// Request model for updating outlet

@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import littleappam.composeapp.generated.resources.Res
-import littleappam.composeapp.generated.resources.logo
+import littleappam.composeapp.generated.resources.main_logo
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.example.project.presentation.ui.auth.rememberAuthViewModel
@@ -76,7 +75,7 @@ fun AppSplashScreenRoute(
 
                     if (authResponse != null && authResponse.user != null && authResponse.token != null) {
                         // Set auth data
-                        AuthData.setAuthData(authResponse.user, authResponse.token)
+                        AuthData.setAuthData(authResponse.user, authResponse.token, authResponse.outlet)
                         TokenManager.setAccessToken(authResponse.token.access)
 
                         // Navigate to home with user role
@@ -100,7 +99,7 @@ fun AppSplashScreenRoute(
     }
 
     AppLoadingScreen(
-        title = "LITTLE APPAM",
+        title = "Reward App",
         subtitle = "Loading your awesome experience!",
         progress = animatedProgress,
         loadingText = getLoadingText(animatedProgress)
@@ -131,38 +130,23 @@ private fun AppLoadingScreen(
             .background(MaterialTheme.colorScheme.background)
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top
     ) {
         // App Logo/Icon
-        Box(
-            modifier = Modifier
-                .size(120.dp)
-//                .background(
-//                    LoyaltyColors.OrangePink,
-//                    RoundedCornerShape(20.dp)
-//                )
-            ,
-            contentAlignment = Alignment.Center
-        ) {
-
+        Spacer(modifier.height(100.dp))
+        Box(modifier = Modifier,
+            contentAlignment = Alignment.Center) {
             Row (modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.Bottom) {
                 Image(
-                    painter = painterResource(resource = Res.drawable.logo),
+                    painter = painterResource(resource = Res.drawable.main_logo),
                     contentDescription = "Logo",
-                    modifier = Modifier.size(100.dp)
+
                 )
             }
-
-//            Icon(
-//                imageVector = AppIcons.Info, // Replace with app logo
-//                contentDescription = null,
-//                tint = Color.White,
-//                modifier = Modifier.size(60.dp)
-//            )
         }
-
+        Spacer(modifier.height(20.dp))
         Text(
             text = title,
             style = MaterialTheme.typography.headlineLarge,
@@ -170,8 +154,6 @@ private fun AppLoadingScreen(
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(10.dp))
-        Spacer(modifier = Modifier.height(8.dp))
-
         Text(
             text = subtitle,
             style = MaterialTheme.typography.bodyLarge,
@@ -219,7 +201,7 @@ private fun AppLoadingScreen(
 private fun AppLoadingScreenPreview() {
     MaterialTheme {
         AppLoadingScreen(
-            title = "Loyalty App",
+            title = "Reward App",
             subtitle = "Loading your awesome experience!",
             progress = 0.6f,
             loadingText = "Loading your data..."

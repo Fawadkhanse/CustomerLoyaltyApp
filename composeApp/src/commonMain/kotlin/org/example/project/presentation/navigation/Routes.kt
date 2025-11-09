@@ -83,7 +83,9 @@ object CustomerRoutes {
     object OutletsMap {
         const val route = "OutletsMaps"
     }
-
+    object Outlets {
+        const val route = "outlets"
+    }
     object Transactions {
         const val route = "transactions"
     }

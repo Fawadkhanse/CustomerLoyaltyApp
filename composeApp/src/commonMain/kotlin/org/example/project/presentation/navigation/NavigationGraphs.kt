@@ -179,7 +179,9 @@ fun NavGraphBuilder.customerGraph(
 //            },
             onNavigateToGame = {},
             onNavigateToReferral = {},
-            onNavigateToNews = {},
+            onNavigateToOutlet = {
+                navController.navigate(CustomerRoutes.Outlets.route)
+            },
             onNavigateToVouchers = {}
         )
     }
@@ -252,6 +254,27 @@ fun NavGraphBuilder.customerGraph(
         }
         TransactionHistoryScreenRoute()
     }
+    composable(CustomerRoutes.Outlets.route) {
+        LaunchedEffect(Unit) {
+            updateTopBottomAppBar(true, "Transactions", false)
+        }
+        composable(MerchantRoutes.Outlets.route) {
+            LaunchedEffect(Unit) {
+                updateTopBottomAppBar(false, "Outlets", true)
+            }
+            OutletsListScreenRoute(
+                onBack = {
+                    navController.popBackStack()
+                },
+                onAddOutlet = {
+                    navController.navigate(MerchantRoutes.AddOutlet.route)
+                },
+                onOutletClick = { outlet ->
+                    navController.navigate(OutletRoutes.OutletDetail.createRoute(outlet))
+                }
+            )
+        }
+    }
 }
 
 /**
@@ -286,7 +309,7 @@ fun NavGraphBuilder.merchantGraph(
     // Outlets
     composable(MerchantRoutes.Outlets.route) {
         LaunchedEffect(Unit) {
-            updateTopBottomAppBar(false, "Outlets", true)
+            updateTopBottomAppBar(true, "Outlets", false)
         }
         OutletsListScreenRoute(
             onBack = {
@@ -374,12 +397,16 @@ fun NavGraphBuilder.settingsGraph(
             onChangePassword = {
                 navController.navigate(SettingsRoutes.ChangePassword.route)
             },
+            
             onLogout = {
                 navController.navigate(AuthRoutes.Login.route) {
                     popUpTo(0) { inclusive = true } // Clear entire back stack
                     launchSingleTop = true
                 }
-            }
+            }, onPersonalInfo = {}, onReferEarn = {}, onAboutUs = {}, onTermsConditions = {}, onFAQs = {},
+            onOutletInfo = {
+                navController.navigate(MerchantRoutes.OutletDetail.route)
+            },
         )
     }
 

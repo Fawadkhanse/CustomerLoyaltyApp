@@ -20,5 +20,8 @@ data class CouponDetails(
     @SerialName("status")
     val status: String? = null,
     @SerialName("created_at")
-    val createdAt: String? = null
+    val createdAt: String? = null,
+    @SerialName("image_url")
+    val imageUrl: String? = null,
+
 )

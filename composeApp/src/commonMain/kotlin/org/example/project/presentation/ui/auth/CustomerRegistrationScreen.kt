@@ -1,7 +1,6 @@
 package org.example.project.presentation.ui.auth
 
 import AppIcons
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,8 +15,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -59,7 +56,7 @@ fun CustomerRegistrationScreenRoute(
         registerState = registerState,
         onRegister = { response ->
             TokenManager.setAccessToken(response.token?.access)
-            AuthData.setAuthData(response.user,response.token)
+            AuthData.setAuthData(response.user, response.token, null)
 
             viewModel.clearAllStates()
             if (response.user != null && response.token != null) {
