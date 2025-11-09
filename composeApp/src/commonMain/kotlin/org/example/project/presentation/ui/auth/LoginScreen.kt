@@ -18,6 +18,7 @@ import androidx.datastore.preferences.core.Preferences
 import kotlinx.coroutines.launch
 import littleappam.composeapp.generated.resources.Res
 import littleappam.composeapp.generated.resources.logo_name
+import littleappam.composeapp.generated.resources.main_logo
 import org.example.project.domain.models.Resource
 import org.example.project.domain.models.auth.login.UserLoginResponse
 import org.example.project.presentation.common.HandleApiState
@@ -142,7 +143,7 @@ private fun LoginScreen(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Image(
-                    painter = painterResource(resource = Res.drawable.logo_name),
+                    painter = painterResource(resource = Res.drawable.main_logo),
                     contentDescription = "Logo",
                     modifier = Modifier.height(150.dp).width(230.dp)
                 )

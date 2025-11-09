@@ -1,5 +1,6 @@
 package org.example.project.presentation.ui.coupons
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -16,6 +17,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import littleappam.composeapp.generated.resources.Res
+import littleappam.composeapp.generated.resources.logo
 import org.example.project.domain.models.Resource
 import org.example.project.presentation.common.HandleApiState
 import org.example.project.presentation.common.PromptsViewModel
@@ -25,12 +28,14 @@ import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.example.project.presentation.ui.auth.rememberCouponViewModel
 import org.example.project.utils.dataholder.AuthData
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun CouponsScreenRoute(
     onBack: () -> Unit,
     onCouponClick: (CouponData) -> Unit,
+    onCouponRedeem: (String, String) -> Unit
 ) {
     val viewModel = rememberCouponViewModel()
     val couponsListState by viewModel.couponsListState.collectAsState()
@@ -50,7 +55,8 @@ fun CouponsScreenRoute(
         onBack = onBack,
         onRefresh = {
             viewModel.refreshCoupons(useMock = GlobalVar.isMock)
-        }
+        },
+        onCouponRedeem =  onCouponRedeem
     )
 }
 
@@ -63,7 +69,8 @@ private fun CouponsScreen(
     onBack: () -> Unit,
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
-    promptsViewModel: PromptsViewModel = remember { PromptsViewModel() }
+    promptsViewModel: PromptsViewModel = remember { PromptsViewModel() },
+    onCouponRedeem: (String, String) -> Unit = {_,_->}
 ) {
     var selectedTabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("All Vouchers", "My Vouchers")
@@ -115,20 +122,18 @@ private fun CouponsScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        // TMG Logo Circle
                         Surface(
                             modifier = Modifier.size(32.dp),
                             shape = CircleShape,
-                            color = Color(0xFFFFA500)
                         ) {
                             Box(
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(
-                                    text = "TMG",
-                                    color = Color.White,
-                                    fontSize = 10.sp,
-                                    fontWeight = FontWeight.Bold
+
+                                Image(
+                                    painter = painterResource(resource = Res.drawable.logo),
+                                    contentDescription = "Logo",
+                                    modifier =  Modifier.size(30.dp).padding(end = 8.dp)
                                 )
                             }
                         }
@@ -253,7 +258,12 @@ private fun CouponsScreen(
                             } else {
                                 RedeemedCouponsContent(
                                     coupons = redeemedCoupons,
-                                    modifier = Modifier.weight(1f)
+                                    modifier = Modifier.weight(1f),
+                                    onCouponClick={couponData ->
+                                        if (couponData.status!= "used"){
+                                            onCouponRedeem(couponData.id,couponData.title)
+                                        }
+                                    }
                                 )
                             }
                         }

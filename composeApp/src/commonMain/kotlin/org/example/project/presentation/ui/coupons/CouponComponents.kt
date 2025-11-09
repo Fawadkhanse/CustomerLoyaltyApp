@@ -23,8 +23,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import littleappam.composeapp.generated.resources.Res
+import littleappam.composeapp.generated.resources.logo
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
@@ -55,7 +58,8 @@ fun AvailableCouponsContent(
 @Composable
 fun RedeemedCouponsContent(
     coupons: List<RedeemedCouponData>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onCouponClick: (RedeemedCouponData) -> Unit = {}
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -67,7 +71,9 @@ fun RedeemedCouponsContent(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(coupons) { coupon ->
-            RedeemedCouponCard(coupon = coupon)
+            RedeemedCouponCard(coupon = coupon, onClick = {
+               onCouponClick(coupon)
+            })
         }
     }
 }
@@ -199,14 +205,13 @@ private fun AvailableCouponCard(
                     Surface(
                         modifier = Modifier.size(20.dp),
                         shape = CircleShape,
-                        color = Color(0xFFFFA500)
                     ) {
                         Box(contentAlignment = Alignment.Center) {
-                            Text(
-                                text = "TMG",
-                                color = Color.White,
-                                fontSize = 7.sp,
-                                fontWeight = FontWeight.Bold
+                            Image(
+                                painter = painterResource(resource = Res.drawable.logo),
+                                contentDescription = "Logo",
+                                modifier =  Modifier.size(30.dp),
+                                alignment = Alignment.Center
                             )
                         }
                     }
@@ -232,12 +237,13 @@ private fun AvailableCouponCard(
 @Composable
 private fun RedeemedCouponCard(
     coupon: RedeemedCouponData,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
 ) {
     Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(160.dp),
+        modifier = modifier.fillMaxWidth()
+            .height(160.dp)
+            .clickable { onClick() },
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),

@@ -185,6 +185,28 @@ fun NavGraphBuilder.customerGraph(
             onNavigateToVouchers = {}
         )
     }
+    composable(
+        route = CouponRoutes.CouponQR.route,
+        arguments = listOf(
+            navArgument(RouteParams.COUPON_ID) { type = NavType.StringType },
+            navArgument(RouteParams.TITLE) { type = NavType.StringType }
+        )
+    ) { backStackEntry ->
+        LaunchedEffect(Unit) {
+            updateTopBottomAppBar(true, "Coupon QR Code", false)
+        }
+
+        val couponId = backStackEntry.arguments?.getString(RouteParams.COUPON_ID) ?: ""
+        val couponTitle = backStackEntry.arguments?.getString(RouteParams.COUPON_TITLE) ?: ""
+
+        CouponQRCodeScreenRoute(
+            couponId = couponId,
+            couponTitle = couponTitle,
+            onBack = {
+                navController.popBackStack()
+            }
+        )
+    }
 
     // Customer QR
     composable(CustomerRoutes.MyQR.route) {
@@ -211,6 +233,12 @@ fun NavGraphBuilder.customerGraph(
             },
             onCouponClick = { coupon ->
                 navController.navigate(CouponRoutes.CouponDetail.createRoute(coupon.id))
+            },
+            onCouponRedeem ={
+                couponId,
+                couponTitle ->
+                navController.navigate(CouponRoutes.CouponQR.createRoute(couponId,couponTitle))
+
             }
         )
     }
@@ -233,9 +261,13 @@ fun NavGraphBuilder.customerGraph(
             onRedeem = {
                 // Navigate back to coupons list after successful redemption
                 navController.popBackStack()
+            },
+            onShowQRCode = { couponId, title ->
+                navController.navigate(CouponRoutes.CouponQR.createRoute(couponId, title))
             }
         )
     }
+
 
     composable(CustomerRoutes.OutletsMap.route) {
         LaunchedEffect(Unit) {
@@ -247,6 +279,7 @@ fun NavGraphBuilder.customerGraph(
             }
         )
     }
+
     // Transactions
     composable(CustomerRoutes.Transactions.route) {
         LaunchedEffect(Unit) {
@@ -258,22 +291,19 @@ fun NavGraphBuilder.customerGraph(
         LaunchedEffect(Unit) {
             updateTopBottomAppBar(true, "Transactions", false)
         }
-        composable(MerchantRoutes.Outlets.route) {
-            LaunchedEffect(Unit) {
-                updateTopBottomAppBar(false, "Outlets", true)
+        OutletsListScreenRoute(
+            onBack = {
+                navController.popBackStack()
+            },
+            onAddOutlet = {
+                // Customers can't add outlets, this might be a placeholder or mistake
+                // For now, we can make it do nothing or just pop back
+                navController.popBackStack()
+            },
+            onOutletClick = { outlet ->
+                navController.navigate(OutletRoutes.OutletDetail.createRoute(outlet))
             }
-            OutletsListScreenRoute(
-                onBack = {
-                    navController.popBackStack()
-                },
-                onAddOutlet = {
-                    navController.navigate(MerchantRoutes.AddOutlet.route)
-                },
-                onOutletClick = { outlet ->
-                    navController.navigate(OutletRoutes.OutletDetail.createRoute(outlet))
-                }
-            )
-        }
+        )
     }
 }
 
@@ -324,7 +354,7 @@ fun NavGraphBuilder.merchantGraph(
         )
     }
 
-    //]]
+    //
     composable(
         route = OutletRoutes.OutletDetail.route,
         arguments = listOf(navArgument(RouteParams.OUTLET_ID) { type = NavType.StringType })
@@ -580,6 +610,28 @@ fun NavGraphBuilder.qrFlowGraph(
                 updateTopBottomAppBar(true, "QR Result", false)
             }
             // QR Result screen would go here
+        }
+        composable(
+            route = QRRoutes.CouponQR.route,
+            arguments = listOf(
+                navArgument(RouteParams.COUPON_ID) { type = NavType.StringType },
+                navArgument(RouteParams.COUPON_TITLE) { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            LaunchedEffect(Unit) {
+                updateTopBottomAppBar(true, "Coupon QR Code", false)
+            }
+
+            val couponId = backStackEntry.arguments?.getString(RouteParams.COUPON_ID) ?: ""
+            val couponTitle = backStackEntry.arguments?.getString(RouteParams.COUPON_TITLE) ?: ""
+
+            CouponQRCodeScreenRoute(
+                couponId = couponId,
+                couponTitle = couponTitle,
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }

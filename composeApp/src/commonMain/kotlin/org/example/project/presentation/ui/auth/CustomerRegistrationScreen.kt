@@ -1,8 +1,11 @@
 package org.example.project.presentation.ui.auth
 
 import AppIcons
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,7 +30,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import littleappam.composeapp.generated.resources.Res
+import littleappam.composeapp.generated.resources.main_logo
 import org.example.project.domain.models.Resource
 import org.example.project.domain.models.auth.register.UserRegistrationRequest
 import org.example.project.domain.models.auth.register.UserRegistrationResponse
@@ -42,6 +48,7 @@ import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.example.project.utils.dataholder.AuthData
 import org.example.project.utils.dataholder.TokenManager
 import org.example.project.utils.isValidEmail
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -181,6 +188,29 @@ private fun CustomerRegistrationScreen(
 //                    contentDescription = "Back"
 //                )
 //            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = LoyaltyColors.OrangePink.copy(alpha = 0.05f)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(Res.drawable.main_logo),
+                        contentDescription = "App Logo",
+                        modifier = Modifier
+                            .height(100.dp)
+                            .width(200.dp)
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+            }
+
 
             // Header
             Text(

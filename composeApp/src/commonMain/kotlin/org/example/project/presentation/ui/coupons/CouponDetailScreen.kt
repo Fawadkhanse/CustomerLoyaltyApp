@@ -1,6 +1,8 @@
 package org.example.project.presentation.ui.coupons
 
 import AppIcons
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -20,6 +22,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import littleappam.composeapp.generated.resources.Res
+import littleappam.composeapp.generated.resources.logo
 import org.example.project.domain.models.CouponDetails
 import org.example.project.domain.models.RedeemCouponResponse
 import org.example.project.domain.models.Resource
@@ -29,13 +33,15 @@ import org.example.project.presentation.components.*
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.example.project.presentation.ui.auth.rememberCouponViewModel
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun CouponDetailScreenRoute(
     couponId: String,
     onBack: () -> Unit,
-    onRedeem: () -> Unit
+    onRedeem: () -> Unit,
+    onShowQRCode: (String, String) -> Unit
 ) {
     val viewModel = rememberCouponViewModel()
     val couponDetailState by viewModel.couponDetailState.collectAsState()
@@ -58,6 +64,9 @@ fun CouponDetailScreenRoute(
             viewModel.clearRedeemState()
             onRedeem()
         },
+        onShowQRCode = {id, title ->
+            onShowQRCode(id,title)
+        },
         onBack = onBack
     )
 }
@@ -70,6 +79,7 @@ private fun CouponDetailScreen(
     onRedeemClick: () -> Unit,
     onRedeemSuccess: () -> Unit,
     onBack: () -> Unit,
+    onShowQRCode: (String, String) -> Unit={_,_->},
     promptsViewModel: PromptsViewModel = remember { PromptsViewModel() }
 ) {
 
@@ -83,7 +93,8 @@ private fun CouponDetailScreen(
             coupon = coupon,
             redeemState = redeemState,
             onRedeemClick = onRedeemClick,
-            onBack = onBack
+            onBack = onBack,
+            onShowQRCode = onShowQRCode
         )
     }
 
@@ -117,19 +128,19 @@ private fun CouponDetailContent(
     coupon: CouponDetails,
     redeemState: Resource<RedeemCouponResponse>,
     onRedeemClick: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onShowQRCode: (String, String) -> Unit={_,_->}
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF5F5F5))
             .verticalScroll(rememberScrollState())
     ) {
         // Large Voucher Card
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp)
+                .padding(   bottom = 20.dp, start = 10.dp, end = 10.dp)
         ) {
             Card(
                 modifier = Modifier
@@ -242,14 +253,13 @@ private fun CouponDetailContent(
                             Surface(
                                 modifier = Modifier.size(28.dp),
                                 shape = CircleShape,
-                                color = Color(0xFFFFA500)
                             ) {
                                 Box(contentAlignment = Alignment.Center) {
-                                    Text(
-                                        text = "TMG",
-                                        color = Color.White,
-                                        fontSize = 9.sp,
-                                        fontWeight = FontWeight.Bold
+
+                                    Image(
+                                        painter = painterResource(resource = Res.drawable.logo),
+                                        contentDescription = "Logo",
+                                        modifier =  Modifier.size(30.dp)
                                     )
                                 }
                             }
@@ -428,6 +438,28 @@ private fun CouponDetailContent(
             }
 
             Spacer(modifier = Modifier.height(24.dp))
+//            OutlinedButton(
+//                onClick = {
+//                    onShowQRCode(coupon.id ?: "", coupon.title ?: "")
+//                },
+//                modifier = Modifier.fillMaxWidth(),
+//                shape = RoundedCornerShape(12.dp),
+//                colors = ButtonDefaults.outlinedButtonColors(
+//                    contentColor = LoyaltyColors.OrangePink
+//                ),
+//                border = BorderStroke(1.dp, LoyaltyColors.OrangePink)
+//            ) {
+//                Icon(
+//                    imageVector = AppIcons.QrCode,
+//                    contentDescription = null,
+//                    modifier = Modifier.size(20.dp)
+//                )
+//                Spacer(modifier = Modifier.width(8.dp))
+//                Text(
+//                    text = "Show QR Code",
+//                    fontWeight = FontWeight.SemiBold
+//                )
+//            }
 
             // Redeem Button
             LoyaltyPrimaryButton(

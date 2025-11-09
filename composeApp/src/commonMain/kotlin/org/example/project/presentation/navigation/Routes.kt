@@ -93,6 +93,7 @@ object CustomerRoutes {
         const val route = "coupon_detail/{couponId}"
         fun createRoute(couponId: String) = "coupon_detail/$couponId"
     }
+
 }
 
 // Merchant Routes
@@ -171,6 +172,11 @@ object QRRoutes {
     object QRResult {
         const val route = "qr_result"
     }
+    object CouponQR {
+        const val route = "coupon_qr/{couponId}/{couponTitle}"
+        fun createRoute(couponId: String, couponTitle: String) = "coupon_qr/$couponId/$couponTitle"
+    }
+
 }
 
 // Transaction Routes
@@ -210,6 +216,11 @@ object CouponRoutes {
     object CouponDetail {
         const val route = "coupon_detail/{couponId}"
         fun createRoute(couponId: String) = "coupon_detail/$couponId"
+    }
+    // Coupon QR Code
+    object CouponQR {
+        const val route = "coupon_qr/{couponId}/{couponTitle}"
+        fun createRoute(couponId: String, couponTitle: String) = "coupon_qr/$couponId/$couponTitle"
     }
 }
 
@@ -332,6 +343,7 @@ object RouteParams {
     const val DEST_ROUTE = "destRoute"
     const val CONFIGURATION = "configuration"
     const val COUPON_ID = "couponId"
+    const val COUPON_TITLE = "couponTitle"
     const val OUTLET_ID = "outletId"
     const val TRANSACTION_ID = "transactionId"
     const val URL = "url"
