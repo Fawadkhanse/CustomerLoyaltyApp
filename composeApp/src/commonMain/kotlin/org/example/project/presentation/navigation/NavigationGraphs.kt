@@ -403,7 +403,16 @@ fun NavGraphBuilder.settingsGraph(
                     popUpTo(0) { inclusive = true } // Clear entire back stack
                     launchSingleTop = true
                 }
-            }, onPersonalInfo = {}, onReferEarn = {}, onAboutUs = {}, onTermsConditions = {}, onFAQs = {},
+            }, onPersonalInfo = {}, onReferEarn = {}, onTermsConditions = {},
+
+            onAboutUs = {
+                navController.navigate(SettingsRoutes.AboutUs.route)
+            },
+
+            onFAQs = {
+                navController.navigate(SettingsRoutes.FAQs.route)
+            },
+
             onOutletInfo = {
                 navController.navigate(MerchantRoutes.OutletDetail.route)
             },
@@ -443,6 +452,29 @@ fun NavGraphBuilder.settingsGraph(
             },
             onNotificationClick = { notification ->
                 // Handle notification click
+            }
+        )
+    }
+    // About Us
+    composable(SettingsRoutes.AboutUs.route) {
+        LaunchedEffect(Unit) {
+            updateTopBottomAppBar(true, "About Us", false)
+        }
+        AboutUsScreenRoute(
+            onBack = {
+                navController.popBackStack()
+            }
+        )
+    }
+
+    // FAQs
+    composable(SettingsRoutes.FAQs.route) {
+        LaunchedEffect(Unit) {
+            updateTopBottomAppBar(true, "FAQs", false)
+        }
+        FAQsScreenRoute(
+            onBack = {
+                navController.popBackStack()
             }
         )
     }

@@ -144,6 +144,14 @@ object SettingsRoutes {
     object Notifications {
         const val route = "notifications"
     }
+    object AboutUs {
+        const val route = "about_us"
+    }
+
+    object FAQs {
+        const val route = "faqs"
+    }
+
 }
 
 // QR Payment Routes (similar to Bank Islami QR features)

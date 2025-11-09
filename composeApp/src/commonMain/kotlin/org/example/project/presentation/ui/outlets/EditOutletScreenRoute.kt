@@ -70,8 +70,8 @@ private fun EditOutletScreen(
     var cityState by remember(outlet) { mutableStateOf(outlet.city ?: "") }
     var stateState by remember(outlet) { mutableStateOf(outlet.state ?: "") }
     var countryState by remember(outlet) { mutableStateOf(outlet.country ?: "") }
-    var latitudeState by remember(outlet) { mutableStateOf(outlet.latitude ?: "") }
-    var longitudeState by remember(outlet) { mutableStateOf(outlet.longitude ?: "") }
+    var latitudeState by remember(outlet) { mutableStateOf(outlet.latitude.toString() ?: "") }
+    var longitudeState by remember(outlet) { mutableStateOf(outlet.longitude.toString() ?: "") }
     var contactNumberState by remember(outlet) { mutableStateOf(outlet.contactNumber ?: "") }
 
     // Validation states
