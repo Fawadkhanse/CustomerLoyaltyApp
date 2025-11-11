@@ -186,7 +186,9 @@ fun QRCodeDisplayScreen(
             // My Rewards History Button
             LoyaltyPrimaryButton(
                 text = "My Rewards History",
-                onClick = { }
+                onClick = {
+                    onNavigateToHistory()
+                }
             )
 
         }
@@ -345,9 +347,9 @@ private fun QRCodeCard(
             frame = QrFrameShape.roundCorners(.25f)
         ),
         colors = QrColors(
-            dark = QrBrush.solid(Color.Black),
+            dark = QrBrush.solid(LoyaltyColors.BackgroundDark),
             light = QrBrush.solid(Color.White),
-            frame = QrBrush.solid(Color.Black)
+            frame = QrBrush.solid(LoyaltyColors.OrangePink)
         )
     )
 

@@ -133,7 +133,7 @@ private fun CouponsScreen(
                                 Image(
                                     painter = painterResource(resource = Res.drawable.logo),
                                     contentDescription = "Logo",
-                                    modifier =  Modifier.size(30.dp).padding(end = 8.dp)
+                                    modifier =  Modifier.size(30.dp)
                                 )
                             }
                         }

@@ -29,6 +29,8 @@ class QRScannerViewModel(
     private val _awardPointsState = MutableStateFlow<Resource<AwardPointsResponse>>(Resource.None)
     val awardPointsState: StateFlow<Resource<AwardPointsResponse>> = _awardPointsState.asStateFlow()
 
+
+
     private var hasScanned = false
     private var isProcessing = false
 
@@ -84,6 +86,7 @@ class QRScannerViewModel(
             }
         }
     }
+
 
     /**
      * Award points to customer

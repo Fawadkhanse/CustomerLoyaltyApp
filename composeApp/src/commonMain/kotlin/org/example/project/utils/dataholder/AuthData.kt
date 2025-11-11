@@ -11,6 +11,7 @@ object AuthData {
     var UserData: UserDataResponse? = null
     var outletDetails: OutletResponse?=null
     var userRole = ""
+    var userPoint= ""
     fun setAuthData(
         authResponse: UserDataResponse?,
         token: TokenResponse?,
@@ -23,6 +24,9 @@ object AuthData {
         userRole = authResponse?.role ?: "customer"
         outletDetails = outlet?.first()
     }
+    fun setPoint (string: String){
+        userPoint = string
+    }
 
 
     fun clearAuthData(){
@@ -32,6 +36,7 @@ object AuthData {
         userId = ""
         userRole = ""
     }
+
     fun isMerchant(): Boolean = userRole.equals("merchant", ignoreCase = true)
     fun isCustomer(): Boolean = userRole.equals("customer", ignoreCase = true)
 }

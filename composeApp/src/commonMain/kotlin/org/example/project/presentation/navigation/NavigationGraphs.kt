@@ -598,10 +598,10 @@ fun NavGraphBuilder.qrFlowGraph(
             LaunchedEffect(Unit) {
                 updateTopBottomAppBar(true, "My QR Code", false)
             }
-            QRCodeDisplayScreenRoute (onBack = {  navController.popBackStack()}
-            ){
-
+            QRCodeDisplayScreenRoute (onBack = {  navController.popBackStack()}, onNavigateToHistory = {
+                navController.navigate(CustomerRoutes.Transactions.route)
             }
+            )
         }
 
         // QR Result

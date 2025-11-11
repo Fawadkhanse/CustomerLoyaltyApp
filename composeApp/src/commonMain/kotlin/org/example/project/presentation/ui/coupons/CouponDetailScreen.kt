@@ -429,10 +429,10 @@ private fun CouponDetailContent(
                     Spacer(modifier = Modifier.height(12.dp))
 
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        TermItem("Valid for single use only")
-                        TermItem("Cannot be combined with other offers")
-                        TermItem("Non-transferable and non-refundable")
-                        TermItem("Present this voucher at checkout")
+                        coupon.termsConditions?.forEach {
+                            TermItem(it)
+                        }
+
                     }
                 }
             }

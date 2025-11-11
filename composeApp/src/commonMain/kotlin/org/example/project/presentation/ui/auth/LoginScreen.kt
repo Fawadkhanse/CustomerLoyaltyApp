@@ -79,10 +79,10 @@ fun LoginScreenRoute(
         },
         onMerchantLogin={
 
-            onLogin(
-                "name",  "name", "merchant"
-
-            )
+//            onLogin(
+//                "name",  "name", "merchant"
+//
+//            )
         },
         onForgotPassword = onForgotPassword,
         onRegister = onRegister,
@@ -267,8 +267,12 @@ private fun LoginScreen(
         state = loginState,
         promptsViewModel = promptsViewModel
     ) { loginResponse ->
-        if (loginResponse.user != null && loginResponse.token != null){
-            onLogin(loginResponse)
+        if (loginResponse.user != null && loginResponse.token != null) {
+            if (loginResponse.user.role == "merchant" && loginResponse.outlet.isNullOrEmpty()) {
+                promptsViewModel.showError("Merchant outlet is not registered please contact admin")
+            } else {
+                onLogin(loginResponse)
+            }
         }
 
     }

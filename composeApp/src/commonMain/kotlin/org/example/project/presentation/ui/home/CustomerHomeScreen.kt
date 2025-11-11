@@ -3,6 +3,7 @@ package org.example.project.presentation.ui.home
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -56,14 +57,19 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import littleappam.composeapp.generated.resources.Res
+import littleappam.composeapp.generated.resources.logo_name
+import littleappam.composeapp.generated.resources.main_logo
 import org.example.project.domain.models.Resource
 import org.example.project.domain.models.home.CustomerHomeResponse
 import org.example.project.presentation.common.HandleApiState
 import org.example.project.presentation.common.PromptsViewModel
+import org.example.project.presentation.components.ScreenContainer
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.ui.auth.rememberHomeViewModel
 import org.example.project.presentation.ui.coupons.CouponData
 import org.example.project.utils.dataholder.AuthData
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -103,6 +109,7 @@ fun CustomerHomeScreenRoute(
         promotions = promotions,
         availableCoupons = availableCoupons,
         onHomeResponseSuccess = { response ->
+            AuthData.setPoint(response.data?.user?.points.toString())
             viewModel.processHomeData(response)
         }
     )
@@ -129,19 +136,17 @@ fun CustomerHomeScreen(
 ) {
     val currentPrompt by promptsViewModel.currentPrompt.collectAsState()
 
-    // Define dimensions
-    val headerHeight = 170.dp
+    // Define dimensions - Adjusted for better spacing
+    val headerHeight = 180.dp // Increased header height
     val promotionHeight = 190.dp
-    val promotionOffset = headerHeight - (promotionHeight / 2) // Half in, half out
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        // Scrollable content
+    val promotionOffset = headerHeight - 40.dp // Adjusted to show more of the header
+    ScreenContainer (currentPrompt =  currentPrompt, verticalPadding = 0.dp, topPadding = 24.dp){
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
-            // Space for header + half of promotion
+            // Space for header + promotion
             item {
-                Spacer(modifier = Modifier.height(headerHeight + (promotionHeight / 2) + 10.dp))
+                Spacer(modifier = Modifier.height(headerHeight + promotionHeight - 30.dp))
             }
 
             // Points Card
@@ -150,7 +155,7 @@ fun CustomerHomeScreen(
                     points = userPoints,
                     tier = tier,
                     onRedeemClick = onViewAllCoupons,
-                    modifier = Modifier.padding(top = 20.dp)
+                    modifier = Modifier.padding(top = 10.dp)
                 )
             }
 
@@ -166,19 +171,18 @@ fun CustomerHomeScreen(
             }
 
             item {
-                Spacer(modifier = Modifier.height(40.dp))
+
             }
         }
-
-        // Fixed Header (Red Background)
         SimpleFixedHeader(
             userName = userName,
             userProfileImageUrl = userProfileImageUrl,
             onProfileClick = onProfileClick,
             height = headerHeight
         )
-
-        // Promotion Card - Half in Red, Half in White
+    }
+    Box(modifier = Modifier.fillMaxSize()) {
+          // Promotion Card - Positioned below header but above scrollable content
         if (promotions.isNotEmpty()) {
             Box(
                 modifier = Modifier
@@ -232,80 +236,33 @@ private fun SimpleFixedHeader(
                 )
         )
 
-        // Content
+        // Content - Adjusted spacing for better logo placement
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 20.dp, vertical = 16.dp),
+                .padding(horizontal = 20.dp, vertical = 20.dp), // Increased vertical padding
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Top: Logo and Profile
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            // Top: Logo only (centered) - Made smaller and better positioned
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
             ) {
-                // Logo + App Name
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(Color.White.copy(alpha = 0.15f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = AppIcons.Gift,
-                            contentDescription = "Logo",
-                            tint = Color.White,
-                            modifier = Modifier.size(26.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(
-                        text = "Rewards",
-                        color = Color.White,
-                        fontSize = 26.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        letterSpacing = 0.5.sp
-                    )
-                }
-
-                // Profile Avatar
-                Box(
+                Image(
+                    painter = painterResource(Res.drawable.main_logo),
+                    contentDescription = "App Logo",
                     modifier = Modifier
-                        .size(52.dp)
-                        .clip(CircleShape)
-                        .background(Color.White.copy(alpha = 0.2f))
-                        .clickable { onProfileClick() },
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (userProfileImageUrl != null) {
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalPlatformContext.current)
-                                .data(userProfileImageUrl)
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = "Profile",
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop
-                        )
-                    } else {
-                        Text(
-                            text = userName.split(" ").take(2)
-                                .mapNotNull { it.firstOrNull() }
-                                .joinToString(""),
-                            style = MaterialTheme.typography.titleLarge,
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp
-                        )
-                    }
-                }
+                        .height(80.dp) // Reduced height
+                        .width(160.dp) // Reduced width
+                )
             }
 
-//            // Bottom: Welcome Message
-//            Column {
+            // Bottom: Welcome Message - Moved up slightly
+//            Column(
+//                modifier = Modifier.padding(bottom = 8.dp) // Reduced bottom padding
+//            ) {
 //                Text(
 //                    text = "Welcome Back! 👋",
 //                    color = Color.White.copy(alpha = 0.9f),
@@ -483,19 +440,19 @@ private fun PromotionCard(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 // Badge
-                Surface(
-                    color = LoyaltyColors.OrangePink,
-                    shape = RoundedCornerShape(20.dp)
-                ) {
-                    Text(
-                        text = "SPECIAL OFFER",
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp),
-                        fontSize = 11.sp,
-                        letterSpacing = 1.sp
-                    )
-                }
+//                Surface(
+//                    color = LoyaltyColors.OrangePink,
+//                    shape = RoundedCornerShape(20.dp)
+//                ) {
+//                    Text(
+//                        text = "SPECIAL OFFER",
+//                        color = Color.White,
+//                        fontWeight = FontWeight.Bold,
+//                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp),
+//                        fontSize = 11.sp,
+//                        letterSpacing = 1.sp
+//                    )
+//                }
 
                 // Title and Date
                 Column {
@@ -593,15 +550,14 @@ private fun ElegantPointsCard(
 
                         Column {
                             Text(
-                                text = "Your Balance",
+                                text = "Your Points Balance",
                                 color = Color.Gray,
                                 fontSize = 13.sp
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Row(verticalAlignment = Alignment.Bottom) {
                                 Text(
-                                    text = points.toString()
-                                        .replace(Regex("(\\d)(?=(\\d{3})+$)"), "$1,"),
+                                    text = points.toString(),
                                     fontSize = 36.sp,
                                     color = Color(0xFF1A1A1A),
                                     fontWeight = FontWeight.ExtraBold
@@ -628,17 +584,18 @@ private fun ElegantPointsCard(
                         color = LoyaltyColors.ButteryYellow.copy(alpha = 0.2f),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text(
-                            text = "⭐ $tier Member",
-                            color = Color(0xFF8B1538),
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
-                        )
+//                        Text(
+//                          //  text = "⭐ $tier Member",
+//                            text = "Member",
+//                            color = Color(0xFF8B1538),
+//                            fontWeight = FontWeight.Bold,
+//                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
+//                        )
                     }
 
                     Surface(
                         onClick = onRedeemClick,
-                        color = Color(0xFF8B1538),
+                        color =MaterialTheme.colorScheme.primary,
                         shape = RoundedCornerShape(12.dp),
                         shadowElevation = 4.dp
                     ) {
