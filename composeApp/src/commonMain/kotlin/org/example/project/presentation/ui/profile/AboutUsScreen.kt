@@ -24,6 +24,7 @@ import littleappam.composeapp.generated.resources.main_logo
 import org.example.project.presentation.components.ScreenContainer
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
+import org.example.project.utils.dataholder.AuthData
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -87,14 +88,14 @@ private fun AboutUsScreen(
             ) {
                 // Who We Are Section
                 SectionTitle(
-                    title = "Who We Are",
+                    title = AuthData.about?.title?:"",
                     icon = AppIcons.Info
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Text(
-                    text = "We are a leading customer loyalty and rewards platform dedicated to helping businesses build stronger relationships with their customers. Our innovative solution makes it easy for merchants to reward customer loyalty while providing customers with amazing benefits and exclusive offers.",
+                    text = AuthData.about?.description?:"",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onBackground,
                     lineHeight = 24.sp,

@@ -223,7 +223,7 @@ private fun PointsCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .height(160.dp),
+            .height(120.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
         ),

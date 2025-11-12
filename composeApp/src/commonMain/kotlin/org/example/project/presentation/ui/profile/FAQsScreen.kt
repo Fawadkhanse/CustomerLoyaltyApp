@@ -23,9 +23,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.example.project.domain.models.auth.login.Faq
 import org.example.project.presentation.components.ScreenContainer
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
+import org.example.project.utils.dataholder.AuthData
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 data class FAQ(
@@ -38,146 +40,29 @@ data class FAQ(
 fun FAQsScreenRoute(
     onBack: () -> Unit
 ) {
-    FAQsScreen(onBack = onBack)
+    FAQsScreen(onBack = onBack, onEmailClicked = {}, onCallClicked = {})
 }
 
 @Composable
 private fun FAQsScreen(
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onEmailClicked:()->Unit={},
+    onCallClicked:()->Unit={}
 ) {
     // FAQ Categories
     var selectedCategory by remember { mutableStateOf("General") }
 
-    val categories = listOf("General", "Points & Rewards", "Coupons", "Transactions", "Account")
+  //  val categories = listOf("General", "Points & Rewards", "Coupons","Account")
+    val categories = listOf("General",)
 
     // FAQ Data
     val faqList = remember {
-        listOf(
-            // General FAQs
-            FAQ(
-                category = "General",
-                question = "What is this loyalty app about?",
-                answer = "Our loyalty app is a comprehensive rewards platform that helps you earn points with every purchase at participating outlets. You can redeem these points for exclusive coupons, discounts, and special offers."
-            ),
-            FAQ(
-                category = "General",
-                question = "How do I get started?",
-                answer = "Simply download the app, create your account by providing your name, email, and phone number, and you're ready to start earning rewards! You can immediately begin scanning QR codes at participating outlets to earn points."
-            ),
-            FAQ(
-                category = "General",
-                question = "Is the app free to use?",
-                answer = "Yes! The app is completely free to download and use. There are no hidden fees or subscription charges. You simply earn points and redeem rewards."
-            ),
-            FAQ(
-                category = "General",
-                question = "Which devices support this app?",
-                answer = "Our app is available for both Android and iOS devices. You can download it from the Google Play Store or Apple App Store."
-            ),
 
-            // Points & Rewards FAQs
-            FAQ(
-                category = "Points & Rewards",
-                question = "How do I earn points?",
-                answer = "You earn points by making purchases at participating merchant outlets. Simply show your QR code to the merchant at checkout, and points will be automatically added to your account based on your purchase amount."
-            ),
-            FAQ(
-                category = "Points & Rewards",
-                question = "How are points calculated?",
-                answer = "Points are typically calculated based on your purchase amount. For example, you might earn 1 point for every dollar spent. The exact rate may vary by merchant and promotional offers."
-            ),
-            FAQ(
-                category = "Points & Rewards",
-                question = "Do my points expire?",
-                answer = "Points typically remain valid for 12 months from the date they were earned. Any unused points will expire after this period. Make sure to redeem your points before they expire!"
-            ),
-            FAQ(
-                category = "Points & Rewards",
-                question = "Can I transfer points to another account?",
-                answer = "Points are non-transferable and can only be used by the account holder. However, you can use your points to purchase rewards for friends and family."
-            ),
-            FAQ(
-                category = "Points & Rewards",
-                question = "How do I check my points balance?",
-                answer = "Your current points balance is always displayed on your home screen. You can also view your complete transaction history to see how you earned each point."
-            ),
-
-            // Coupons FAQs
-            FAQ(
-                category = "Coupons",
-                question = "How do I redeem coupons?",
-                answer = "Browse available coupons in the 'Coupons' section, select the one you want, and click 'Redeem'. The required points will be deducted from your balance, and the coupon will be added to your account for use at participating outlets."
-            ),
-            FAQ(
-                category = "Coupons",
-                question = "Can I use multiple coupons at once?",
-                answer = "This depends on the specific terms and conditions of each coupon. Some coupons can be combined, while others cannot. Check the coupon details for specific information."
-            ),
-            FAQ(
-                category = "Coupons",
-                question = "What happens if I don't use a redeemed coupon?",
-                answer = "Redeemed coupons have an expiration date. If you don't use the coupon before it expires, it will be removed from your account and the points will not be refunded."
-            ),
-            FAQ(
-                category = "Coupons",
-                question = "How do I know which outlets accept my coupons?",
-                answer = "Each coupon displays the participating outlets where it can be used. You can also view all participating outlets in the 'Outlets' section of the app."
-            ),
-
-            // Transactions FAQs
-            FAQ(
-                category = "Transactions",
-                question = "How do I complete a transaction?",
-                answer = "To complete a transaction, show your unique QR code to the merchant at the time of purchase. The merchant will scan your code, and the transaction will be recorded in your account with the appropriate points added."
-            ),
-            FAQ(
-                category = "Transactions",
-                question = "Can I see my transaction history?",
-                answer = "Yes! Go to the 'Transactions' or 'Activity' section to view your complete transaction history, including points earned, coupons redeemed, and all purchases made using the app."
-            ),
-            FAQ(
-                category = "Transactions",
-                question = "What if a transaction doesn't show up?",
-                answer = "Transactions typically appear within a few seconds. If you don't see a transaction after 5 minutes, please contact our support team with your transaction details for assistance."
-            ),
-            FAQ(
-                category = "Transactions",
-                question = "Can I cancel a transaction?",
-                answer = "Once a transaction is completed and points are awarded, it cannot be cancelled through the app. If there's an issue with your purchase, please contact the merchant or our support team."
-            ),
-
-            // Account FAQs
-            FAQ(
-                category = "Account",
-                question = "How do I reset my password?",
-                answer = "On the login screen, click 'Forgot Password', enter your registered email address, and follow the instructions sent to your email to reset your password."
-            ),
-            FAQ(
-                category = "Account",
-                question = "Can I change my phone number?",
-                answer = "Yes, you can update your phone number in the 'Edit Profile' section. However, you may need to verify your new number for security purposes."
-            ),
-            FAQ(
-                category = "Account",
-                question = "How do I delete my account?",
-                answer = "If you wish to delete your account, please contact our support team. Please note that account deletion is permanent and all your points and data will be lost."
-            ),
-            FAQ(
-                category = "Account",
-                question = "Is my personal information secure?",
-                answer = "Yes! We take data security very seriously. All your personal information is encrypted and stored securely. We never share your information with third parties without your consent."
-            ),
-            FAQ(
-                category = "Account",
-                question = "How do I update my profile picture?",
-                answer = "Go to your Profile, click on 'Edit Profile', then tap on your profile picture. You can then select a new photo from your device's gallery."
-            )
-        )
     }
 
     // Filter FAQs by selected category
     val filteredFAQs = remember(selectedCategory) {
-        faqList.filter { it.category == selectedCategory }
+        AuthData.faqs
     }
 
     ScreenContainer(
@@ -275,7 +160,7 @@ private fun FAQsScreen(
                     .padding(20.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                if (filteredFAQs.isEmpty()) {
+                if (filteredFAQs?.isEmpty() == true) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -290,7 +175,7 @@ private fun FAQsScreen(
                         )
                     }
                 } else {
-                    filteredFAQs.forEach { faq ->
+                    filteredFAQs?.forEach { faq ->
                         FAQItem(faq = faq)
                     }
                 }
@@ -342,13 +227,13 @@ private fun FAQsScreen(
                             ContactButton(
                                 icon = AppIcons.Email,
                                 label = "Email",
-                                onClick = { /* Handle email */ }
+                                onClick = { onEmailClicked}
                             )
 
                             ContactButton(
                                 icon = AppIcons.Phone,
                                 label = "Call",
-                                onClick = { /* Handle call */ }
+                                onClick = { onCallClicked}
                             )
                         }
                     }
@@ -362,7 +247,7 @@ private fun FAQsScreen(
 
 @Composable
 private fun FAQItem(
-    faq: FAQ,
+    faq: Faq,
     modifier: Modifier = Modifier
 ) {
     var isExpanded by remember { mutableStateOf(false) }
@@ -476,3 +361,102 @@ private fun FAQsScreenPreview() {
         FAQsScreen(onBack = {})
     }
 }
+val list =listOf(
+// General FAQs
+FAQ(
+category = "General",
+question = "What is this loyalty app about?",
+answer = "Our loyalty app is a comprehensive rewards platform that helps you earn points with every purchase at participating outlets. You can redeem these points for exclusive coupons, discounts, and special offers."
+),
+FAQ(
+category = "General",
+question = "How do I get started?",
+answer = "Simply download the app, create your account by providing your name, email, and phone number, and you're ready to start earning rewards! You can immediately begin scanning QR codes at participating outlets to earn points."
+),
+FAQ(
+category = "General",
+question = "Is the app free to use?",
+answer = "Yes! The app is completely free to download and use. There are no hidden fees or subscription charges. You simply earn points and redeem rewards."
+),
+FAQ(
+category = "General",
+question = "Which devices support this app?",
+answer = "Our app is available for both Android and iOS devices. You can download it from the Google Play Store or Apple App Store."
+),
+
+// Points & Rewards FAQs
+FAQ(
+category = "Points & Rewards",
+question = "How do I earn points?",
+answer = "You earn points by making purchases at participating merchant outlets. Simply show your QR code to the merchant at checkout, and points will be automatically added to your account based on your purchase amount."
+),
+FAQ(
+category = "Points & Rewards",
+question = "How are points calculated?",
+answer = "Points are typically calculated based on your purchase amount. For example, you might earn 1 point for every dollar spent. The exact rate may vary by merchant and promotional offers."
+),
+FAQ(
+category = "Points & Rewards",
+question = "Do my points expire?",
+answer = "Points typically remain valid for 12 months from the date they were earned. Any unused points will expire after this period. Make sure to redeem your points before they expire!"
+),
+FAQ(
+category = "Points & Rewards",
+question = "Can I transfer points to another account?",
+answer = "Points are non-transferable and can only be used by the account holder. However, you can use your points to purchase rewards for friends and family."
+),
+FAQ(
+category = "Points & Rewards",
+question = "How do I check my points balance?",
+answer = "Your current points balance is always displayed on your home screen. You can also view your complete transaction history to see how you earned each point."
+),
+
+// Coupons FAQs
+FAQ(
+category = "Coupons",
+question = "How do I redeem coupons?",
+answer = "Browse available coupons in the 'Coupons' section, select the one you want, and click 'Redeem'. The required points will be deducted from your balance, and the coupon will be added to your account for use at participating outlets."
+),
+FAQ(
+category = "Coupons",
+question = "Can I use multiple coupons at once?",
+answer = "This depends on the specific terms and conditions of each coupon. Some coupons can be combined, while others cannot. Check the coupon details for specific information."
+),
+FAQ(
+category = "Coupons",
+question = "What happens if I don't use a redeemed coupon?",
+answer = "Redeemed coupons have an expiration date. If you don't use the coupon before it expires, it will be removed from your account and the points will not be refunded."
+),
+FAQ(
+category = "Coupons",
+question = "How do I know which outlets accept my coupons?",
+answer = "Each coupon displays the participating outlets where it can be used. You can also view all participating outlets in the 'Outlets' section of the app."
+),
+
+// Account FAQs
+FAQ(
+category = "Account",
+question = "How do I reset my password?",
+answer = "On the login screen, click 'Forgot Password', enter your registered email address, and follow the instructions sent to your email to reset your password."
+),
+FAQ(
+category = "Account",
+question = "Can I change my phone number?",
+answer = "Yes, you can update your phone number in the 'Edit Profile' section. However, you may need to verify your new number for security purposes."
+),
+FAQ(
+category = "Account",
+question = "How do I delete my account?",
+answer = "If you wish to delete your account, please contact our support team. Please note that account deletion is permanent and all your points and data will be lost."
+),
+FAQ(
+category = "Account",
+question = "Is my personal information secure?",
+answer = "Yes! We take data security very seriously. All your personal information is encrypted and stored securely. We never share your information with third parties without your consent."
+),
+FAQ(
+category = "Account",
+question = "How do I update my profile picture?",
+answer = "Go to your Profile, click on 'Edit Profile', then tap on your profile picture. You can then select a new photo from your device's gallery."
+)
+)

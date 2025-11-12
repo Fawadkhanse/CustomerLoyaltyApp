@@ -75,7 +75,7 @@ fun AppSplashScreenRoute(
 
                     if (authResponse != null && authResponse.user != null && authResponse.token != null) {
                         // Set auth data
-                        AuthData.setAuthData(authResponse.user, authResponse.token, authResponse.outlet)
+                        AuthData.setAuthData(authResponse)
                         TokenManager.setAccessToken(authResponse.token.access)
 
                         // Navigate to home with user role

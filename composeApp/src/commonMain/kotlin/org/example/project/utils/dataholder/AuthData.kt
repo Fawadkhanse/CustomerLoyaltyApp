@@ -1,8 +1,12 @@
 package org.example.project.utils.dataholder
 
 import org.example.project.domain.models.OutletResponse
+import org.example.project.domain.models.auth.login.About
+import org.example.project.domain.models.auth.login.Faq
 import org.example.project.domain.models.auth.login.UserDataResponse
+import org.example.project.domain.models.auth.login.UserLoginResponse
 import org.example.project.domain.models.auth.register.TokenResponse
+import org.example.project.presentation.ui.profile.FAQ
 
 object AuthData {
     var userName = ""
@@ -12,17 +16,20 @@ object AuthData {
     var outletDetails: OutletResponse?=null
     var userRole = ""
     var userPoint= ""
-    fun setAuthData(
-        authResponse: UserDataResponse?,
-        token: TokenResponse?,
-        outlet: List<OutletResponse>?
-    ) {
-        UserData = authResponse
-        tokens = token
-        userName = authResponse?.name ?: ""
-        userId = authResponse?.id ?: ""
-        userRole = authResponse?.role ?: "customer"
-        outletDetails = outlet?.first()
+    var about : About?=null
+    var faqs :List<Faq>?=null
+
+
+    fun setAuthData(response: UserLoginResponse) {
+        UserData = response.user
+        tokens = response.token
+        userName = response.user?.name ?: ""
+        userId = response.user?.id ?: ""
+        userRole = response?.user?.role ?: "customer"
+        outletDetails = response.outlet?.first()
+        about = response.about
+        faqs = response.faqs
+
     }
     fun setPoint (string: String){
         userPoint = string

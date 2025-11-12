@@ -3,7 +3,6 @@ package org.example.project.presentation.ui.profile
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -54,7 +53,7 @@ fun ProfileScreenRoute(
         name = AuthData.userName,
         email = AuthData.UserData?.email ?: "",
         phone = AuthData.UserData?.phone ?: "",
-        points = 0,
+        points = AuthData.userPoint,
         profileImageUrl = AuthData.UserData?.profileImage,
         isMerchant = AuthData.isMerchant() ?: false, // Add this check
         onEditProfile = onEditProfile,
@@ -81,7 +80,7 @@ private fun ProfileScreen(
     name: String,
     email: String,
     phone: String,
-    points: Int,
+    points: String,
     profileImageUrl: String? = null,
     isMerchant: Boolean = false,
     onEditProfile: () -> Unit,
@@ -111,6 +110,7 @@ private fun ProfileScreen(
                 phone = phone,
                 points = points,
                 profileImageUrl = profileImageUrl,
+                isMerchant = isMerchant,
                 onEditProfile = onEditProfile
             )
 
@@ -203,15 +203,16 @@ private fun ProfileScreen(
 private fun ModernProfileHeader(
     name: String,
     phone: String,
-    points: Int,
+    points: String,
     profileImageUrl: String?,
+    isMerchant: Boolean,
     onEditProfile: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(220.dp)
+            .height(if (isMerchant) 140.dp else 140.dp)
     ) {
         // Gradient Background
         Box(
@@ -228,94 +229,111 @@ private fun ModernProfileHeader(
                 )
         )
 
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            // Top Row with Logo and Profile Icon
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            // Bigger Logo on the left
+            Image(
+                painter = painterResource(Res.drawable.logo_name),
+                contentDescription = "Logo",
+                modifier = Modifier.height(60.dp)
+            )
+
+            // Name and Phone on the right
+            Column(
+                horizontalAlignment = Alignment.End
             ) {
-                // Logo
-                Image(
-                    painter = painterResource(Res.drawable.logo_name),
-                    contentDescription = "Logo",
-                    modifier = Modifier.height(40.dp)
+                Text(
+                    text = name,
+                    color = Color.White,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.End
                 )
-
-                // Profile Icon Button
-                IconButton(
-                    onClick = onEditProfile,
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(CircleShape)
-                        .background(Color.White.copy(alpha = 0.2f))
-                ) {
-                    Icon(
-                        imageVector = AppIcons.Person,
-                        contentDescription = "Profile",
-                        tint = Color.White,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = phone,
+                    color = Color.White.copy(alpha = 0.9f),
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.End
+                )
             }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // Points Badge
-            Surface(
-                shape = RoundedCornerShape(20.dp),
-                color = Color(0xFFFFA500),
-                modifier = Modifier.clickable(onClick = {})
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Icon(
-                        imageVector = AppIcons.Gift,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Text(
-                        text = "$points",
-                        color = Color.White,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = "points",
-                        color = Color.White,
-                        fontSize = 14.sp
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // User Name and Phone
-            Text(
-                text = name,
-                color = Color.White,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
-
-            Text(
-                text = phone,
-                color = Color.White.copy(alpha = 0.9f),
-                fontSize = 14.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-            )
         }
+//
+//        if (isMerchant) {
+//            // Merchant Layout - Logo on left, Name/Phone on right
+//
+//        } else {
+//            // Non-merchant Layout - Centered with points
+//            Column(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .padding(20.dp),
+//                horizontalAlignment = Alignment.CenterHorizontally
+//            ) {
+//                // Logo centered at top
+//                Image(
+//                    painter = painterResource(Res.drawable.logo_name),
+//                    contentDescription = "Logo",
+//                    modifier = Modifier.height(45.dp)
+//                )
+//
+//                Spacer(modifier = Modifier.height(16.dp))
+//
+//                // Points Badge
+//                Surface(
+//                    shape = RoundedCornerShape(20.dp),
+//                    color = Color(0xFFFFA500),
+//                    modifier = Modifier.clickable(onClick = {})
+//                ) {
+//                    Row(
+//                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
+//                        verticalAlignment = Alignment.CenterVertically,
+//                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+//                    ) {
+//                        Icon(
+//                            imageVector = AppIcons.Gift,
+//                            contentDescription = null,
+//                            tint = Color.White,
+//                            modifier = Modifier.size(18.dp)
+//                        )
+//                        Text(
+//                            text = "$points",
+//                            color = Color.White,
+//                            fontSize = 20.sp,
+//                            fontWeight = FontWeight.Bold
+//                        )
+//                        Text(
+//                            text = "points",
+//                            color = Color.White,
+//                            fontSize = 13.sp
+//                        )
+//                    }
+//                }
+//
+//                Spacer(modifier = Modifier.height(8.dp))
+//
+//                // User Name and Phone
+//                Text(
+//                    text = name,
+//                    color = Color.White,
+//                    fontSize = 18.sp,
+//                    fontWeight = FontWeight.Bold,
+//                    textAlign = TextAlign.Center
+//                )
+//
+//                Text(
+//                    text = phone,
+//                    color = Color.White.copy(alpha = 0.9f),
+//                    fontSize = 13.sp,
+//                    textAlign = TextAlign.Center
+//                )
+//            }
+//        }
     }
 }
 
@@ -374,13 +392,13 @@ private fun ModernProfileMenuItem(
                     )
 
                     if (subtitle != null) {
-                        Text(
-                            text = subtitle,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = LoyaltyExtendedColors.secondaryText(),
-                            modifier = Modifier.padding(top = 4.dp),
-                            lineHeight = 16.sp
-                        )
+//                        Text(
+//                            text = subtitle,
+//                            style = MaterialTheme.typography.bodySmall,
+//                            color = LoyaltyExtendedColors.secondaryText(),
+//                            modifier = Modifier.padding(top = 4.dp),
+//                            lineHeight = 16.sp
+//                        )
                     }
                 }
 
@@ -411,7 +429,7 @@ private fun ProfileScreenPreview() {
             name = "Prabu Dadayan",
             email = "prabu@example.com",
             phone = "+60 169533611",
-            points = 12510,
+            points = "",
             profileImageUrl = null,
             isMerchant = false,
             onEditProfile = {},

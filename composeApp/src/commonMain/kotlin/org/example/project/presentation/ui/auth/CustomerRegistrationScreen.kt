@@ -30,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import littleappam.composeapp.generated.resources.Res
 import littleappam.composeapp.generated.resources.main_logo
@@ -63,7 +62,7 @@ fun CustomerRegistrationScreenRoute(
         registerState = registerState,
         onRegister = { response ->
             TokenManager.setAccessToken(response.token?.access)
-            AuthData.setAuthData(response.user, response.token, null)
+           // AuthData.setAuthData(response)
 
             viewModel.clearAllStates()
             if (response.user != null && response.token != null) {
@@ -178,16 +177,6 @@ private fun CustomerRegistrationScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-//            // Back button
-//            IconButton(
-//                onClick = onBack,
-//                modifier = Modifier.padding(bottom = 16.dp)
-//            ) {
-//                Icon(
-//                    imageVector = AppIcons.ArrowBack,
-//                    contentDescription = "Back"
-//                )
-//            }
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

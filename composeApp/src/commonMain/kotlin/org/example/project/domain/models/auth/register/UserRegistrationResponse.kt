@@ -12,11 +12,31 @@ data class UserRegistrationResponse(
     @SerialName("message")
     val message: String? = null,
     @SerialName("user")
-    val user: UserDataResponse? = null
+    val user: UserDataResponse? = null,
+    @SerialName("about")
+    val about: AboutResponse? = null,
+    @SerialName("faqs")
+    val faqs: List<FaqResponse>? = null
 ){
 
 
 }
+
+@Serializable
+data class AboutResponse(
+    @SerialName("title")
+    val title: String? = null,
+    @SerialName("description")
+    val description: String? = null
+)
+
+@Serializable
+data class FaqResponse(
+    @SerialName("question")
+    val question: String? = null,
+    @SerialName("answer")
+    val answer: String? = null
+)
 
 @Serializable
 data class TokenResponse(

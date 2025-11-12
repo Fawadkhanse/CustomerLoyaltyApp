@@ -14,6 +14,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import org.example.project.domain.models.CouponScanResponse
 import org.example.project.domain.models.QRScanResponse
 import org.example.project.domain.models.Resource
 import org.example.project.presentation.common.HandleApiState
@@ -30,17 +31,29 @@ fun QRScannerScreenRoute(
 ) {
     val viewModel = rememberQRScannerViewModel()
     val scanState by viewModel.scanState.collectAsState()
+    val couponState by viewModel.couponState.collectAsState()
     val customerInfo by viewModel.customerInfo.collectAsState()
+
 
     QRScannerScreen(
         scanState = scanState,
         customerInfo = customerInfo,
+        couponState = couponState,
         onQRScanned = { qrCode ->
             val qrId = QRCodeUtils.parseQRCodeData(qrCode)
-            if (qrId != null) {
-                viewModel.scanQRCode(qrId)
-            } else {
-                viewModel.showInvalidQRError()
+            when {
+                !QRCodeUtils.isValidQRCode(qrCode) || qrId == null -> {
+                    viewModel.showInvalidQRError()
+                }
+                QRCodeUtils.isValidCouponQRCode(qrCode) -> {
+                    viewModel.scanQRCouponCode(qrId)
+                }
+                QRCodeUtils.isValidUserQRCode(qrCode) -> {
+                    viewModel.scanQRCode(qrId)
+                }
+                else -> {
+                    viewModel.showInvalidQRError()
+                }
             }
         },
         onAwardPoints = { points ->
@@ -53,6 +66,7 @@ fun QRScannerScreenRoute(
         },
         onBack ={
             viewModel.resetScanState()
+            viewModel.resetScanState()
             onBack()
         }
     )
@@ -62,6 +76,7 @@ fun QRScannerScreenRoute(
 fun QRScannerScreen(
     scanState: Resource<QRScanResponse>,
     customerInfo: CustomerInfo?,
+    couponState: Resource<CouponScanResponse>,
     onQRScanned: (String) -> Unit,
     onAwardPoints: (Int) -> Unit,
     onDismissCustomerSheet: () -> Unit,
@@ -177,6 +192,15 @@ fun QRScannerScreen(
     // Handle scan state
     HandleApiState(
         state = scanState,
+        promptsViewModel = promptsViewModel
+    ) { response ->
+        promptsViewModel.showSuccess(title = response.message) {
+            onBack()
+        }
+        // Success handled by customerInfo state
+    }
+    HandleApiState(
+        state =couponState,
         promptsViewModel = promptsViewModel
     ) { response ->
         promptsViewModel.showSuccess(title = response.message) {

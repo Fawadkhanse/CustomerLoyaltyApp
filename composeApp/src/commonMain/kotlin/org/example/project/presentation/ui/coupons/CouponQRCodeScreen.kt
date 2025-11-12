@@ -23,6 +23,7 @@ import org.example.project.presentation.common.PromptsViewModel
 import org.example.project.presentation.components.LoyaltyPrimaryButton
 import org.example.project.presentation.components.ScreenContainer
 import org.example.project.presentation.design.LoyaltyColors
+import org.example.project.utils.QRCodeUtils.createCouponQRCodeData
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -261,13 +262,7 @@ private fun CouponQRCodeCard(
     }
 }
 
-/**
- * Create QR code data string for coupon redemption
- * Format: littleAppStation00coupon:{couponId}
- */
-fun createCouponQRCodeData(couponId: String): String {
-    return "littleAppStation00coupon:$couponId"
-}
+
 
 /**
  * Parse coupon QR code data to extract coupon ID

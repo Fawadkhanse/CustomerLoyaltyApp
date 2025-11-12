@@ -91,7 +91,8 @@ fun CustomerHomeScreenRoute(
     val tier by viewModel.userTier.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.loadHomeData()
+
+
     }
 
     CustomerHomeScreen(
@@ -140,7 +141,8 @@ fun CustomerHomeScreen(
     val headerHeight = 180.dp // Increased header height
     val promotionHeight = 190.dp
     val promotionOffset = headerHeight - 40.dp // Adjusted to show more of the header
-    ScreenContainer (currentPrompt =  currentPrompt, verticalPadding = 0.dp, topPadding = 24.dp){
+    ScreenContainer (currentPrompt =  currentPrompt,  horizontalPadding = 0.dp,
+        verticalPadding = 0.dp){
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -254,8 +256,8 @@ private fun SimpleFixedHeader(
                     painter = painterResource(Res.drawable.main_logo),
                     contentDescription = "App Logo",
                     modifier = Modifier
-                        .height(80.dp) // Reduced height
-                        .width(160.dp) // Reduced width
+                        .height(100.dp) // Reduced height
+                        .width(200.dp) // Reduced width
                 )
             }
 

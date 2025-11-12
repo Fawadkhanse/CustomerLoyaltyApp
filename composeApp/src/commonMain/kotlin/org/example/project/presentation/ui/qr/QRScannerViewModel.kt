@@ -10,6 +10,7 @@ import org.example.project.data.api.HttpMethod
 import org.example.project.domain.RemoteRepository
 import org.example.project.domain.models.AwardPointsRequest
 import org.example.project.domain.models.AwardPointsResponse
+import org.example.project.domain.models.CouponScanResponse
 import org.example.project.domain.models.QRScanRequest
 import org.example.project.domain.models.QRScanResponse
 import org.example.project.domain.models.Resource
@@ -22,6 +23,8 @@ class QRScannerViewModel(
 
     private val _scanState = MutableStateFlow<Resource<QRScanResponse>>(Resource.None)
     val scanState: StateFlow<Resource<QRScanResponse>> = _scanState.asStateFlow()
+    private val _couponState = MutableStateFlow<Resource<CouponScanResponse>>(Resource.None)
+    val couponState: StateFlow<Resource<CouponScanResponse>> = _couponState.asStateFlow()
 
     private val _customerInfo = MutableStateFlow<CustomerInfo?>(null)
     val customerInfo: StateFlow<CustomerInfo?> = _customerInfo.asStateFlow()
@@ -77,6 +80,49 @@ class QRScannerViewModel(
                         total_points = 100
 
                         )
+                    )
+
+            } catch (e: Exception) {
+                _scanState.value = Resource.Error(e)
+                hasScanned = false
+                isProcessing = false
+            }
+        }
+    }
+    fun scanQRCouponCode(qrId: String) {
+        if (hasScanned || isProcessing) return
+
+        isProcessing = true
+        hasScanned = true
+        _couponState.value = Resource.Loading
+        val request = QRScanRequest(qrId)
+
+        viewModelScope.launch {
+            try {
+                remoteRepository.makeApiRequest(
+                    requestModel = request,
+                    endpoint = ApiEndpoints.SCAN_QR_CODE,
+                    httpMethod = HttpMethod.POST,
+                    isMock = GlobalVar.isMock
+                ).collectAsResource<CouponScanResponse>(
+                    onEmit = { result ->
+                        when (result) {
+                            is Resource.Success -> {
+
+                                _couponState.value = result
+                            }
+                            is Resource.Error -> {
+                                _couponState.value = result
+                                hasScanned = false
+                            }
+                            is Resource.Loading -> {
+                                _couponState.value = result
+                            }
+                            else -> {}
+                        }
+                        isProcessing = false
+                    },
+
                     )
 
             } catch (e: Exception) {
@@ -147,6 +193,8 @@ class QRScannerViewModel(
         hasScanned = false
         isProcessing = false
         _scanState.value = Resource.None
+        _couponState.value =Resource.None
+
     }
 }
 

@@ -62,6 +62,9 @@ class HomeViewModel(
     val activeOutlets: StateFlow<List<OutletSummaryData>> = _activeOutlets.asStateFlow()
 
     // Customer Home Data Loading
+    init {
+        loadHomeData()
+    }
     fun loadHomeData() {
         viewModelScope.launch {
             remoteRepository.makeApiRequest(

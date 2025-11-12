@@ -17,7 +17,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import kotlinx.coroutines.launch
 import littleappam.composeapp.generated.resources.Res
-import littleappam.composeapp.generated.resources.logo_name
 import littleappam.composeapp.generated.resources.main_logo
 import org.example.project.domain.models.Resource
 import org.example.project.domain.models.auth.login.UserLoginResponse
@@ -57,7 +56,7 @@ fun LoginScreenRoute(
         loginState = loginState,
         onLogin = { response ->
             TokenManager.setAccessToken(response.token?.access)
-            AuthData.setAuthData(response.user, response.token,response.outlet)
+            AuthData.setAuthData(response)
             // FIXED: Launch coroutine to save preferences
             scope.launch {
                 viewModel.setAuthResponsePreferences(response)
