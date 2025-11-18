@@ -53,31 +53,29 @@ data class OutletResponse(
     @SerialName("id")
     val id: String,
     @SerialName("merchant")
-    val merchant: String,
+    val merchant: String?="",
     @SerialName("name")
-    val name: String,
+    val name: String?,
     @SerialName("address")
-    val address: String,
+    val address: String?,
     @SerialName("city")
-    val city: String,
+    val city: String?,
     @SerialName("state")
-    val state: String,
+    val state: String?,
     @SerialName("country")
-    val country: String,
+    val country: String?,
     @SerialName("latitude")
-    val latitude: String,
+    val latitude: Double,
     @SerialName("longitude")
-    val longitude: String,
+    val longitude: Double,
     @SerialName("contact_number")
     val contactNumber: String,
+    @SerialName("outlet_image")
+    val outletImage: String?="",
     @SerialName("created_at")
-    val createdAt: String,
+    val createdAt: String?="",
     @SerialName("updated_at")
-    val updatedAt: String,
-    @SerialName ("outlet_image")
-    val imageUrl: String? = null, // Add this field for store images
-    @SerialName ("operatingHours")
-    val operatingHours: String? = null, // Optional: Add operating hours
-
+    val updatedAt: String?="",
+    val operatingHours: String= ""
 )
 // Request model for updating outlet

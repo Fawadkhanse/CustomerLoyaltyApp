@@ -88,36 +88,36 @@ private fun TransactionHistoryScreen(
 //            }
 
             // Filter Row
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                // Date Range Filter
-                FilterChip(
-                    onClick = onDateRangeFilter,
-                    label = {
-                        Text(
-                            text = selectedDateRange ?: "Date range",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = AppIcons.Calendar,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    },
-                    selected = selectedDateRange != null,
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = LoyaltyColors.OrangePink.copy(alpha = 0.1f),
-                        selectedLabelColor = LoyaltyColors.OrangePink,
-                        selectedLeadingIconColor = LoyaltyColors.OrangePink
-                    ),
-                    modifier = Modifier.weight(1f)
-                )
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(horizontal = 16.dp, vertical = 8.dp),
+//                horizontalArrangement = Arrangement.spacedBy(12.dp)
+//            ) {
+//                // Date Range Filter
+//                FilterChip(
+//                    onClick = onDateRangeFilter,
+//                    label = {
+//                        Text(
+//                            text = selectedDateRange ?: "Date range",
+//                            style = MaterialTheme.typography.bodyMedium
+//                        )
+//                    },
+//                    leadingIcon = {
+//                        Icon(
+//                            imageVector = AppIcons.Calendar,
+//                            contentDescription = null,
+//                            modifier = Modifier.size(18.dp)
+//                        )
+//                    },
+//                    selected = selectedDateRange != null,
+//                    colors = FilterChipDefaults.filterChipColors(
+//                        selectedContainerColor = LoyaltyColors.OrangePink.copy(alpha = 0.1f),
+//                        selectedLabelColor = LoyaltyColors.OrangePink,
+//                        selectedLeadingIconColor = LoyaltyColors.OrangePink
+//                    ),
+//                    modifier = Modifier.weight(1f)
+//                )
 
                 // Outlet Filter
 //                FilterChip(
@@ -143,7 +143,7 @@ private fun TransactionHistoryScreen(
 //                    ),
 //                    modifier = Modifier.weight(1f)
 //                )
-            }
+ //           }
 
             // Content based on state
             when (transactionsState) {

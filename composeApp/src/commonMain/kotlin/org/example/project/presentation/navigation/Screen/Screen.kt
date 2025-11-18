@@ -12,7 +12,9 @@ sealed class Screen(val route: String) {
     object ResetPassword : Screen("reset_password")
 
     // Customer Screens
+    // Customer Screens
     object Home : Screen("customer_home")
+    object Order : Screen("order")
     object MyQR : Screen("my_qr")
     object Coupons : Screen("coupons")
     object Profile : Screen("profile")

@@ -1,6 +1,5 @@
 package org.example.project.presentation.ui.auth
 
-
 import ProfileViewModel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -40,7 +39,6 @@ import org.example.project.utils.isValidEmail
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-
 @Composable
 fun LoginScreenRoute(
     onLogin: (String, String, String) -> Unit,
@@ -50,19 +48,28 @@ fun LoginScreenRoute(
 ) {
     val viewModel = rememberAuthViewModel()
     val loginState by viewModel.loginState.collectAsState()
-    val scope = rememberCoroutineScope() // ADD THIS LINE
+    val scope = rememberCoroutineScope()
+
+    // Load saved credentials
+    val savedCredentials by viewModel.savedCredentials.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.getRememberMeCredentials()
+    }
 
     LoginScreen(
         loginState = loginState,
         onLogin = { response ->
             TokenManager.setAccessToken(response.token?.access)
             AuthData.setAuthData(response)
-            // FIXED: Launch coroutine to save preferences
             scope.launch {
                 viewModel.setAuthResponsePreferences(response)
+                if (viewModel.credentials?.rememberMe == true) {
+                    viewModel.setRememberMeCredentials()
+                } else {
+                    viewModel.clearRememberMeCredentials()
+                }
             }
 
-            viewModel.clearAllStates()
             response.user?.let {
                 onLogin(
                     response.user.name?:"",
@@ -70,21 +77,16 @@ fun LoginScreenRoute(
                     response.user.role?:""
                 )
             }
-
+            viewModel.clearAllStates()
         },
-
-        onLoginButtonClicked = { email, password ->
-          viewModel.login(email, password)
-        },
-        onMerchantLogin={
-
-//            onLogin(
-//                "name",  "name", "merchant"
-//
-//            )
+        onLoginButtonClicked = { email, password, rememberMe ->
+            viewModel.login(email, password, rememberMe=rememberMe)
         },
         onForgotPassword = onForgotPassword,
         onRegister = onRegister,
+        savedEmail = savedCredentials?.email?:"",
+        savedPassword = savedCredentials?.password?:"",
+        savedRememberMe = savedCredentials?.rememberMe?:false
     )
 }
 
@@ -92,20 +94,30 @@ fun LoginScreenRoute(
 private fun LoginScreen(
     loginState: Resource<UserLoginResponse> = Resource.None,
     onLogin: (UserLoginResponse) -> Unit,
-    onLoginButtonClicked: (String, String) -> Unit = {_,_->},
+    onLoginButtonClicked: (String, String, Boolean) -> Unit = { _, _, _ -> },
     onForgotPassword: () -> Unit,
     onRegister: () -> Unit,
-    onMerchantLogin: () -> Unit ={},
-    promptsViewModel: PromptsViewModel = remember { PromptsViewModel() }
+    onMerchantLogin: () -> Unit = {},
+    promptsViewModel: PromptsViewModel = remember { PromptsViewModel() },
+    savedEmail: String = "",
+    savedPassword: String = "",
+    savedRememberMe: Boolean = false
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var rememberMe by remember { mutableStateOf(false) }
     var userType by remember { mutableStateOf("Customer") }
 
     // Validation states
     var emailError by remember { mutableStateOf<String?>(null) }
     var passwordError by remember { mutableStateOf<String?>(null) }
 
+    // Use LaunchedEffect to update email and password when saved credentials change
+    LaunchedEffect(savedEmail, savedPassword, savedRememberMe) {
+        email = savedEmail
+        password = savedPassword
+        rememberMe = savedRememberMe
+    }
     // Validation functions
     fun validateEmail(): Boolean {
         emailError = when {
@@ -116,7 +128,7 @@ private fun LoginScreen(
         return emailError == null
     }
 
-     fun validatePassword(): Boolean {
+    fun validatePassword(): Boolean {
         passwordError = when {
             password.isBlank() -> "Password is required"
             password.length < 6 -> "Password must be at least 6 characters"
@@ -147,7 +159,6 @@ private fun LoginScreen(
                     modifier = Modifier.height(150.dp).width(230.dp)
                 )
             }
-
 
             Spacer(Modifier.height(10.dp))
 
@@ -196,21 +207,46 @@ private fun LoginScreen(
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
-            // Forgot Password
-            TextButton(
-                onClick = onForgotPassword,
-                modifier = Modifier.align(Alignment.End)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = "Forgot Password?",
-                    color = LoyaltyColors.OrangePink,
-                    style = MaterialTheme.typography.bodyMedium
-                )
+
+                // Remember Me (Left Side)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.clickable { rememberMe = !rememberMe }
+                ) {
+                    Checkbox(
+                        checked = rememberMe,
+                        onCheckedChange = { rememberMe = it },
+                        colors = CheckboxDefaults.colors(
+                            checkedColor = LoyaltyColors.OrangePink,
+                            checkmarkColor = MaterialTheme.colorScheme.onPrimary
+                        )
+                    )
+                    Text(
+                        text = "Remember me",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+
+                // Forgot Password (Right Side)
+                TextButton(onClick = onForgotPassword) {
+                    Text(
+                        text = "Forgot Password?",
+                        color = LoyaltyColors.OrangePink,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
             }
 
+
             Spacer(modifier = Modifier.height(24.dp))
-
-
 
             // Login Button
             LoyaltyPrimaryButton(
@@ -219,7 +255,8 @@ private fun LoginScreen(
                     if (validateAll()) {
                         onLoginButtonClicked(
                             email,
-                            password
+                            password,
+                            rememberMe
                         )
                     }
                 },
@@ -261,24 +298,21 @@ private fun LoginScreen(
             }
         }
     }
+
     // Handle login state with API calls
     HandleApiState(
         state = loginState,
         promptsViewModel = promptsViewModel
     ) { loginResponse ->
         if (loginResponse.user != null && loginResponse.token != null) {
-            if (loginResponse.user.role == "merchant" && loginResponse.outlet.isNullOrEmpty()) {
+            if (loginResponse.user.role == "merchant" && loginResponse.user.outletDetails.isNullOrEmpty()) {
                 promptsViewModel.showError("Merchant outlet is not registered please contact admin")
             } else {
                 onLogin(loginResponse)
             }
         }
-
     }
-
 }
-
-
 
 @Preview(showBackground = true)
 @Composable
@@ -293,20 +327,22 @@ fun LoginScreenPreview() {
 
 
 
-
 @Composable
 expect fun rememberAuthViewModel(): AuthViewModel
+
 @Composable
 expect fun rememberHomeViewModel(): HomeViewModel
 
 @Composable
 expect fun rememberProfileViewModel(): ProfileViewModel
+
 // commonMain
 expect fun ByteArray.encodeBase64(): String
 
 // Expect function to get ViewModel in common
 @Composable
 expect fun rememberCouponViewModel(): CouponViewModel
+
 @Composable
 expect fun rememberTransactionViewModel(): TransactionViewModel
 
@@ -315,7 +351,6 @@ expect fun QRScannerCameraView(
     onQRCodeScanned: (String) -> Unit,
     modifier: Modifier = Modifier
 )
-
 
 @Composable
 expect fun OutletMapView(
@@ -333,5 +368,3 @@ expect fun rememberQRScannerViewModel(): QRScannerViewModel
 expect fun rememberOutletViewModel(): OutletViewModel
 
 expect fun createDataStore(): DataStore<Preferences>
-
-

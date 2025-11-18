@@ -161,10 +161,10 @@ private fun AvailableCouponCard(
                 modifier = Modifier.align(Alignment.Center)
             ) {
                 Text(
-                    text = extractAmount(coupon.title),
+                    text = coupon.pointsRequired.toString(),
                     fontSize = 56.sp,
                     fontWeight = FontWeight.Bold,
-                    color = getVoucherColor(coupon.title)
+                    color = getVoucherColor(coupon.pointsRequired)
                 )
             }
 
@@ -311,15 +311,15 @@ private fun RedeemedCouponCard(
 }
 
 // Helper function to extract amount from title (e.g., "RM20" from "Rewards eVoucher RM20")
-private fun extractAmount(title: String): String {
-    val regex = "RM(\\d+)".toRegex()
-    val match = regex.find(title)
-    return match?.groupValues?.get(1) ?: "20"
-}
+//private fun extractAmount(title: String): String {
+//    val regex = "RM(\\d+)".toRegex()
+//    val match = regex.find(title)
+//    return match?.groupValues?.get(1) ?: "20"
+//}
 
 // Helper function to get color based on voucher amount
-private fun getVoucherColor(title: String): Color {
-    val amount = extractAmount(title).toIntOrNull() ?: 0
+private fun getVoucherColor(point: Int?): Color {
+    val amount = point ?: 0
     return when {
         amount >= 20 -> Color(0xFF4CAF50) // Green for RM20
         amount >= 6 -> Color(0xFF2196F3) // Blue for RM6

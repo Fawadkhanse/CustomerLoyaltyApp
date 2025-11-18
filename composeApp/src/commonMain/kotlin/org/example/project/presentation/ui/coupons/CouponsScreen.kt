@@ -52,6 +52,7 @@ fun CouponsScreenRoute(
         availableCoupons = availableCoupons,
         redeemedCoupons = redeemedCoupons,
         onCouponClick = onCouponClick,
+        point = AuthData.userPoint,
         onBack = onBack,
         onRefresh = {
             viewModel.refreshCoupons(useMock = GlobalVar.isMock)
@@ -69,6 +70,7 @@ private fun CouponsScreen(
     onBack: () -> Unit,
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
+    point: String="0",
     promptsViewModel: PromptsViewModel = remember { PromptsViewModel() },
     onCouponRedeem: (String, String) -> Unit = {_,_->}
 ) {
@@ -140,7 +142,7 @@ private fun CouponsScreen(
 
                         // Points
                         Text(
-                            text = "12510",
+                            text = point,
                             color = Color(0xFFFFA500),
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold

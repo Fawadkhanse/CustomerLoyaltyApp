@@ -26,7 +26,7 @@ object AuthData {
         userName = response.user?.name ?: ""
         userId = response.user?.id ?: ""
         userRole = response?.user?.role ?: "customer"
-        outletDetails = response.outlet?.first()
+        outletDetails = response.user?.outletDetails?.takeIf { it.isNotEmpty() }?.first()
         about = response.about
         faqs = response.faqs
 

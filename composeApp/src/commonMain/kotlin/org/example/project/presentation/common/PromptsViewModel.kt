@@ -95,7 +95,8 @@ class PromptsViewModel : ViewModel() {
         positiveButtonText: String = "Yes",
         negativeButtonText: String = "No",
         onPositiveClick: () -> Unit = {},
-        onNegativeClick: () -> Unit = {}
+        onNegativeClick: () -> Unit = {},
+        onDismiss: () -> Unit={}
     ) {
         _currentPrompt.value = PromptTypeShow.Confirmation(
             title = title,
@@ -104,20 +105,29 @@ class PromptsViewModel : ViewModel() {
             negativeButtonText = negativeButtonText,
             positiveButtonClick = onPositiveClick,
             negativeButtonClick = onNegativeClick,
-            onDismiss = { clearPrompt() }
+            onDismiss = {
+                onDismiss()
+                clearPrompt()
+            }
         )
     }
 
-    fun comingSoon(message: String = "") {
+    fun comingSoon(message: String = "",onDismiss: () -> Unit = {}) {
         updatePrompt(
             if (message.isNotBlank()) {
                 PromptTypeShow.ComingSoon(
                     message = message,
-                    onDismiss = { updatePrompt(null) }
+                    onDismiss = { updatePrompt(null)
+                        onDismiss()
+                    }
                 )
             } else {
                 PromptTypeShow.ComingSoon(
-                    onDismiss = { updatePrompt(null) }
+                    onDismiss = {
+
+                        updatePrompt(null)
+                        onDismiss()
+                    }
                 )
             }
         )

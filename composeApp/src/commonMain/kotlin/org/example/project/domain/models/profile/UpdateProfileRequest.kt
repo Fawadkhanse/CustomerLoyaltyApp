@@ -18,7 +18,7 @@ data class UpdateProfileRequest(
     val tc: Boolean =true,
     @SerialName("address")
     val address: String,
-    @SerialName("postcode")
+    @SerialName("postalcode")
     val postcode: String,
     @SerialName("region")
     val region: String,

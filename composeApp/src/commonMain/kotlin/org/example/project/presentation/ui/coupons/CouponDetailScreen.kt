@@ -216,10 +216,11 @@ private fun CouponDetailContent(
                             .padding(horizontal = 20.dp)
                     ) {
                         Text(
-                            text = extractAmount(coupon.title ?: ""),
+                           // text = extractAmount(coupon.title ?: ""),
+                            text = coupon.pointsRequired.toString(),
                             fontSize = 96.sp,
                             fontWeight = FontWeight.Bold,
-                            color = getVoucherColor(coupon.title ?: ""),
+                            color = getVoucherColor( coupon.pointsRequired),
                             textAlign = TextAlign.Center
                         )
                     }
@@ -397,44 +398,46 @@ private fun CouponDetailContent(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-
-            // Terms & Conditions
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                shape = RoundedCornerShape(16.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(20.dp)
+            if (!coupon.termsConditions.isNullOrEmpty()){
+// Terms & Conditions
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    shape = RoundedCornerShape(16.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    Column(
+                        modifier = Modifier.padding(20.dp)
                     ) {
-                        Icon(
-                            imageVector = AppIcons.Info,
-                            contentDescription = null,
-                            tint = LoyaltyColors.OrangePink,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Text(
-                            text = "Terms & Conditions",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = Color(0xFF333333),
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        coupon.termsConditions?.forEach {
-                            TermItem(it)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Icon(
+                                imageVector = AppIcons.Info,
+                                contentDescription = null,
+                                tint = LoyaltyColors.OrangePink,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Text(
+                                text = "Terms & Conditions",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = Color(0xFF333333),
+                                fontWeight = FontWeight.Bold
+                            )
                         }
 
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            coupon.termsConditions?.forEach {
+                                TermItem(it)
+                            }
+
+                        }
                     }
                 }
+
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -529,8 +532,8 @@ private fun extractAmount(title: String): String {
     return match?.groupValues?.get(1) ?: "20"
 }
 
-private fun getVoucherColor(title: String): Color {
-    val amount = extractAmount(title).toIntOrNull() ?: 0
+private fun getVoucherColor(title: Int?): Color {
+    val amount = title?: 0
     return when {
         amount >= 20 -> Color(0xFF4CAF50) // Green
         amount >= 6 -> Color(0xFF2196F3) // Blue

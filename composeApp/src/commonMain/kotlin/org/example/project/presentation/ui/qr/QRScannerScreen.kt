@@ -46,10 +46,10 @@ fun QRScannerScreenRoute(
                     viewModel.showInvalidQRError()
                 }
                 QRCodeUtils.isValidCouponQRCode(qrCode) -> {
-                    viewModel.scanQRCouponCode(qrId)
+                    viewModel.scanQRCouponCode("coupon:$qrId")
                 }
                 QRCodeUtils.isValidUserQRCode(qrCode) -> {
-                    viewModel.scanQRCode(qrId)
+                    viewModel.scanQRCode("user:$qrId")
                 }
                 else -> {
                     viewModel.showInvalidQRError()

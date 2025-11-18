@@ -21,7 +21,7 @@ enum class CustomerBottomNavItems(
     val screen: Screen
 ) {
     HOME("Home", AppIcons.Home, Screen.Home),
-    ORDER("Order", AppIcons.Home, Screen.Home),
+    ORDER("Order", AppIcons.Order, Screen.Order),
     REWARDS("Reward", AppIcons.Coupon, Screen.Coupons),
     PROFILE("Profile", AppIcons.Person, Screen.Profile),
 }

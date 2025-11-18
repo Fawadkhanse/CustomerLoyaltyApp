@@ -2,37 +2,6 @@ package org.example.project.presentation.navigation
 
 
 // Main App Routes - similar to Bank Islami structure
-object MainScreensRoute {
-    object Splash {
-        const val route = "splash"
-        fun createRoute() = route
-    }
-
-    object AppIntro {
-        const val route = "app_intro"
-        fun createRoute() = route
-    }
-
-    object Login {
-        const val route = "login"
-        fun createRoute() = route
-    }
-
-    object DashboardFlow {
-        const val route = "dashboard_flow"
-        fun createRoute() = route
-    }
-
-    object OtpScreen {
-        const val route = "otp_screen"
-        fun createRoute() = route
-    }
-
-    object WebViewScreen {
-        const val route = "webview_screen"
-        fun createRoute() = route
-    }
-}
 
 // Authentication Routes
 object AuthRoutes {
@@ -89,6 +58,10 @@ object CustomerRoutes {
     object Transactions {
         const val route = "transactions"
     }
+     object Order{
+        const val route = "order"
+    }
+
     object CouponDetail {
         const val route = "coupon_detail/{couponId}"
         fun createRoute(couponId: String) = "coupon_detail/$couponId"
@@ -151,6 +124,9 @@ object SettingsRoutes {
 
     object FAQs {
         const val route = "faqs"
+    }
+ object WebView {
+        const val route = "webView"
     }
 
 }

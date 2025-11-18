@@ -25,6 +25,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,6 +55,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun CustomerRegistrationScreenRoute(
     onRegister: (String, String, String, String) -> Unit, // name, email, phone, password
     onBack: () -> Unit,
+    onTermsAndConditionClicked: () -> Unit
 ) {
     val viewModel = rememberAuthViewModel()
     val registerState by viewModel.registerState.collectAsState()
@@ -87,6 +89,7 @@ fun CustomerRegistrationScreenRoute(
             )
             viewModel.register(request)
         },
+        onTermsAndConditionClicked = onTermsAndConditionClicked,
         onBack = onBack
     )
 }
@@ -97,21 +100,22 @@ private fun CustomerRegistrationScreen(
     onRegister: (UserRegistrationResponse) -> Unit,
     onRegisterButtonClicked: (String, String, String, String, String) -> Unit = { _, _, _, _, _ -> },
     onBack: () -> Unit,
+    onTermsAndConditionClicked: () -> Unit = {},
     promptsViewModel: PromptsViewModel = remember { PromptsViewModel() }
 ) {
-    var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var phone by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
-    var agreeToTerms by remember { mutableStateOf(false) }
+    var name by rememberSaveable  { mutableStateOf("") }
+    var email by rememberSaveable  { mutableStateOf("") }
+    var phone by rememberSaveable  { mutableStateOf("") }
+    var password by rememberSaveable  { mutableStateOf("") }
+    var confirmPassword by rememberSaveable  { mutableStateOf("") }
+    var agreeToTerms by rememberSaveable  { mutableStateOf(false) }
 
     // Validation states - Initialize with null, not empty string
-    var nameError by remember { mutableStateOf<String?>(null) }
-    var emailError by remember { mutableStateOf<String?>(null) }
-    var phoneError by remember { mutableStateOf<String?>(null) }
-    var passwordError by remember { mutableStateOf<String?>(null) }
-    var confirmPasswordError by remember { mutableStateOf<String?>(null) }
+    var nameError by rememberSaveable  { mutableStateOf<String?>(null) }
+    var emailError by rememberSaveable  { mutableStateOf<String?>(null) }
+    var phoneError by rememberSaveable  { mutableStateOf<String?>(null) }
+    var passwordError by rememberSaveable  { mutableStateOf<String?>(null) }
+    var confirmPasswordError by rememberSaveable  { mutableStateOf<String?>(null) }
 
     // Validation functions
     fun validateName(): Boolean {
@@ -324,12 +328,12 @@ private fun CustomerRegistrationScreen(
                 // Use the spannable text component
                 TermsAndPrivacyText(
                     onTermsClick = {
-                        // Navigate to Terms of Service
-                        // TODO: Add navigation to terms screen
+                        agreeToTerms=true
+                        onTermsAndConditionClicked()
                     },
                     onPrivacyClick = {
-                        // Navigate to Privacy Policy
-                        // TODO: Add navigation to privacy screen
+                        agreeToTerms=true
+                        onTermsAndConditionClicked()
                     },
                     modifier = Modifier.weight(1f),
                     textStyle = MaterialTheme.typography.bodyMedium.copy(

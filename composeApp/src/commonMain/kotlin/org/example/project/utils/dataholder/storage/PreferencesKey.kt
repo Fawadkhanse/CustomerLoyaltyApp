@@ -8,6 +8,7 @@ object PreferencesKey {
     const val USER_EMAIL = "user_email"
     const val USER_ROLE = "user_role"
     const val  AUTH_RESPONSE = "auth_response"
+    const val  USER_CREDENTIALS = "user_credentials"
     const val USER_PHONE = "user_phone"
     const val IS_LOGGED_IN = "is_logged_in"
     const val IS_REMEMBER_ME = "is_remember_me"

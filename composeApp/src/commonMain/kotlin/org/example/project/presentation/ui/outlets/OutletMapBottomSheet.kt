@@ -259,8 +259,8 @@ fun OutletResponse.toOutletLocation(): OutletLocation? {
             id = id ?: return null,
             name = name ?: "Unknown Outlet",
             address = address ?: "",
-            latitude = latitude?.toDoubleOrNull() ?: return null,
-            longitude = longitude?.toDoubleOrNull() ?: return null,
+            latitude = latitude ?: return null,
+            longitude = longitude ?: return null,
             contactNumber = contactNumber,
             city = city,
             state = state

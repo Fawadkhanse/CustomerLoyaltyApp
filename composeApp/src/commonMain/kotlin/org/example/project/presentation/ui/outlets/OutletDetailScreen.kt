@@ -17,6 +17,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.mohamedrejeb.calf.core.LocalPlatformContext
+import io.ktor.util.PlatformUtils
 import org.example.project.domain.models.OutletResponse
 import org.example.project.domain.models.Resource
 import org.example.project.presentation.common.HandleApiState
@@ -25,7 +27,11 @@ import org.example.project.presentation.components.*
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
 import org.example.project.presentation.ui.auth.rememberOutletViewModel
+
 import org.example.project.utils.dataholder.AuthData
+import org.example.project.utils.makePhoneCall
+import org.example.project.utils.openMapsForDirections
+
 
 // Route Composable - Connects to ViewModel and Navigation
 @Composable
@@ -36,8 +42,9 @@ fun OutletDetailScreenRoute(
 ) {
     val viewModel = rememberOutletViewModel()
     val outletState by viewModel.outletDetailState.collectAsState()
-    val currentOutlet by viewModel.currentOutlet.collectAsState()
 
+
+// Main Screen Composable
     // Load outlet details when screen opens
     LaunchedEffect(outletId) {
         if (!AuthData.isMerchant()){
@@ -52,12 +59,11 @@ fun OutletDetailScreenRoute(
         onBack = onBack,
         onEdit = onEdit,
         onRefresh = {
-            viewModel.loadOutletById(outletId)
+           // viewModel.loadOutletById(outletId)
         }
     )
 }
 
-// Main Screen Composable
 @Composable
 private fun OutletDetailScreen(
     outletState: Resource<OutletResponse>,
@@ -68,6 +74,7 @@ private fun OutletDetailScreen(
     promptsViewModel: PromptsViewModel = remember { PromptsViewModel() }
 ) {
     var outletResponse by remember {mutableStateOf(outlet) }
+
     ScreenContainer(
         currentPrompt = promptsViewModel.currentPrompt.collectAsState().value,
         horizontalPadding = 0.dp,
@@ -101,6 +108,7 @@ private fun OutletDetailContent(
     onBack: () -> Unit,
     onEdit: () -> Unit
 ) {
+    val context =LocalPlatformContext.current
     LazyColumn(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -112,9 +120,9 @@ private fun OutletDetailContent(
                     .height(280.dp)
             ) {
                 // Store Image
-                if (outlet.imageUrl != null) {
+                if (outlet.outletImage != null) {
                     AsyncImage(
-                        model = outlet.imageUrl,
+                        model = outlet.outletImage,
                         contentDescription = outlet.name,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
@@ -148,7 +156,7 @@ private fun OutletDetailContent(
                         modifier = Modifier.padding(12.dp)
                     ) {
                         Text(
-                            text = outlet.state,
+                            text = outlet.state?:"",
                             color = Color.White,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
@@ -168,7 +176,7 @@ private fun OutletDetailContent(
                     .padding(20.dp)
             ) {
                 Text(
-                    text = outlet.name,
+                    text = outlet.name?:"",
                     style = MaterialTheme.typography.headlineMedium,
                     color = LoyaltyColors.Error,
                     fontWeight = FontWeight.Bold,
@@ -212,51 +220,54 @@ private fun OutletDetailContent(
         }
 
         item {
-            // Action Buttons Section
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.White)
-                    .padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                // Get Direction Button
-                LoyaltyPrimaryButton(
-                    text = "Get Direction",
-                    onClick = { /* Open maps */ },
-                    icon = AppIcons.Store,
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                // Call Button
-                OutlinedButton(
-                    onClick = { /* Make call */ },
+            if (AuthData.isCustomer()){
+                // Action Buttons Section
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(48.dp),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = LoyaltyColors.OrangePink
-                    )
+                        .background(Color.White)
+                        .padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Icon(
-                        imageVector = AppIcons.Phone,
-                        contentDescription = null,
-                        modifier = Modifier.size(20.dp)
+                    // Get Direction Button
+                    LoyaltyPrimaryButton(
+                        text = "Get Direction",
+                        onClick = { openMapsForDirections(context,outlet.latitude, outlet.longitude, outlet.address?:"") },
+                        icon = AppIcons.Store,
+                        modifier = Modifier.fillMaxWidth()
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Call Store",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium
-                    )
+
+                    // Call Button
+                    OutlinedButton(
+                        onClick = {makePhoneCall(context,phoneNumber = outlet.contactNumber) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = LoyaltyColors.OrangePink
+                        )
+                    ) {
+                        Icon(
+                            imageVector = AppIcons.Phone,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Call Store",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
                 }
+
+                Divider(
+                    color = Color(0xFFF0F0F0),
+                    thickness = 8.dp
+                )
             }
 
-            Divider(
-                color = Color(0xFFF0F0F0),
-                thickness = 8.dp
-            )
         }
 
         item {
@@ -277,30 +288,29 @@ private fun OutletDetailContent(
 
                 DetailItem(
                     label = "City",
-                    value = outlet.city
+                    value = outlet.city?:""
                 )
 
                 DetailItem(
                     label = "State",
-                    value = outlet.state
+                    value = outlet.state?:""
                 )
 
                 DetailItem(
                     label = "Country",
-                    value = outlet.country
+                    value = outlet.country?:""
                 )
-
-                if (outlet.latitude.isNotEmpty() && outlet.longitude.isNotEmpty()) {
-                    DetailItem(
-                        label = "Coordinates",
-                        value = "${outlet.latitude}, ${outlet.longitude}"
-                    )
-                }
 
                 DetailItem(
-                    label = "Merchant ID",
-                    value = outlet.merchant
+                    label = "Coordinates",
+                    value = "${outlet.latitude}, ${outlet.longitude}"
                 )
+                if (AuthData.isMerchant()) {
+                    DetailItem(
+                        label = "Merchant ID",
+                        value = outlet.merchant?:""
+                    )
+                }
             }
 
             Divider(
@@ -311,65 +321,66 @@ private fun OutletDetailContent(
 
         item {
             // Map Preview Section (Optional)
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.White)
-                    .padding(20.dp)
-            ) {
-                Text(
-                    text = "Location",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = Color(0xFF333333),
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-
-                // Map Placeholder
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Color(0xFFE0E0E0)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Icon(
-                            imageVector = AppIcons.Map,
-                            contentDescription = null,
-                            modifier = Modifier.size(48.dp),
-                            tint = Color(0xFF999999)
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Map Preview",
-                            color = Color(0xFF999999),
-                            fontSize = 14.sp
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Text(
-                    text = "${outlet.address}, ${outlet.city}, ${outlet.state}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF666666),
-                    lineHeight = 20.sp
-                )
-            }
-
-            Divider(
-                color = Color(0xFFF0F0F0),
-                thickness = 8.dp
-            )
+//            Column(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .background(Color.White)
+//                    .padding(20.dp)
+//            ) {
+//                Text(
+//                    text = "Location",
+//                    style = MaterialTheme.typography.titleLarge,
+//                    color = Color(0xFF333333),
+//                    fontWeight = FontWeight.Bold,
+//                    modifier = Modifier.padding(bottom = 16.dp)
+//                )
+//
+//                // Map Placeholder
+//                Box(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .height(200.dp)
+//                        .clip(RoundedCornerShape(12.dp))
+//                        .background(Color(0xFFE0E0E0)),
+//                    contentAlignment = Alignment.Center
+//                ) {
+//                    Column(
+//                        horizontalAlignment = Alignment.CenterHorizontally
+//                    ) {
+//                        Icon(
+//                            imageVector = AppIcons.Map,
+//                            contentDescription = null,
+//                            modifier = Modifier.size(48.dp),
+//                            tint = Color(0xFF999999)
+//                        )
+//                        Spacer(modifier = Modifier.height(8.dp))
+//                        Text(
+//                            text = "Map Preview",
+//                            color = Color(0xFF999999),
+//                            fontSize = 14.sp
+//                        )
+//                    }
+//                }
+//
+//                Spacer(modifier = Modifier.height(12.dp))
+//
+//                Text(
+//                    text = "${outlet.address}, ${outlet.city}, ${outlet.state}",
+//                    style = MaterialTheme.typography.bodyMedium,
+//                    color = Color(0xFF666666),
+//                    lineHeight = 20.sp
+//                )
+//            }
+//
+//            Divider(
+//                color = Color(0xFFF0F0F0),
+//                thickness = 8.dp
+//            )
         }
 
         item {
-            // Additional Information
+            if (AuthData.isMerchant()) {
+        //         Additional Information
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -386,16 +397,16 @@ private fun OutletDetailContent(
 
                 DetailItem(
                     label = "Created At",
-                    value = formatDateTime(outlet.createdAt)
+                    value = formatDateTime(outlet.createdAt?:"")
                 )
 
                 DetailItem(
                     label = "Last Updated",
-                    value = formatDateTime(outlet.updatedAt),
+                    value = formatDateTime(outlet.updatedAt?:""),
                     showDivider = false
                 )
             }
-
+            }
             Spacer(modifier = Modifier.height(20.dp))
         }
     }
@@ -582,12 +593,13 @@ private fun OutletDetailScreenPreview() {
         country = "Malaysia",
         contactNumber = "+60 12-345 6789",
         merchant = "merchant-123",
-        latitude = "3.9733",
-        longitude = "103.3609",
-        imageUrl = null,
-        operatingHours = "9am - 10pm",
+        latitude = 3.9733,
+        longitude = 103.3609,
+//        imageUrl = null,
+//        operatingHours = "9am - 10pm",
         createdAt = "2023-10-27T10:00:00.000Z",
-        updatedAt = "2023-10-27T11:30:00.000Z"
+        updatedAt = "2023-10-27T11:30:00.000Z",
+        outletImage = null
     )
     MaterialTheme {
         OutletDetailScreen(

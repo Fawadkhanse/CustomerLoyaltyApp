@@ -144,7 +144,7 @@ private fun OutletsListScreen(
                     name = response.name ?: "Unknown Outlet",
                     location = "${response.address ?: ""}, ${response.city ?: ""}",
                     category = "Outlet",
-                    distance = calculateDistance(response.latitude, response.longitude),
+                    distance = calculateDistance(response.latitude.toString(), response.longitude.toString()),
                     phone = response.contactNumber ?: "",
                     email = "",
                     website = "",

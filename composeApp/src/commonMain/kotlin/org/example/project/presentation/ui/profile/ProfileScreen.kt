@@ -67,6 +67,7 @@ fun ProfileScreenRoute(
         onLogout = {
             lifecycleScope.launch {
                 preferences.remove(PreferencesKey.AUTH_RESPONSE)
+                preferences.putBoolean(PreferencesKey.IS_LOGGED_IN, false)
             }
             AuthData.clearAuthData()
             TokenManager.setAccessToken(null)
@@ -95,6 +96,8 @@ private fun ProfileScreen(
     promptsViewModel: PromptsViewModel = remember { PromptsViewModel() }
 ) {
     val currentPrompt by promptsViewModel.currentPrompt.collectAsState()
+    var showLogoutDialog by remember { mutableStateOf(false) }
+    var showComingSoon: Boolean by remember { mutableStateOf(false) }
 
     ScreenContainer(
         currentPrompt = currentPrompt,
@@ -149,7 +152,9 @@ private fun ProfileScreen(
                         title = "Refer & Earn",
                         subtitle = "Get RM5 off on your next purchase for referring friends",
                         icon = AppIcons.Gift,
-                        onClick = onReferEarn
+                        onClick = {
+                            showComingSoon = true
+                        }
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -189,10 +194,29 @@ private fun ProfileScreen(
                     title = "Logout",
                     icon = AppIcons.Logout,
                     iconTint = LoyaltyColors.Error,
-                    onClick = onLogout,
+                    onClick = {
+                        showLogoutDialog=true
+                    },
                     showDivider = false
                 )
 
+                if (showLogoutDialog){
+                    promptsViewModel.showConfirmation(
+                        title = "Logout",
+                        message = "Are sure to logout ?",
+                        onNegativeClick = { },
+                        onDismiss = {showLogoutDialog=false},
+                        onPositiveClick = {
+                            onLogout()
+
+                        })
+                }
+
+                if (showComingSoon){
+                    promptsViewModel.comingSoon("The Refer feature will be available in the next version release."){
+                        showComingSoon=false
+                    }
+                }
                 Spacer(modifier = Modifier.weight(1f))
             }
         }

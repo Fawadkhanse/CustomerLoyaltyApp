@@ -30,6 +30,7 @@ abstract class BaseViewModel : ViewModel() {
                             Resource.Success(it)
                         } ?: Resource.Error(Exception("Failed to parse response"))
                     } catch (e: Exception) {
+                        e.printStackTrace()
                         Resource.Error(e)
                     }
                 }

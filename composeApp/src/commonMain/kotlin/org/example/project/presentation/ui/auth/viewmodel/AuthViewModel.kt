@@ -14,6 +14,7 @@ import org.example.project.data.mockresponses.userLoginResponse
 import org.example.project.data.mockresponses.userRegisterResponse
 import org.example.project.domain.RemoteRepository
 import org.example.project.domain.models.Resource
+import org.example.project.domain.models.auth.login.SavedCredentials
 import org.example.project.domain.models.auth.login.UserLoginRequest
 import org.example.project.domain.models.auth.login.UserLoginResponse
 import org.example.project.domain.models.auth.register.UserRegistrationRequest
@@ -56,11 +57,25 @@ class AuthViewModel(
 
     private val _currentUser = MutableStateFlow<UserLoginResponse?>(null)
     val currentUser: StateFlow<UserLoginResponse?> = _currentUser.asStateFlow()
+
+    private val _savedCredentials= MutableStateFlow<SavedCredentials?>(null)
+    val savedCredentials: StateFlow<SavedCredentials?> = _savedCredentials.asStateFlow()
     private val preferences = DataStorePreferences(createDataStore())
+
+    var credentials: SavedCredentials?=null
+
+
+    init {
+
+    }
+
     // endregion
 
     // region API calls
-    fun login(email: String, password: String, userType: String = "customer") {
+    fun login(email: String, password: String, userType: String = "customer",rememberMe: Boolean = false) {
+        if (rememberMe){
+            credentials=SavedCredentials(email, password, rememberMe)
+        }
         val request = UserLoginRequest(email, password)
         viewModelScope.launch {
             remoteRepository.makeApiRequest(
@@ -82,12 +97,45 @@ class AuthViewModel(
             )
         }
     }
-    suspend fun setAuthResponsePreferences(response: UserLoginResponse) {
+    // Add this method to set credentials
+    suspend fun setRememberMeCredentials() {
+        try {
+            preferences.putObject(PreferencesKey.USER_CREDENTIALS, credentials)
+            preferences.putBoolean(PreferencesKey.IS_REMEMBER_ME, true)
+            println("saved credentials successfully")
+        } catch (e: Exception) {
+            println("Error saving credentials : ${e.message}")
+            e.printStackTrace()
+        }
+    }
+
+    suspend fun clearRememberMeCredentials() {
+        try {
+            preferences.remove(PreferencesKey.USER_CREDENTIALS)
+            preferences.putBoolean(PreferencesKey.IS_REMEMBER_ME, false)
+            println("saved credentials successfully")
+        } catch (e: Exception) {
+            println("Error saving credentials : ${e.message}")
+            e.printStackTrace()
+        }
+    }
+    suspend fun getRememberMeCredentials() {
+        try {
+            _savedCredentials.value =  preferences.getObject<SavedCredentials>(PreferencesKey.USER_CREDENTIALS)
+
+            println("get saved credentials successfully ${_savedCredentials.value?.email}")
+        } catch (e: Exception) {
+            println("Error getting credentials : ${e.message}")
+            e.printStackTrace()
+        }
+    }
+
+    suspend fun setAuthResponsePreferences(response: UserLoginResponse?) {
         try {
             preferences.putObject(PreferencesKey.AUTH_RESPONSE, response)
             preferences.putBoolean(PreferencesKey.IS_LOGGED_IN, true)
             println("Auth response saved successfully")
-            println("Saved user: ${response.user?.name}")
+            println("Saved user: ${response?.user?.name}")
         } catch (e: Exception) {
             println("Error saving auth response: ${e.message}")
             e.printStackTrace()
@@ -109,6 +157,18 @@ class AuthViewModel(
 
     // FIXED: Make this a suspend function that properly returns the value
     suspend fun isLoggedInPreferences(): Boolean {
+        return try {
+            val isLoggedIn = preferences.getBoolean(PreferencesKey.IS_LOGGED_IN)
+            println("Is logged in: $isLoggedIn")
+            isLoggedIn
+        } catch (e: Exception) {
+            println("Error getting login status: ${e.message}")
+            e.printStackTrace()
+            false
+        }
+    }
+
+ suspend fun removeLoggedInPreferences(): Boolean {
         return try {
             val isLoggedIn = preferences.getBoolean(PreferencesKey.IS_LOGGED_IN)
             println("Is logged in: $isLoggedIn")

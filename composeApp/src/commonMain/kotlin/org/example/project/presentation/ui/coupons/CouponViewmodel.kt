@@ -74,7 +74,8 @@ class CouponViewModel(
                 description = coupon.description ?: "",
                 pointsRequired = coupon.pointsRequired ?: 0,
                 expiryDate = coupon.expiryDate ?: "",
-                isRedeemable = coupon.status?.lowercase() == "active"
+                isRedeemable = coupon.status?.lowercase() == "active",
+
             )
         } ?: emptyList()
 
@@ -86,7 +87,8 @@ class CouponViewModel(
                 id = coupon.id ?: "",
                 title = coupon.title ?: "",
                 redeemedDate = coupon.redeemedDate ?: "",
-                status = coupon.status ?: "Used"
+                status = coupon.status ?: "Used",
+
             )
         } ?: emptyList()
 

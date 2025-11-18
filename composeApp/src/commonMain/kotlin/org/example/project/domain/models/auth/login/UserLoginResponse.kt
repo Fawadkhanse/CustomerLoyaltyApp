@@ -13,8 +13,8 @@ data class UserLoginResponse(
     val message: String? = null,
     @SerialName("user")
     val user: UserDataResponse? = null,
-    @SerialName("outlet_details")
-    val outlet: List<OutletResponse>? = null,
+//    @SerialName("outlet_details")
+//    val outlet: List<OutletResponse>? = null,
     @SerialName("about")
     val about: About? = null,
     @SerialName("faqs")

@@ -358,11 +358,12 @@ private fun EditOutletScreenPreview() {
         city = "Metropolis",
         state = "State",
         country = "Country",
-        latitude = "33.6844",
-        longitude = "73.0479",
+        latitude = 33.6844,
+        longitude = 73.0479,
         contactNumber = "+1-555-123-4567",
         createdAt = "2023-01-01T12:00:00Z",
-        updatedAt = "2023-01-01T12:00:00Z"
+        updatedAt = "2023-01-01T12:00:00Z", outletImage = "mi"
+
     )
 
     LoyaltyTheme {

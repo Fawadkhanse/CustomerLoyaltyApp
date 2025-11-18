@@ -217,8 +217,8 @@ class OutletViewModel(
     }
     private fun processOutlets(outletsList: List<OutletResponse>) {
         _outlets.value = outletsList.mapNotNull { outlet ->
-            val lat = outlet.latitude?.toDoubleOrNull()
-            val lng = outlet.longitude?.toDoubleOrNull()
+            val lat = outlet.latitude
+            val lng = outlet.longitude
 
             if (lat != null && lng != null) {
                 OutletMapData(
@@ -326,11 +326,11 @@ private fun getMockOutletsList(): List<OutletResponse> = listOf(
         city = "Isb",
         state = "ICT",
         country = "PK",
-        latitude = "33.68440000",
-        longitude = "73.04790000",
+        latitude = 33.68440000,
+        longitude = 73.04790000,
         contactNumber = "03001234567",
         createdAt = "2025-09-19T13:53:53.953848Z",
-        updatedAt = "2025-09-19T13:53:53.953848Z"
+        updatedAt = "2025-09-19T13:53:53.953848Z",
     ),
     OutletResponse(
         id = "0201d2d6-c524-4821-9262-6eb9e780ec43",
@@ -340,11 +340,11 @@ private fun getMockOutletsList(): List<OutletResponse> = listOf(
         city = "Rwp",
         state = "Punjab",
         country = "PK",
-        latitude = "33.59950000",
-        longitude = "73.04180000",
+        latitude = 33.59950000,
+        longitude = 73.04180000,
         contactNumber = "03001234568",
         createdAt = "2025-09-20T13:53:53.953848Z",
-        updatedAt = "2025-09-20T13:53:53.953848Z"
+        updatedAt = "2025-09-20T13:53:53.953848Z",
     )
 )
 
@@ -356,11 +356,12 @@ private fun getMockOutlet(): OutletResponse = OutletResponse(
     city = "Isb",
     state = "ICT",
     country = "PK",
-    latitude = "33.68440000",
-    longitude = "73.04790000",
+    latitude = 33.68440000,
+    longitude = 73.04790000,
     contactNumber = "03001234567",
     createdAt = "2025-09-19T13:53:53.953848Z",
-    updatedAt = "2025-09-19T13:53:53.953848Z"
+    updatedAt = "2025-09-19T13:53:53.953848Z", outletImage = "luctus"
+
 )
 // Data classes
 data class OutletMapData(

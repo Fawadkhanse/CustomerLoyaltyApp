@@ -21,7 +21,7 @@ data class CouponDetails(
     val startDate: String? = null,
     @SerialName("expiry_date")
     val expiryDate: String? = null,
-    @SerialName("terms_conditions")
+    @SerialName("terms_and_conditions_text")
     val termsConditions: List<String>? = null,
     @SerialName("status")
     val status: String? = null,

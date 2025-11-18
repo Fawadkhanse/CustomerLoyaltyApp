@@ -1251,8 +1251,60 @@ val ArrowForward: ImageVector by lazy {
         }
     }.build()
 }
+    val Order: ImageVector by lazy {
+        ImageVector.Builder(
+            name = "Order",
+            defaultWidth = 24.0.dp,
+            defaultHeight = 24.0.dp,
+            viewportWidth = 24.0f,
+            viewportHeight = 24.0f
+        ).apply {
+            path(
+                fill = SolidColor(Color(0xFF000000)),
+                stroke = null,
+                strokeLineWidth = 0.0f,
+                strokeLineCap = Butt,
+                strokeLineJoin = Miter,
+                strokeLineMiter = 4.0f,
+                pathFillType = NonZero
+            ) {
+                moveTo(7.0f, 18.0f)
+                curveTo(5.9f, 18.0f, 5.0f, 18.9f, 5.0f, 20.0f)
+                reflectiveCurveTo(5.9f, 22.0f, 7.0f, 22.0f)
+                reflectiveCurveTo(9.0f, 21.1f, 9.0f, 20.0f)
+                reflectiveCurveTo(8.1f, 18.0f, 7.0f, 18.0f)
+                close()
 
-// CORE APP ICONS
+                moveTo(17.0f, 18.0f)
+                curveTo(15.9f, 18.0f, 15.0f, 18.9f, 15.0f, 20.0f)
+                reflectiveCurveTo(15.9f, 22.0f, 17.0f, 22.0f)
+                reflectiveCurveTo(19.0f, 21.1f, 19.0f, 20.0f)
+                reflectiveCurveTo(18.1f, 18.0f, 17.0f, 18.0f)
+                close()
+
+                moveTo(7.16f, 14.0f)
+                lineToRelative(-0.95f, -4.0f)
+                horizontalLineToRelative(12.59f)
+                curveToRelative(0.45f, 0.0f, 0.84f, -0.3f, 0.96f, -0.73f)
+                lineToRelative(1.25f, -4.27f)
+                horizontalLineToRelative(-15.0f)
+                lineToRelative(-0.28f, -1.0f)
+                horizontalLineTo(2.0f)
+                verticalLineToRelative(2.0f)
+                horizontalLineToRelative(2.0f)
+                lineToRelative(3.6f, 10.59f)
+                curveToRelative(0.23f, 0.66f, 0.87f, 1.11f, 1.58f, 1.11f)
+                horizontalLineToRelative(8.49f)
+                verticalLineToRelative(-2.0f)
+                horizontalLineTo(7.16f)
+                close()
+            }
+        }.build()
+    }
+
+
+
+    // CORE APP ICONS
 val Home: ImageVector by lazy {
     ImageVector.Builder(
         name = "Home",

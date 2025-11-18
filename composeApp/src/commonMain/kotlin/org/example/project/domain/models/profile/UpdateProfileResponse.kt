@@ -3,13 +3,14 @@ package org.example.project.domain.models.profile
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.example.project.domain.models.auth.login.UserDataResponse
 
 @Serializable
 data class UpdateProfileResponse(
     @SerialName("message")
     val message: String,
     @SerialName("user")
-    val user: UserProfile?= null
+    val user: UserDataResponse?= null
 ) {
 
     @Serializable

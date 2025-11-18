@@ -58,7 +58,6 @@ import coil3.request.crossfade
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import littleappam.composeapp.generated.resources.Res
-import littleappam.composeapp.generated.resources.logo_name
 import littleappam.composeapp.generated.resources.main_logo
 import org.example.project.domain.models.Resource
 import org.example.project.domain.models.home.CustomerHomeResponse
@@ -77,7 +76,7 @@ fun CustomerHomeScreenRoute(
     onNavigateToProfile: () -> Unit,
     onNavigateToCouponDetails: (String) -> Unit,
     onNavigateToAllCoupons: () -> Unit,
-    onNavigateToGame: () -> Unit = {},
+    onNavigateToOrder: () -> Unit = {},
     onNavigateToReferral: () -> Unit = {},
     onNavigateToOutlet: () -> Unit = {},
     onNavigateToVouchers: () -> Unit = {}
@@ -100,7 +99,7 @@ fun CustomerHomeScreenRoute(
         onProfileClick = onNavigateToProfile,
         onCouponClick = { coupon -> onNavigateToCouponDetails(coupon.id) },
         onViewAllCoupons = onNavigateToAllCoupons,
-        onNavigateToGame = onNavigateToGame,
+        onNavigateToOrder = onNavigateToOrder,
         onNavigateToReferral = onNavigateToReferral,
         onNavigateToNewOutle = onNavigateToOutlet,
         onNavigateToVouchers = onNavigateToVouchers,
@@ -129,14 +128,14 @@ fun CustomerHomeScreen(
     onProfileClick: () -> Unit,
     onCouponClick: (CouponData) -> Unit,
     onViewAllCoupons: () -> Unit,
-    onNavigateToGame: () -> Unit = {},
+    onNavigateToOrder: () -> Unit = {},
     onNavigateToReferral: () -> Unit = {},
     onNavigateToNewOutle: () -> Unit = {},
     onNavigateToVouchers: () -> Unit = {},
     onHomeResponseSuccess: (CustomerHomeResponse) -> Unit = {}
 ) {
     val currentPrompt by promptsViewModel.currentPrompt.collectAsState()
-
+    var showComingSoon: Boolean by remember { mutableStateOf(false) }
     // Define dimensions - Adjusted for better spacing
     val headerHeight = 180.dp // Increased header height
     val promotionHeight = 190.dp
@@ -164,8 +163,10 @@ fun CustomerHomeScreen(
             // Quick Actions
             item {
                 ModernQuickActions(
-                    onGameClick = onNavigateToGame,
-                    onReferralClick = onNavigateToReferral,
+                    onGameClick = onNavigateToOrder,
+                    onReferralClick = {
+                        showComingSoon = true
+                    },
                     onOutletClick = onNavigateToNewOutle,
                     onVouchersClick = onNavigateToVouchers,
                     modifier = Modifier.padding(top = 20.dp)
@@ -196,6 +197,24 @@ fun CustomerHomeScreen(
                     promotions = promotions,
                     cardHeight = promotionHeight
                 )
+            }
+        }else{
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = promotionOffset)
+                    .padding(horizontal = 20.dp)
+            ) {
+                PromotionsCarousel(
+                    promotions = listPromo,
+                    cardHeight = promotionHeight
+                )
+            }
+        }
+
+        if (showComingSoon){
+            promptsViewModel.comingSoon("The Refer feature will be available in the next version release."){
+                showComingSoon=false
             }
         }
     }
@@ -731,18 +750,6 @@ val listPromo = listOf(
         imageUrl = null,
         expiryDate = "Dec 31"
     ),
-    PromotionData(
-        id = "promo_002",
-        title = "Double Points Weekend",
-        imageUrl = null,
-        expiryDate = "Jan 15"
-    ),
-    PromotionData(
-        id = "promo_003",
-        title = "Special Rewards",
-        imageUrl = null,
-        expiryDate = "Feb 28"
-    )
 )
 
 @Preview

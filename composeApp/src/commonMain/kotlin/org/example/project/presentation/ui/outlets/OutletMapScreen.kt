@@ -194,42 +194,46 @@ fun OpenOutletInExternalMap(
 @Composable
 private fun OutletMapScreenPreview() {
     val mockOutlets = listOf(
-        OutletResponse(id = "1", name = "Outlet 1", address = "123 Main St", latitude =" 1.2921", longitude = "103.8519",
+        OutletResponse(id = "1", name = "Outlet 1", address = "123 Main St", latitude =1.2921, longitude = 103.8519,
             merchant = "",
             city = "",
             state = "",
             country = "",
             contactNumber = "",
             createdAt = "",
-            updatedAt = ""
+            updatedAt = "",
+            outletImage = "tacimates"
+
         ),
         OutletResponse(
             id = "2",
             name = "Outlet 2",
             address = "456 Orchard Rd",
-            latitude = "1.3048",
-            longitude = "103.8318",
+            latitude = 1.3048,
+            longitude = 103.8318,
             merchant = TODO(),
             city = TODO(),
             state = TODO(),
             country = TODO(),
             contactNumber = TODO(),
             createdAt = TODO(),
-            updatedAt = TODO(),
+            updatedAt = TODO(), outletImage = "nisl",
+
         ),
         OutletResponse(
             id = "3",
             name = "Outlet 3",
             address = "789 Marina Bay",
-            latitude = "1.2824",
-            longitude = "103.8596",
+            latitude = 1.2824,
+            longitude = 103.8596,
             merchant = TODO(),
             city = TODO(),
             state = TODO(),
             country = TODO(),
             contactNumber = TODO(),
             createdAt = TODO(),
-            updatedAt = TODO(),
+            updatedAt = TODO(), outletImage = "gloriatur",
+
         )
     )
     OutletMapScreen(

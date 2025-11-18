@@ -70,7 +70,7 @@ fun QRCodeDisplayScreenRoute(
     onBack: () -> Unit,
     onNavigateToHistory: () -> Unit = {}
 ) {
-    val qrId = AuthData.UserData?.uniqueQrId ?: ""
+    val qrId = AuthData.userId ?: ""
     val customerName = AuthData.userName
     val qrCodeData = createQRCodeData(qrId)
 
@@ -114,12 +114,15 @@ fun QRCodeDisplayScreenRoute(
         customerName = customerName,
         qrCodeData = qrCodeData,
         onShareQR = handleShare,
+        points = AuthData.userPoint,
         onDownloadQR = {
             isSaving = true
             filePicker.launch()
         },
         onBack = onBack,
-        onNavigateToHistory = onNavigateToHistory,
+        onNavigateToHistory = {
+            onNavigateToHistory()
+        },
         isSharing = isSharing,
         isSaving = isSaving,
         message = showMessage,
@@ -131,6 +134,7 @@ fun QRCodeDisplayScreenRoute(
 fun QRCodeDisplayScreen(
     customerName: String,
     qrCodeData: String,
+    points: String="0",
     onShareQR: () -> Unit,
     onDownloadQR: () -> Unit,
     onBack: () -> Unit,
@@ -142,7 +146,7 @@ fun QRCodeDisplayScreen(
     promptsViewModel: PromptsViewModel = remember { PromptsViewModel() }
 ) {
     val currentPrompt by promptsViewModel.currentPrompt.collectAsState()
-    val points =0
+    val points =points
 
     ScreenContainer(
         currentPrompt = currentPrompt,
@@ -199,7 +203,7 @@ fun QRCodeDisplayScreen(
 @Composable
 private fun PointsCard(
     customerName: String,
-    points: Int,
+    points: String,
     modifier: Modifier = Modifier
 ) {
     val currentDateTime = remember {

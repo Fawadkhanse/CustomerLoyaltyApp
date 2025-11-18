@@ -10,3 +10,9 @@ data class UserLoginRequest(
     @SerialName("password")
     val password: String
 )
+@Serializable
+data class SavedCredentials(
+    val email: String,
+    val password: String,
+    val rememberMe: Boolean
+)

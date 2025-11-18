@@ -96,7 +96,8 @@ private fun MerchantDashboardScreen(
 
                         merchantInfo?.let {
                             Text(
-                                text = "${it.totalCustomers ?: 0} Customers • ${it.totalOutlets ?: 0} Outlets",
+                             //   text = "${it.totalCustomers ?: 0} Customers • ${it.totalOutlets ?: 0} Outlets",
+                                text = "${it.totalCustomers ?: 0} Customers •",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = LoyaltyExtendedColors.secondaryText(),
                                 modifier = Modifier.padding(top = 4.dp)
@@ -105,19 +106,19 @@ private fun MerchantDashboardScreen(
                     }
 
                     // Notification Icon
-                    IconButton(
-                        onClick = { },
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .background(LoyaltyExtendedColors.cardBackground())
-                    ) {
-                        Icon(
-                            imageVector = AppIcons.Notifications,
-                            contentDescription = "Notifications",
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
+//                    IconButton(
+//                        onClick = { },
+//                        modifier = Modifier
+//                            .size(40.dp)
+//                            .clip(CircleShape)
+//                            .background(LoyaltyExtendedColors.cardBackground())
+//                    ) {
+//                        Icon(
+//                            imageVector = AppIcons.Notifications,
+//                            contentDescription = "Notifications",
+//                            tint = MaterialTheme.colorScheme.onSurface
+//                        )
+//                    }
                 }
             }
 
@@ -174,7 +175,8 @@ private fun MerchantDashboardScreen(
 
                     StatsCard(
                         title = "Tody",
-                        value = activeOutletsCount.toString(),
+//                        value = activeOutletsCount.toString(),
+                        value = "0",
                         subtitle = "Order",
                         icon = AppIcons.Store,
                         color = LoyaltyColors.Warning,

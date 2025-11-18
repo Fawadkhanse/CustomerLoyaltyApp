@@ -17,7 +17,9 @@ import org.example.project.presentation.ui.qr.*
 import org.example.project.presentation.ui.outlets.*
 import org.example.project.presentation.ui.transaction.*
 import org.example.project.presentation.notfication.*
+import org.example.project.presentation.ui.orders.OrdersScreen
 import org.example.project.presentation.ui.splash.AppSplashScreenRoute
+import org.example.project.presentation.ui.web.WebViewScreenRoute
 
 /**
  * Authentication navigation graph
@@ -108,6 +110,10 @@ fun NavGraphBuilder.authenticationGraph(
                 onBack = {
                     navController.popBackStack()
                 }
+                ,
+                onTermsAndConditionClicked = {
+                    navController.navigate(SettingsRoutes.WebView.route)
+                }
             )
         }
 
@@ -177,12 +183,16 @@ fun NavGraphBuilder.customerGraph(
 //            onNavigateToAllActivity = {
 //                navController.navigate(CustomerRoutes.Transactions.route)
 //            },
-            onNavigateToGame = {},
+            onNavigateToOrder = {
+                navController.navigate(CustomerRoutes.Order.route)
+            },
             onNavigateToReferral = {},
             onNavigateToOutlet = {
                 navController.navigate(CustomerRoutes.Outlets.route)
             },
-            onNavigateToVouchers = {}
+            onNavigateToVouchers = {
+                navController.navigate(CustomerRoutes.Coupons.route)
+            }
         )
     }
     composable(
@@ -214,6 +224,20 @@ fun NavGraphBuilder.customerGraph(
             updateTopBottomAppBar(false, "My QR", true)
         }
         QRCodeDisplayScreenRoute(
+            onBack = {
+                navController.popBackStack()
+            },
+            onNavigateToHistory = {
+                navController.navigate(CustomerRoutes.Transactions.route)
+            }
+        )
+    }
+// Customer QR
+    composable(CustomerRoutes.Order.route) {
+        LaunchedEffect(Unit) {
+            updateTopBottomAppBar(false, "Order", true)
+        }
+        OrdersScreen(
             onBack = {
                 navController.popBackStack()
             }
@@ -433,7 +457,10 @@ fun NavGraphBuilder.settingsGraph(
                     popUpTo(0) { inclusive = true } // Clear entire back stack
                     launchSingleTop = true
                 }
-            }, onPersonalInfo = {}, onReferEarn = {}, onTermsConditions = {},
+            }, onPersonalInfo = {}, onReferEarn = {}, onTermsConditions = {
+                navController.navigate(SettingsRoutes.WebView.route)
+
+            },
 
             onAboutUs = {
                 navController.navigate(SettingsRoutes.AboutUs.route)
@@ -503,6 +530,16 @@ fun NavGraphBuilder.settingsGraph(
             updateTopBottomAppBar(true, "FAQs", false)
         }
         FAQsScreenRoute(
+            onBack = {
+                navController.popBackStack()
+            }
+        )
+    }
+    composable(SettingsRoutes.WebView.route) {
+        LaunchedEffect(Unit) {
+            updateTopBottomAppBar(true, "Terms And Condition", false)
+        }
+        WebViewScreenRoute(
             onBack = {
                 navController.popBackStack()
             }
@@ -598,9 +635,11 @@ fun NavGraphBuilder.qrFlowGraph(
             LaunchedEffect(Unit) {
                 updateTopBottomAppBar(true, "My QR Code", false)
             }
-            QRCodeDisplayScreenRoute (onBack = {  navController.popBackStack()}, onNavigateToHistory = {
-                navController.navigate(CustomerRoutes.Transactions.route)
-            }
+            QRCodeDisplayScreenRoute(
+                onBack = { navController.popBackStack() },
+                onNavigateToHistory = {
+                    navController.navigate(CustomerRoutes.Transactions.route)
+                }
             )
         }
 
