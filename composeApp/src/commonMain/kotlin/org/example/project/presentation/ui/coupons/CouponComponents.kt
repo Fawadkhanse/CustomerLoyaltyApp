@@ -373,5 +373,6 @@ data class RedeemedCouponData(
     val id: String,
     val title: String,
     val redeemedDate: String,
-    val status: String // "Used", "Expired", etc.
+    val status: String, // "Used", "Expired", etc.
+    val couponCode: String="",
 )

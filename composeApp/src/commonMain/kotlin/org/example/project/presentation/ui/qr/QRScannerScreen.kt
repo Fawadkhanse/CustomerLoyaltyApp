@@ -23,6 +23,7 @@ import org.example.project.presentation.components.ScreenContainer
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.ui.auth.QRScannerCameraView
 import org.example.project.presentation.ui.auth.rememberQRScannerViewModel
+import org.example.project.utils.QRCodeType
 import org.example.project.utils.QRCodeUtils
 
 @Composable
@@ -40,19 +41,28 @@ fun QRScannerScreenRoute(
         customerInfo = customerInfo,
         couponState = couponState,
         onQRScanned = { qrCode ->
-            val qrId = QRCodeUtils.parseQRCodeData(qrCode)
+            println("QR Code scanned: $qrCode")
+
+            // Use parseQRCode to get both type and ID in one call
+            val result = QRCodeUtils.parseQRCode(qrCode)
+
             when {
-                !QRCodeUtils.isValidQRCode(qrCode) || qrId == null -> {
+                result == null -> {
+                    // Invalid QR code format
+                    println("Invalid QR Code")
                     viewModel.showInvalidQRError()
                 }
-                QRCodeUtils.isValidCouponQRCode(qrCode) -> {
-                    viewModel.scanQRCouponCode("coupon:$qrId")
+                result.first == QRCodeType.COUPON -> {
+                    // It's a coupon QR code
+                    val couponId = result.second
+                    println("Coupon QR Code parsed: $couponId")
+                    viewModel.scanQRCouponCode(couponId)  // Pass just the ID, not "coupon:$couponId"
                 }
-                QRCodeUtils.isValidUserQRCode(qrCode) -> {
-                    viewModel.scanQRCode("user:$qrId")
-                }
-                else -> {
-                    viewModel.showInvalidQRError()
+                result.first == QRCodeType.USER -> {
+                    // It's a user QR code
+                    val userId = result.second
+                    println("User QR Code parsed: $userId")
+                    viewModel.scanQRCode(userId)  // Pass just the ID, not "user:$userId"
                 }
             }
         },
@@ -194,7 +204,7 @@ fun QRScannerScreen(
         state = scanState,
         promptsViewModel = promptsViewModel
     ) { response ->
-        promptsViewModel.showSuccess(title = response.message) {
+        promptsViewModel.showSuccess(title =  "Success",message = response.message) {
             onBack()
         }
         // Success handled by customerInfo state
@@ -203,7 +213,7 @@ fun QRScannerScreen(
         state =couponState,
         promptsViewModel = promptsViewModel
     ) { response ->
-        promptsViewModel.showSuccess(title = response.message) {
+        promptsViewModel.showSuccess(title = "Success",message = response.message) {
             onBack()
         }
         // Success handled by customerInfo state

@@ -263,7 +263,7 @@ private fun CouponsScreen(
                                     modifier = Modifier.weight(1f),
                                     onCouponClick={couponData ->
                                         if (couponData.status!= "used"){
-                                            onCouponRedeem(couponData.id,couponData.title)
+                                            onCouponRedeem(couponData.couponCode,couponData.title)
                                         }
                                     }
                                 )

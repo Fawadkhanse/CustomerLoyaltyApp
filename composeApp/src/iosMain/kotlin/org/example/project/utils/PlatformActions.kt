@@ -1,11 +1,17 @@
+package org.example.project.utils
+
 import platform.Foundation.NSURL
 import platform.UIKit.UIApplication
 
-
-
 actual fun makePhoneCall(context: Any?, phoneNumber: String) {
-    val url = NSURL(string = "tel:$phoneNumber") ?: return
-    UIApplication.sharedApplication.openURL(url)
+    // Clean the phone number (remove spaces, dashes, etc.)
+    val cleanNumber = phoneNumber.replace(Regex("[^0-9+]"), "")
+    val url = NSURL(string = "tel:$cleanNumber") ?: return
+
+    // Check if the device can make phone calls
+    if (UIApplication.sharedApplication.canOpenURL(url)) {
+        UIApplication.sharedApplication.openURL(url)
+    }
 }
 
 actual fun openMapsForDirections(
@@ -14,10 +20,12 @@ actual fun openMapsForDirections(
     longitude: Double,
     address: String
 ) {
+    // Apple Maps URL scheme for directions
     val url = NSURL(
         string = "http://maps.apple.com/?daddr=$latitude,$longitude"
     ) ?: return
 
-    UIApplication.sharedApplication.openURL(url)
+    if (UIApplication.sharedApplication.canOpenURL(url)) {
+        UIApplication.sharedApplication.openURL(url)
+    }
 }
-

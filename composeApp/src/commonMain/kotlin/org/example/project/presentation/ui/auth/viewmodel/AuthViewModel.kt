@@ -167,6 +167,17 @@ class AuthViewModel(
             false
         }
     }
+    suspend fun isOnboardingDone(): Boolean {
+        return try {
+            val isFirstLoggedIn = preferences.getBoolean(PreferencesKey.IS_FIRST_LOGIN)
+            println("Is logged in: $isFirstLoggedIn")
+            isFirstLoggedIn
+        } catch (e: Exception) {
+            println("Error getting login status: ${e.message}")
+            e.printStackTrace()
+            false
+        }
+    }
 
  suspend fun removeLoggedInPreferences(): Boolean {
         return try {

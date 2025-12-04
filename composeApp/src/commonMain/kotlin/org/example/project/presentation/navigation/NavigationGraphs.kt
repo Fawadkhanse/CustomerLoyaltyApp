@@ -49,6 +49,9 @@ fun NavGraphBuilder.authenticationGraph(
                     } else {
                         navController.navigateToMainAppAndClearAuth(isCustomer = false)
                     }
+                },
+                onNavigateToOnboarding = {
+                    navController.navigate(AuthRoutes.Onboarding.route)
                 }
             )
         }

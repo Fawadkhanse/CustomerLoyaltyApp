@@ -11,6 +11,7 @@ object PreferencesKey {
     const val  USER_CREDENTIALS = "user_credentials"
     const val USER_PHONE = "user_phone"
     const val IS_LOGGED_IN = "is_logged_in"
+    const val IS_FIRST_LOGIN = "is_first_login"
     const val IS_REMEMBER_ME = "is_remember_me"
 
 }

@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CouponScanResponse(
-    @SerialName("message") val message: String=""
+    @SerialName("status_message") val message: String=""
 )

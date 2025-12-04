@@ -86,6 +86,7 @@ class CouponViewModel(
             RedeemedCouponData(
                 id = coupon.id ?: "",
                 title = coupon.title ?: "",
+                couponCode = coupon.code?:"",
                 redeemedDate = coupon.redeemedDate ?: "",
                 status = coupon.status ?: "Used",
 

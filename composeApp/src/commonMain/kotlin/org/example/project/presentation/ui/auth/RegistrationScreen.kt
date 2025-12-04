@@ -45,8 +45,6 @@ import org.example.project.presentation.components.ScreenContainer
 import org.example.project.presentation.components.TermsAndPrivacyText
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
-import org.example.project.utils.dataholder.AuthData
-import org.example.project.utils.dataholder.TokenManager
 import org.example.project.utils.isValidEmail
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -63,18 +61,18 @@ fun CustomerRegistrationScreenRoute(
     CustomerRegistrationScreen(
         registerState = registerState,
         onRegister = { response ->
-            TokenManager.setAccessToken(response.token?.access)
-           // AuthData.setAuthData(response)
-
-            viewModel.clearAllStates()
-            if (response.user != null && response.token != null) {
-                onRegister(
-                    response.user.name?:"",
-                    response.user.email?:"",
-                    response.user.phone?:"",
-                    "" // Don't pass password back
-                )
-            }
+//            TokenManager.setAccessToken(response.token?.access)
+//           // AuthData.setAuthData(response)
+//
+//            viewModel.clearAllStates()
+//            if (response.user != null && response.token != null) {
+//                onRegister(
+//                    response.user.name?:"",
+//                    response.user.email?:"",
+//                    response.user.phone?:"",
+//                    "" // Don't pass password back
+//                )
+//            }
         },
         onRegisterButtonClicked = { name, email, phone, password, confirmPassword ->
             val request = UserRegistrationRequest(
@@ -398,8 +396,14 @@ private fun CustomerRegistrationScreen(
         state = registerState,
         promptsViewModel = promptsViewModel
     ) { registrationResponse ->
+
         if (registrationResponse.user != null && registrationResponse.token != null) {
-            onRegister(registrationResponse)
+         //   onRegister(registrationResponse)
+            promptsViewModel.showSuccess(
+                title = "Success",
+                message = "Registration successful! You can now log in.") {
+                onBack()
+            }
         }
     }
 }

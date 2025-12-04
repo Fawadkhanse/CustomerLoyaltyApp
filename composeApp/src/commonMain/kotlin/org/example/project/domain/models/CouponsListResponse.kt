@@ -35,11 +35,13 @@ data class AvailableCoupon(
     @SerialName("expiry_date")
     val expiryDate: String? = null,
     @SerialName("terms_and_conditions_text")
-    val termsAndConditionsText: List<String>? = null,
+    val termsAndConditionsText: String? = null,
     @SerialName("code")
     val code: String? = null,
     @SerialName("status")
-    val status: String? = null
+    val status: String? = null,
+    @SerialName("created_at")
+    val createdAt: String? = null
 )
 
 
@@ -49,6 +51,10 @@ data class RedeemedCoupon(
     val id: String? = null,
     @SerialName("title")
     val title: String? = null,
+    @SerialName("code")
+    val code: String? = null,
+    @SerialName("merchant_name")
+    val merchantName: String? = null,
     @SerialName("redeemed_date")
     val redeemedDate: String? = null,
     @SerialName("status")

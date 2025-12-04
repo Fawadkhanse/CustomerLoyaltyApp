@@ -10,6 +10,7 @@ import org.example.project.data.api.HttpMethod
 import org.example.project.domain.RemoteRepository
 import org.example.project.domain.models.AwardPointsRequest
 import org.example.project.domain.models.AwardPointsResponse
+import org.example.project.domain.models.CouponScanRequest
 import org.example.project.domain.models.CouponScanResponse
 import org.example.project.domain.models.QRScanRequest
 import org.example.project.domain.models.QRScanResponse
@@ -46,7 +47,7 @@ class QRScannerViewModel(
         isProcessing = true
         hasScanned = true
         _scanState.value = Resource.Loading
-        val request = QRScanRequest(qrId)
+        val request = QRScanRequest("user:"+qrId, points = 150)
 
         viewModelScope.launch {
             try {
@@ -95,13 +96,13 @@ class QRScannerViewModel(
         isProcessing = true
         hasScanned = true
         _couponState.value = Resource.Loading
-        val request = QRScanRequest(qrId)
+        val request = CouponScanRequest(qrId)
 
         viewModelScope.launch {
             try {
                 remoteRepository.makeApiRequest(
                     requestModel = request,
-                    endpoint = ApiEndpoints.SCAN_QR_CODE,
+                    endpoint = ApiEndpoints.COUPONS_SCAN,
                     httpMethod = HttpMethod.POST,
                     isMock = GlobalVar.isMock
                 ).collectAsResource<CouponScanResponse>(
@@ -145,7 +146,7 @@ class QRScannerViewModel(
             try {
                 val request = AwardPointsRequest(
                     customerId = customerId,
-                    points = points
+                    points = 150
                 )
 
                 remoteRepository.makeApiRequest(

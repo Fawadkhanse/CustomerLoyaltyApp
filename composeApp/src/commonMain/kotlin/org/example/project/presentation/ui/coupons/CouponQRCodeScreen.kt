@@ -169,7 +169,7 @@ private fun CouponInfoCard(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Coupon ID: $couponId",
+                text = "Coupon Code: $couponId",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
             )

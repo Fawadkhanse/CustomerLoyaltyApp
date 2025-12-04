@@ -37,7 +37,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun AppSplashScreenRoute(
     onNavigateToLogin: () -> Unit,
-    onNavigateToHome: (String) -> Unit
+    onNavigateToHome: (String) -> Unit,
+    onNavigateToOnboarding: () -> Unit={}
 ) {
     var isLoading by remember { mutableStateOf(true) }
     var progress by remember { mutableFloatStateOf(0f) }
@@ -67,6 +68,7 @@ fun AppSplashScreenRoute(
         scope.launch {
             try {
                 val isLoggedIn = viewModel.isLoggedInPreferences()
+                val isOnboardingDone = viewModel.isOnboardingDone()
                 println("Splash: Is logged in = $isLoggedIn")
 
                 if (isLoggedIn) {
@@ -88,11 +90,17 @@ fun AppSplashScreenRoute(
                     }
                 } else {
                     println("Splash: Not logged in, going to login")
-                    onNavigateToLogin()
+                    if (!isOnboardingDone) {
+                        onNavigateToOnboarding()
+                    } else {
+                        onNavigateToLogin()
+                    }
+
                 }
             } catch (e: Exception) {
                 println("Splash: Error checking login status: ${e.message}")
                 e.printStackTrace()
+
                 onNavigateToLogin()
             }
         }

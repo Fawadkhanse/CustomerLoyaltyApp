@@ -32,6 +32,7 @@ import kotlinx.coroutines.launch
 import org.example.project.presentation.components.LoyaltyPrimaryButton
 import org.example.project.presentation.design.LoyaltyColors
 import org.example.project.presentation.design.LoyaltyExtendedColors
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 data class OnboardingPage(
     val title: String,
@@ -208,4 +209,10 @@ private fun OnboardingPageContent(
 
         Spacer(modifier = Modifier.weight(0.5f))
     }
+}
+
+@Preview
+@Composable
+private fun OnboardingScreenPreview() {
+    OnboardingScreenRoute(onComplete = {}, onSkip = {})
 }
